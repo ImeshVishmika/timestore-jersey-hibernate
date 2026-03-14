@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+   <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+      <property name="hibernate.connection.username">root</property>
+      <property name="hibernate.connection.password">Imesh#14681</property>
+      <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/timestore_db</property>
+      <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+      <property name="hibernate.hbm2ddl.auto">update</property>
+
+      <mapping class="com.org.entity.Admin"/>
+      <mapping class="com.org.entity.Gender"/>
+      <mapping class="com.org.entity.UserStatus"/>
+      <mapping class="com.org.entity.User"/>
+      <mapping class="com.org.entity.Province"/>
+      <mapping class="com.org.entity.District"/>
+      <mapping class="com.org.entity.City"/>
+      <mapping class="com.org.entity.UserAddress"/>
+      <mapping class="com.org.entity.UserImage"/>
+      <mapping class="com.org.entity.UserHistory"/>
+      <mapping class="com.org.entity.Brand"/>
+      <mapping class="com.org.entity.Category"/>
+      <mapping class="com.org.entity.Product"/>
+      <mapping class="com.org.entity.ProductHasCategory"/>
+      <mapping class="com.org.entity.Model"/>
+      <mapping class="com.org.entity.ProductImage"/>
+      <mapping class="com.org.entity.Rating"/>
+      <mapping class="com.org.entity.Watchlist"/>
+      <mapping class="com.org.entity.DeliveryMethod"/>
+      <mapping class="com.org.entity.Cart"/>
+      <mapping class="com.org.entity.BuyNowCart"/>
+      <mapping class="com.org.entity.OrderStatus"/>
+      <mapping class="com.org.entity.Order"/>
+      <mapping class="com.org.entity.OrderHasModel"/>
+      <mapping class="com.org.entity.Invoice"/>
+      <mapping class="com.org.entity.InvoiceItem"/>
+      <mapping class="com.org.entity.MessageStatus"/>
+      <mapping class="com.org.entity.Message"/>
+
+  </session-factory>
+</hibernate-configuration>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeStore | Create Account</title>
+    
+    <link rel="stylesheet" href="/timestore/public/assets/style/bootstrap.css">
+    <link rel="stylesheet" href="/timestore/public/assets/style/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        /* --- Luxury Background Styling --- */
+        body {
+            /* Consistent Background with Login Page */
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1547996160-81dfa63595aa?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .signup-container {
+            min-height: 85vh; 
+            max-width: 1000px;
+        }
+
+        .signup-img {
+            background-image: url('https://images.unsplash.com/photo-1619134778706-7015533a6150?q=80&w=1000&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .image-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.2));
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+        }
+
+        .form-col {
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+    </style>
+</head>
+
+<body class="d-flex align-items-center justify-content-center py-5">
+
+    <div class="card signup-container shadow-lg rounded-4 overflow-hidden w-100 m-3">
+        <div class="row g-0 h-100">
+            
+            <div class="col-md-6 form-col p-5 d-flex flex-column justify-content-center order-2 order-md-1">
+                
+                <div class="mb-4">
+                    <h3 class="fw-bold text-dark">Join TimeStore</h3>
+                    <p class="text-muted small">Create an account to unlock exclusive member benefits.</p>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label class="form-label small fw-bold text-secondary">First Name</label>
+                        <input type="text" class="form-control bg-light border-0" id="fname" placeholder="John">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-bold text-secondary">Last Name</label>
+                        <input type="text" class="form-control bg-light border-0" id="lname" placeholder="Doe">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Email Address</label>
+                    <input type="email" class="form-control bg-light border-0" id="email" placeholder="name@example.com">
+                    <span id="msg-email" class="text-danger small fw-bold"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control bg-light border-0" id="password" placeholder="Min. 8 characters">
+                        <span class="input-group-text bg-light border-0 text-secondary" style="cursor: pointer;" onclick="togglePasswordVisibility()">
+                            <i class="bi bi-eye-slash" id="eyeIcon"></i>
+                        </span>
+                    </div>
+                    <span id="msg-pass" class="text-danger small fw-bold"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-secondary">Mobile Number</label>
+                    <input type="tel" class="form-control bg-light border-0" id="mobile" placeholder="07xxxxxxxx">
+                    <span id="msg-mobile" class="text-danger small fw-bold"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-secondary d-block">Gender</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" id="genderMale" value="1" checked>
+                        <label class="form-check-label small" for="genderMale">Male</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="2">
+                        <label class="form-check-label small" for="genderFemale">Female</label>
+                    </div>
+                </div>
+
+                <div class="d-grid mb-4">
+                    <button class="btn btn-dark py-2 fw-bold rounded-2 shadow-sm" onclick="signUp();">Create Account</button>
+                </div>
+
+                <div class="text-center">
+                    <span class="text-muted small">Already have an account?</span>
+                    <a href="signin.php" class="text-decoration-none fw-bold text-danger ms-1">Log in</a>
+                </div>
+
+            </div>
+
+            <div class="col-md-6 d-none d-md-block signup-img order-1 order-md-2">
+                <div class="image-overlay d-flex flex-column justify-content-end p-5 text-end">
+                    <h2 class="text-white fw-bold display-6">Define Your Moment.</h2>
+                    <p class="text-white-50">Experience precision engineering and timeless design.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/timestore/public/assets/Script/bootstrap.bundle.js"></script>
+    <script src="/timestore/public/assets/Script/script.js"></script> 
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        }
+    </script>
+
+</body>
+</html>

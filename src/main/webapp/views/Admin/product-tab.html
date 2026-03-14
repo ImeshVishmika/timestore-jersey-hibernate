@@ -1,0 +1,118 @@
+<div class="tab-pane" id="product" role="tabpanel" aria-labelledby="product-tab" tabindex="0">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark display-6">Products</h2>
+            <p class="text-muted small mb-0">Manage your inventory catalog</p>
+        </div>
+        <div>
+            <button class="btn btn-danger rounded-1 px-4 py-2 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                <i class="bi bi-plus-lg me-2"></i> Add Product
+            </button>
+            <button class="btn btn-dark rounded-1 px-4 py-2 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#addCouponModal">
+                <i class="bi bi-ticket-perforated-fill me-2"></i> Add Coupon
+            </button>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-3">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-secondary"></i></span>
+                        <input type="text" class="form-control border-start-0 ps-0" placeholder="Search by model">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select id="filerByBrand" class="form-select text-secondary fw-bold">
+                        <option selected >Filter by Brand</option>
+
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="sortByPrice" class="form-select text-secondary fw-bold">
+                        <option disabled>Sort by Price</option>
+                        <option value="3" >Revenue</option>
+                        <option value="4" selected>Newest</option>
+                        <option value="1">Price:Low to High</option>
+                        <option value="2">Price:High to Low</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card border-0 shadow rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive rounded-4">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th scope="col" class="py-3 ps-4">Image</th>
+                            <th scope="col" class="py-3">Model Info</th>
+                            <th scope="col" class="py-3">Brand</th>
+                            <th scope="col" class="py-3">Price</th>
+                            <th scope="col" class="py-3">Total Sales</th>
+                            <th scope="col" class="py-3">Stock</th>
+                            <th scope="col" class="py-3">Status</th>
+                            <th scope="col" class="py-3 text-end pe-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modelTable">
+                        <tr>
+                            <td class="ps-4">
+                                <div class="bg-white border rounded-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <img src="resources/img/placeholder.png" class="product-thumb" style="max-width: 100%; max-height: 100%;" alt="Thumb">
+                                </div>
+                            </td>
+                            <td>
+                                <h6 class="fw-bold text-dark mb-0">Model Name</h6>
+                                <small class="text-muted">Product Name</small>
+                            </td>
+                            <td><span class="badge bg-light text-dark border">Brand Name</span></td>
+                            <td class="fw-bold">Rs. 10,000</td>
+                            <td>
+                                <h6 class="fw-bold text-success mb-0">Rs. 1000</h6>
+                                <small class="text-secondary fw-bold" style="font-size: 11px;">5 Sold</small>
+                            </td>
+                            <td>
+                                <span class="fw-bold text-dark">
+                                    25
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">In Stock</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-dark border-0"><i class="bi bi-eye-fill"></i></button>
+                                    <button class="btn btn-sm btn-outline-secondary border-0"><i class="bi bi-pencil-fill"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger border-0"><i class="bi bi-trash-fill"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white border-0 py-3 d-flex justify-content-end rounded-bottom-4">
+            <nav>
+                <ul class="pagination pagination-sm mb-0 gap-1">
+                    <li class="page-item disabled"><a class="page-link border-0 text-secondary" href="#"><i class="bi bi-chevron-left"></i></a></li>
+                    <li class="page-item"><a class="page-link border-0 rounded bg-danger text-white fw-bold" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link border-0 rounded text-secondary fw-bold" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link border-0 rounded text-secondary fw-bold" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link border-0 text-secondary" href="#"><i class="bi bi-chevron-right"></i></a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+</div>
+
+<script src="/timestore/assets/Script/Admin/product.js"></script>

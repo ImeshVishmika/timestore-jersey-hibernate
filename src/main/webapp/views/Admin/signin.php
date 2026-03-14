@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeStore | Admin Portal</title>
+    
+    <link rel="stylesheet" href="/timestore/public/assets/style/bootstrap.css">
+    <link rel="stylesheet" href="/timestore/public/assets/style/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        /* Optional: Specific styling for Admin Page to differentiate from User Page */
+        body {
+            background-color: #f0f2f5; /* Light grey background for admin */
+        }
+        .admin-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .btn-admin {
+            background-color: #212529;
+            color: white;
+            transition: 0.3s;
+        }
+        .btn-admin:hover {
+            background-color: #000;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="col-12 col-md-6 col-lg-4">
+            
+            <div class="card admin-card bg-white p-4">
+                <div class="card-body">
+                    
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="bi bi-shield-lock-fill text-danger" style="font-size: 3rem;"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark">Admin Portal</h4>
+                        <p class="text-secondary small">Restricted Access</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <label class="form-label fw-bold text-secondary" style="font-size: 0.9rem;">Email Address</label>
+                            <label id="em" class="text-danger fw-bold" style="font-size: 0.8rem;"></label> 
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-control bg-light border-start-0" id="email" placeholder="name@timestore.com"
+                            value="<?php if (isset($_COOKIE["email"])) { echo ($_COOKIE["email"]); } ?>">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <label class="form-label fw-bold text-secondary" style="font-size: 0.9rem;">Password</label>
+                            <label id="p" class="text-danger fw-bold" style="font-size: 0.8rem;"></label>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-key"></i></span>
+                            <input type="password" class="form-control bg-light border-start-0" id="pw" placeholder="••••••••"
+                            value="<?php if (isset($_COOKIE["pw"])) { echo ($_COOKIE["pw"]); } ?>">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label text-secondary small" for="rememberMe">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" class="text-decoration-none small text-dark fw-bold">Forgot Password?</a>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button class="btn btn-admin py-2 rounded-3 fw-bold" onclick="adminLogIn();">
+                            Access Dashboard
+                        </button>
+                    </div>
+
+                    <div class="text-center border-top pt-3">
+                        <a href="index.php" class="text-decoration-none small text-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Back to TimeStore Shop
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/timestore/public/assets/Script/bootstrap.bundle.js"></script>
+    <script src="/timestore/public/assets/Script/adminScript.js"></script>
+
+</body>
+</html>
