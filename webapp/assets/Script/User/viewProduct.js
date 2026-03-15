@@ -37,7 +37,7 @@ async function loadModels(product_id) {
         const form = new FormData();
         form.append("product_id", product_id);
 
-        const request = await fetch("/timestore/api/model/load", {
+        const request = await fetch("/api/model/load", {
             method: "POST",
             body: form
         });
@@ -129,7 +129,7 @@ async function checkoutSignIn() {
         form.append("password", password);
         form.append("rememberMe", rememberMe);
 
-        const request = await fetch("/timestore/api/user/logIn", {
+        const request = await fetch("/api/user/logIn", {
             method: "POST",
             body: form
         });

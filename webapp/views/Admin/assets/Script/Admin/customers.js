@@ -12,7 +12,7 @@ document.getElementById("userModal").addEventListener('show.bs.modal', async fun
         const form = new FormData();
         form.append("email", email);
         
-        const request = await fetch("/timestore/api/user/details", {
+        const request = await fetch("/api/user/details", {
             method: "POST",
             body: form
         });
@@ -79,7 +79,7 @@ async function loadUsers() {
         const form = new FormData();
         form.append("status", status);
 
-        const request = await fetch("/timestore/api/user/load", {
+        const request = await fetch("/api/user/load", {
             method: "POST",
             body: form
         });

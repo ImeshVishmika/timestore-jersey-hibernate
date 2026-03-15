@@ -12,7 +12,7 @@ async function loadRevenue() {
         const form = new FormData();
         form.append('revenuePeriod', revenuePeriod.value)
 
-        const request = await fetch("/timestore/api/product/revenue", {
+        const request = await fetch("/api/product/revenue", {
             method: "POST",
             body: form
         });
@@ -110,7 +110,7 @@ async function loadRevenue() {
 
 async function loadDashboardStats() {
     try {
-        const request = await fetch("/timestore/api/admin/dashboardStats", {
+        const request = await fetch("/api/admin/dashboardStats", {
             method: "POST"
         });
 

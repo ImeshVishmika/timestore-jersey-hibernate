@@ -51,7 +51,7 @@
 
     async function loadProfile() {
         try {
-            const request = await fetch("/timestore/api/user/userProfile", {
+            const request = await fetch("/api/user/userProfile", {
                 method: "POST"
             });
 
@@ -123,7 +123,7 @@
             form.append("last_name", document.getElementById("lname").value.trim());
             form.append("mobile", document.getElementById("mobile").value.trim());
 
-            const request = await fetch("/timestore/api/user/updateProfile", {
+            const request = await fetch("/api/user/updateProfile", {
                 method: "POST",
                 body: form
             });
@@ -178,7 +178,7 @@
             form.append("province", province);
             form.append("postal_code", postalCode);
 
-            const request = await fetch("/timestore/api/user/updateAddress", {
+            const request = await fetch("/api/user/updateAddress", {
                 method: "POST",
                 body: form
             });
@@ -211,7 +211,7 @@
 
     async function loadUserOrders() {
         try {
-            const request = await fetch("/timestore/api/order/userOrders", {
+            const request = await fetch("/api/order/userOrders", {
                 method: "POST"
             });
 
@@ -256,7 +256,7 @@
 
     async function loadUserWishlist() {
         try {
-            const request = await fetch("/timestore/api/wishlist/load", {
+            const request = await fetch("/api/wishlist/load", {
                 method: "POST"
             });
 

@@ -36,7 +36,7 @@ if (checkoutForm) {
 async function loadModels(product_id) {
     try {
 
-        const request = await fetch(`api/products/${product_id}`);
+        const request = await fetch(`/api/products/${product_id}`);
 
         if (request.ok) {
             let response = await request.json();
@@ -53,7 +53,7 @@ async function loadModels(product_id) {
                     const button = document.createElement("button");
                     button.dataset.model_id = model.modelId;
                     button.classList.add("btn", "border", "rounded-3");
-                    button.innerHTML = `<img src="api/products/img/${model.modelId}" width="50" alt="Side View">`;
+                    button.innerHTML = `<img src="/api/products/img/${model.modelId}" width="50" alt="Side View">`;
                     fragment.appendChild(button);
                 });
                 modelsTable.appendChild(fragment);
@@ -75,7 +75,7 @@ function changeModel(modelId) {
     document.getElementById("product_label").innerText = "tst";
     document.getElementById("model").innerText = "Test";
     document.getElementById("price").innerText = "Rs." + model.price;
-    document.getElementById("vimg").src =`api/products/img/${modelId}`;
+    document.getElementById("vimg").src =`/api/products/img/${modelId}`;
 }
 
 function buying_product(){
@@ -130,7 +130,7 @@ async function checkoutSignIn() {
         form.append("password", password);
         form.append("rememberMe", rememberMe);
 
-        const request = await fetch("/timestore/api/user/logIn", {
+        const request = await fetch("/api/user/logIn", {
             method: "POST",
             body: form
         });

@@ -18,7 +18,7 @@ async function signIn() {
         form.append("password", password);
         form.append("rememberMe", rememberMe);
 
-        const request = await fetch("/timestore/api/user/logIn", {
+        const request = await fetch("/api/user/logIn", {
             method: "POST",
             body: form
         });

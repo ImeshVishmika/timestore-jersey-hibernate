@@ -13,9 +13,11 @@ async function loadPopularItems() {
         //     "page": 1
         // }
         
-        const request = await fetch("/timestore/api/products",{
+        const request = await fetch("/api/products",{
             method:"GET"
         });
+
+
 
         if (request.ok) {
             const jsonObject = await request.json();
@@ -76,7 +78,7 @@ async function loadNewItems() {
         form.append("page_size", 4);
         form.append("page", 1);
         
-        const request = await fetch("/timestore/api/product/load", {
+        const request = await fetch("/api/product/load", {
             method: "POST",
             body: form
         });

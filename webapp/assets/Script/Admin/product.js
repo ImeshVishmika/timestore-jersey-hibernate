@@ -31,7 +31,7 @@ function loadProducts(next) {
                 form.append("sort", sortId);
             }
 
-            const request = await fetch("/timestore/api/product/load", {
+            const request = await fetch("/api/product/load", {
                 method: "POST",
                 body: form
             });
@@ -107,7 +107,7 @@ function showProducts() {
 function loadBrands() {
     (async () => {
         try {
-            const request = await fetch("/timestore/api/brand/load", {
+            const request = await fetch("/api/brand/load", {
                 method: "POST"
             });
 
@@ -273,7 +273,7 @@ document.getElementById("addProduct").addEventListener("click", () => {
             form.append("qty", document.getElementById("productQty").value);
             form.append("model_name", document.getElementById("modelName").value);
 
-            const request = await fetch("/timestore/api/product/add", {
+            const request = await fetch("/api/product/add", {
                 method: "POST",
                 body: form
             });
@@ -321,7 +321,7 @@ function loadModels(product_id) {
             const form = new FormData();
             form.append("product_id", product_id);
 
-            const request = await fetch("/timestore/api/model/load", {
+            const request = await fetch("/api/model/load", {
                 method: "POST",
                 body: form
             });
@@ -394,7 +394,7 @@ updateProductModal.addEventListener('show.bs.modal', async function (event) {
         form.append("product_id", button.dataset.product_id);
         form.append("model_id", button.dataset.model_id);
 
-        const request = await fetch("/timestore/api/model/load", {
+        const request = await fetch("/api/model/load", {
             method: "POST",
             body: form
         });
@@ -434,7 +434,7 @@ updateProductBtn.addEventListener("click", (event) => {
             form.append("qty", update_qty.value);
             form.append("desc", update_desc.value);
 
-            const request = await fetch("/timestore/api/model/update", {
+            const request = await fetch("/api/model/update", {
                 method: "POST",
                 body: form
             });
@@ -468,7 +468,7 @@ function renderProductChart(id) {
             const form = new FormData();
             form.append("product_id", id);
 
-            const request = await fetch("/timestore/api/product/revenue", {
+            const request = await fetch("/api/product/revenue", {
                 method: "POST",
                 body: form
             });

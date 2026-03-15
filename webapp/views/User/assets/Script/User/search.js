@@ -27,7 +27,7 @@ async function loadProducts() {
             form.append("brand", selectedBrands);
         }
 
-        const request = await fetch("/timestore/api/product/load", {
+        const request = await fetch("/api/product/load", {
             method: "POST",
             body: form
         });
@@ -71,7 +71,7 @@ async function loadProducts() {
 
 async function loadBrands() {
     try {
-        const request = await fetch("/timestore/api/brand/load", {
+        const request = await fetch("/api/brand/load", {
             method: "POST"
         });
 

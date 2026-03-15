@@ -89,7 +89,7 @@ if (addressUpdateForm) {
             form.append("city", city);
             form.append("postal_code", postalCode);
 
-            const request = await fetch("/timestore/api/user/updateAddress", {
+            const request = await fetch("/api/user/updateAddress", {
                 method: "POST",
                 body: form
             });
@@ -124,7 +124,7 @@ var delivery_method_id;
 
 async function loadUserDetails() {
     try {
-        const request = await fetch("/timestore/api/user/userProfile", {
+        const request = await fetch("/api/user/userProfile", {
             method: "POST"
         });
 
@@ -193,7 +193,7 @@ async function loadModels() {
         const form = new FormData();
         form.append("model_id", id);
 
-        const request = await fetch("/timestore/api/model/load", {
+        const request = await fetch("/api/model/load", {
             method: "POST",
             body: form
         });
@@ -221,7 +221,7 @@ async function loadModels() {
 
 async function loadDeliveryDetails() {
     try {
-        const request = await fetch("/timestore/api/delivery/load", {
+        const request = await fetch("/api/delivery/load", {
             method: "POST"
         });
 
@@ -285,7 +285,7 @@ async function paynow() {
         form.append("qty", qty);
         form.append("delivery_method_id", previous_method.dataset.id);
 
-        const request = await fetch("/timestore/api/order/new", {
+        const request = await fetch("/api/order/new", {
             method: "POST",
             body: form
         });
@@ -301,7 +301,7 @@ async function paynow() {
                         const statusUpdate = new FormData();
                         statusUpdate.append("order_id", jsonObject.order_id);
 
-                        const statusRequest = await fetch("/timestore/api/order/updateStatusAfterPayment", {
+                        const statusRequest = await fetch("/api/order/updateStatusAfterPayment", {
                             method: "POST",
                             body: statusUpdate
                         });
@@ -405,7 +405,7 @@ async function cancelOrder(orderId) {
         const form = new FormData();
         form.append("orderId", orderId);
 
-        const request = await fetch("/timestore/api/order/cancel", {
+        const request = await fetch("/api/order/cancel", {
             method: "POST",
             body: form
         });

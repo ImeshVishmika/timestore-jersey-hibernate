@@ -13,7 +13,7 @@ async function loadPopularItems() {
         //     "page": 1
         // }
         
-        const request = await fetch("/timestore/api/products",{
+        const request = await fetch("/api/products",{
             method:"GET"
         });
 
@@ -34,7 +34,7 @@ async function loadPopularItems() {
                 <a href="/timestore/viewProduct.html?id=${model.productId}" class="text-decoration-none text-dark">
                 <div class="card h-100 border-0 shadow-sm transition-hover">
                 <div class="m-2 bg-light rounded-3 p-4 text-center d-flex align-items-center justify-content-center" style="height: 240px;">
-                 <img src="api/products/img/${model.productId}" 
+                 <img src="/api/products/img/${model.productId}" 
                  class="img-fluid" 
                  style="max-height: 100%; object-fit: contain;" 
                  alt="${model.productName}">
@@ -76,7 +76,7 @@ async function loadNewItems() {
         form.append("page_size", 4);
         form.append("page", 1);
         
-        const request = await fetch("/timestore/api/product/load", {
+        const request = await fetch("/api/product/load", {
             method: "POST",
             body: form
         });

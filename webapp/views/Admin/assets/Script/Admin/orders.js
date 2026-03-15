@@ -5,7 +5,7 @@ async function loadOrders() {
         const orderTableBody = document.getElementById("orderTableBody");
         orderTableBody.innerHTML = "";
 
-        const request = await fetch("/timestore/api/order/load", {
+        const request = await fetch("/api/order/load", {
             method: "POST"
         });
 
@@ -68,7 +68,7 @@ document.getElementById("orderModal").addEventListener('show.bs.modal', async fu
         const form = new FormData();
         form.append("order_id", button.dataset.order_id);
 
-        const request = await fetch("/timestore/api/order/details", {
+        const request = await fetch("/api/order/details", {
             method: "POST",
             body: form
         });

@@ -3,7 +3,7 @@ var messageButtons;
 
 async function loadMsgSenders() {
     try {
-        const request = await fetch("/timestore/api/message/senders", {
+        const request = await fetch("/api/message/senders", {
             method: "POST"
         });
 
@@ -64,7 +64,7 @@ async function loadMessageItems(email) {
         const form = new FormData();
         form.append("sender", email);
 
-        const request = await fetch("/timestore/api/message/userMessages", {
+        const request = await fetch("/api/message/userMessages", {
             method: "POST",
             body: form
         });
@@ -140,7 +140,7 @@ document.getElementById("userMsgTableBody").addEventListener("click", async (eve
             const form = new FormData();
             form.append("message_id", card.dataset.message_id);
 
-            const request = await fetch("/timestore/api/message/changeState", {
+            const request = await fetch("/api/message/changeState", {
                 method: "POST",
                 body: form
             });

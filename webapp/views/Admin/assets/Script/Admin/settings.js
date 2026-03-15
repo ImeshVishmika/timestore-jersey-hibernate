@@ -21,7 +21,7 @@ if (updateDeliveryForm) {
             form.append("new_price", newPrice);
             form.append("new_days", newDays);
             
-            const request = await fetch("/timestore/api/delivery/update", {
+            const request = await fetch("/api/delivery/update", {
                 method: "POST",
                 body: form
             });
@@ -45,7 +45,7 @@ if (updateDeliveryForm) {
 
 async function loadDeliveryDetails() {
     try {
-        const request = await fetch("/timestore/api/delivery/load", {
+        const request = await fetch("/api/delivery/load", {
             method: "POST"
         });
 
@@ -114,7 +114,7 @@ document.getElementById("deliveryDetailsTableBody").addEventListener("click", as
             form.append("new_price", price);
             form.append("new_days", days);
 
-            const request = await fetch("/timestore/api/delivery/update", {
+            const request = await fetch("/api/delivery/update", {
                 method: "POST",
                 body: form
             });
@@ -129,7 +129,7 @@ document.getElementById("deliveryDetailsTableBody").addEventListener("click", as
             const form = new FormData();
             form.append("id", div.dataset.id);
 
-            const request = await fetch("/timestore/api/delivery/delete", {
+            const request = await fetch("/api/delivery/delete", {
                 method: "POST",
                 body: form
             });
