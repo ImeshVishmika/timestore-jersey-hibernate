@@ -2,8 +2,6 @@ package com.org.dto;
 
 import com.org.entity.Model;
 
-import java.time.LocalDateTime;
-
 public class ModelDTO {
     private Integer modelId;
     private Integer productId;
@@ -11,15 +9,25 @@ public class ModelDTO {
     private Double price;
     private Integer qty;
     private String addedTime;
+    private String imgPath;
 
     public ModelDTO() {}
 
     public ModelDTO(Model model) {
         this.modelId = model.getModel_id();
+        this.productId = model.getProduct_id();
         this.model = model.getModel();
         this.price = model.getPrice();
         this.qty = model.getQty();
-        this.addedTime = model.getAdded_time().toString();
+        this.addedTime = model.getAdded_time() != null ? model.getAdded_time().toString() : null;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 
     public Integer getModelId() {
@@ -62,11 +70,11 @@ public class ModelDTO {
         this.qty = qty;
     }
 
-    public LocalDateTime getAddedTime() {
-        return LocalDateTime.parse(addedTime);
+    public String getAddedTime() {
+        return addedTime;
     }
 
-    public void setAddedTime(LocalDateTime addedTime) {
-        this.addedTime = addedTime.toString();
+    public void setAddedTime(String addedTime) {
+        this.addedTime = addedTime;
     }
 }

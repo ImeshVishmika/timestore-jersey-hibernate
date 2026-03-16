@@ -3,6 +3,7 @@ package com.org.service;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.org.dto.OrderDTO;
 import com.org.entity.Order;
 import com.org.util.HibernateUtil;
 import org.hibernate.Session;
@@ -10,10 +11,11 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService {
-    
+
     private final Gson gson = new Gson();
 
     /**
@@ -27,7 +29,11 @@ public class OrderService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Order> query = session.createQuery("from Order", Order.class);
             List<Order> orders = query.getResultList();
-            data = gson.toJsonTree(orders);
+            List<OrderDTO> orderDTOs = new ArrayList<>();
+            for (Order order : orders) {
+                orderDTOs.add(convertToDTO(order));
+            }
+            data = gson.toJsonTree(orderDTOs);
 
         } catch (Exception e) {
             state = false;
@@ -46,12 +52,12 @@ public class OrderService {
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Order order = session.get(Order.class, Integer.parseInt(orderId));
-            
+
             if (order == null) {
                 state = false;
                 message = "order not found";
             } else {
-                data = gson.toJsonTree(order);
+                data = gson.toJsonTree(convertToDTO(order));
             }
 
         } catch (Exception e) {
@@ -72,19 +78,18 @@ public class OrderService {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            
+
             Order order = new Order();
-            // Set order properties based on model and delivery method
             if (deliveryMethodId != null && !deliveryMethodId.isEmpty()) {
                 order.setDelivery_method(Integer.parseInt(deliveryMethodId));
             }
             order.setOrdered_date(LocalDateTime.now());
-            order.setOrder_status(1); // Default to pending status
-            
+            order.setOrder_status(1);
+
             session.persist(order);
             transaction.commit();
-            
-            data = gson.toJsonTree(order);
+
+            data = gson.toJsonTree(convertToDTO(order));
             message = "order created successfully";
 
         } catch (Exception e) {
@@ -106,19 +111,19 @@ public class OrderService {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Order order = session.get(Order.class, Integer.parseInt(orderId));
-            
+
             if (order == null) {
                 state = false;
                 message = "order not found";
                 return jsonResponse(state, message, data);
             }
-            
+
             transaction = session.beginTransaction();
-            order.setOrder_status(2); // Update to processing status
+            order.setOrder_status(2);
             session.merge(order);
             transaction.commit();
-            
-            data = gson.toJsonTree(order);
+
+            data = gson.toJsonTree(convertToDTO(order));
             message = "order status updated successfully";
 
         } catch (Exception e) {
@@ -140,19 +145,19 @@ public class OrderService {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Order order = session.get(Order.class, Integer.parseInt(orderId));
-            
+
             if (order == null) {
                 state = false;
                 message = "order not found";
                 return jsonResponse(state, message, data);
             }
-            
+
             transaction = session.beginTransaction();
-            order.setOrder_status(3); // Set to cancelled status
+            order.setOrder_status(3);
             session.merge(order);
             transaction.commit();
-            
-            data = gson.toJsonTree(order);
+
+            data = gson.toJsonTree(convertToDTO(order));
             message = "order cancelled successfully";
 
         } catch (Exception e) {
@@ -176,13 +181,27 @@ public class OrderService {
                     "from Order where email = :email", Order.class);
             query.setParameter("email", email);
             List<Order> orders = query.getResultList();
-            data = gson.toJsonTree(orders);
+            List<OrderDTO> orderDTOs = new ArrayList<>();
+            for (Order order : orders) {
+                orderDTOs.add(convertToDTO(order));
+            }
+            data = gson.toJsonTree(orderDTOs);
 
         } catch (Exception e) {
             state = false;
             message = "user orders loading failed: " + e.getMessage();
         }
         return jsonResponse(state, message, data);
+    }
+
+    private OrderDTO convertToDTO(Order order) {
+        return new OrderDTO(
+                order.getOrder_id(),
+                order.getEmail(),
+                order.getOrdered_date() != null ? order.getOrdered_date().toString() : null,
+                order.getDelivery_method(),
+                order.getOrder_status()
+        );
     }
 
     private String jsonResponse(boolean state, String message, JsonElement jsonElement) {

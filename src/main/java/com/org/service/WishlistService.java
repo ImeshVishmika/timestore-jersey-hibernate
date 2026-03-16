@@ -3,7 +3,7 @@ package com.org.service;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.org.entity.Watchlist;
+import com.org.dto.WishlistDTO;
 import com.org.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -11,7 +11,7 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class WishlistService {
-    
+
     private final Gson gson = new Gson();
 
     /**
@@ -23,10 +23,12 @@ public class WishlistService {
         JsonElement data = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Watchlist> query = session.createQuery(
-                    "from Watchlist where users_email = :email", Watchlist.class);
+            Query<WishlistDTO> query = session.createQuery(
+                    "select new com.org.dto.WishlistDTO(w.watchlist_id, w.product_id, w.users_email) " +
+                            "from Watchlist w where w.users_email = :email",
+                    WishlistDTO.class);
             query.setParameter("email", email);
-            List<Watchlist> wishlist = query.getResultList();
+            List<WishlistDTO> wishlist = query.getResultList();
             data = gson.toJsonTree(wishlist);
 
         } catch (Exception e) {

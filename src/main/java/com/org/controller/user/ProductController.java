@@ -38,14 +38,6 @@ public class ProductController {
         }
     }
 
-    @GET
-    @Path("/img/{id}")
-    @Consumes(MediaType.WILDCARD)
-    @Produces({"image/jpeg", "image/png", "image/webp", "image/gif", MediaType.APPLICATION_OCTET_STREAM})
-    public Response getImage(@PathParam("id") Integer id) {
-        return productService.getImg(id);
-    }
-
     @POST
     public Response createProduct(ProductDTO productDTO) {
         try {

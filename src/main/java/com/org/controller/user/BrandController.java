@@ -7,7 +7,7 @@ import jakarta.ws.rs.core.Response;
 
 @Path("/brand")
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+@Consumes(MediaType.APPLICATION_JSON)
 public class BrandController {
     
     private final BrandService brandService = new BrandService();

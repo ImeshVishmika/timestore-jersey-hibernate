@@ -1,30 +1,29 @@
 package com.org.dto;
 
-import java.time.LocalDateTime;
-
 public class OrderDTO {
-    private Integer orderId;
+    private Integer order_id;
     private String email;
-    private LocalDateTime orderedDate;
-    private Integer deliveryMethod;
-    private Integer orderStatus;
+    private String ordered_date;
+    private Integer delivery_method;
+    private Integer order_status;
 
-    public OrderDTO() {}
+    public OrderDTO() {
+    }
 
-    public OrderDTO(Integer orderId, String email, LocalDateTime orderedDate, Integer deliveryMethod, Integer orderStatus) {
-        this.orderId = orderId;
+    public OrderDTO(Integer order_id, String email, String ordered_date, Integer delivery_method, Integer order_status) {
+        this.order_id = order_id;
         this.email = email;
-        this.orderedDate = orderedDate;
-        this.deliveryMethod = deliveryMethod;
-        this.orderStatus = orderStatus;
+        this.ordered_date = ordered_date;
+        this.delivery_method = delivery_method;
+        this.order_status = order_status;
     }
 
-    public Integer getOrderId() {
-        return orderId;
+    public Integer getOrder_id() {
+        return order_id;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setOrder_id(Integer order_id) {
+        this.order_id = order_id;
     }
 
     public String getEmail() {
@@ -35,27 +34,27 @@ public class OrderDTO {
         this.email = email;
     }
 
-    public LocalDateTime getOrderedDate() {
-        return orderedDate;
+    public String getOrdered_date() {
+        return ordered_date;
     }
 
-    public void setOrderedDate(LocalDateTime orderedDate) {
-        this.orderedDate = orderedDate;
+    public void setOrdered_date(String ordered_date) {
+        this.ordered_date = ordered_date;
     }
 
-    public Integer getDeliveryMethod() {
-        return deliveryMethod;
+    public Integer getDelivery_method() {
+        return delivery_method;
     }
 
-    public void setDeliveryMethod(Integer deliveryMethod) {
-        this.deliveryMethod = deliveryMethod;
+    public void setDelivery_method(Integer delivery_method) {
+        this.delivery_method = delivery_method;
     }
 
-    public Integer getOrderStatus() {
-        return orderStatus;
+    public Integer getOrder_status() {
+        return order_status;
     }
 
-    public void setOrderStatus(Integer orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setOrder_status(Integer order_status) {
+        this.order_status = order_status;
     }
 }

@@ -1,17 +1,16 @@
 package com.org.dto;
 
-import java.time.LocalDateTime;
-
 public class InvoiceDTO {
     private Integer invoiceId;
     private Integer orderId;
-    private LocalDateTime invoiceDate;
+    private String invoiceDate;
     private String email;
     private Double deliveryFee;
 
-    public InvoiceDTO() {}
+    public InvoiceDTO() {
+    }
 
-    public InvoiceDTO(Integer invoiceId, Integer orderId, LocalDateTime invoiceDate, String email, Double deliveryFee) {
+    public InvoiceDTO(Integer invoiceId, Integer orderId, String invoiceDate, String email, Double deliveryFee) {
         this.invoiceId = invoiceId;
         this.orderId = orderId;
         this.invoiceDate = invoiceDate;
@@ -35,11 +34,11 @@ public class InvoiceDTO {
         this.orderId = orderId;
     }
 
-    public LocalDateTime getInvoiceDate() {
+    public String getInvoiceDate() {
         return invoiceDate;
     }
 
-    public void setInvoiceDate(LocalDateTime invoiceDate) {
+    public void setInvoiceDate(String invoiceDate) {
         this.invoiceDate = invoiceDate;
     }
 

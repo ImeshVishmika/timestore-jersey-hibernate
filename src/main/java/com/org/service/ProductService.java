@@ -62,6 +62,17 @@ public class ProductService {
 
             for (Model m : product.getModel()) {
                 ModelDTO modelDTO = new ModelDTO(m);
+                try {
+                    ProductImage productImage = session.createQuery(
+                                    "from ProductImage where model_id = :mid", ProductImage.class)
+                            .setParameter("mid", m.getModel_id())
+                            .setMaxResults(1)
+                            .uniqueResult();
+                    if (productImage != null && productImage.getImg_path() != null && !productImage.getImg_path().isBlank()) {
+                        modelDTO.setImgPath(productImage.getImg_path());
+                    }
+                } catch (Exception ignored) {
+                }
                 modelDTOList.add(modelDTO);
             }
 
@@ -287,48 +298,6 @@ public class ProductService {
         }
         return jsonResponse(state, message, data);
     }
-
-    public Response getImg(Integer mid) {
-        if (mid == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            ProductImage productImage = session.createQuery(
-                            "FROM ProductImage p WHERE p.model_id = :mid OR p.model.product_id =:mid", ProductImage.class)
-                    .setParameter("mid", mid)
-                    .setMaxResults(1)
-                    .uniqueResult();
-
-            if (productImage == null || productImage.getImg_path() == null || productImage.getImg_path().isBlank()) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            // Map database path to actual file location
-            // DB stores: "Image/product/filename.ext"
-            // Actual path: "src/main/webapp/assets/Image/product/filename.ext"
-            String dbPath = productImage.getImg_path();
-            Path path = Paths.get("src/main/webapp/assets/" + dbPath);
-
-            if (!Files.exists(path) || !Files.isRegularFile(path)) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            String mimeType = Files.probeContentType(path);
-            if (mimeType == null || mimeType.isBlank()) {
-                mimeType = MediaType.APPLICATION_OCTET_STREAM;
-            }
-
-            byte[] imageBytes = Files.readAllBytes(path);
-            return Response.ok(imageBytes, mimeType)
-                    .header("Content-Length", imageBytes.length)
-                    .build();
-
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
 
     private String jsonResponse(boolean state, String message, JsonElement jsonElement) {
         JsonObject responseJson = new JsonObject();

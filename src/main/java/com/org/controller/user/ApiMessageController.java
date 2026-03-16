@@ -1,13 +1,15 @@
 package com.org.controller.user;
 
 import com.org.service.MessageService;
+import com.org.util.JsonRequestUtil;
+import com.google.gson.JsonObject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/message")
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+@Consumes(MediaType.APPLICATION_JSON)
 public class ApiMessageController {
     
     private final MessageService messageService = new MessageService();
@@ -26,8 +28,13 @@ public class ApiMessageController {
 
     @POST
     @Path("/userMessages")
-    public Response getUserMessages(@FormParam("sender_email") String senderEmail) {
+    public Response getUserMessages(String requestBody) {
         try {
+            JsonObject body = JsonRequestUtil.parseBody(requestBody);
+            String senderEmail = JsonRequestUtil.getString(body, "sender_email");
+            if (senderEmail == null) {
+                senderEmail = JsonRequestUtil.getString(body, "sender");
+            }
             String result = messageService.getUserMessages(senderEmail);
             return Response.ok().entity(result).build();
         } catch (Exception e) {
@@ -38,8 +45,10 @@ public class ApiMessageController {
 
     @POST
     @Path("/changeState")
-    public Response changeMessageState(@FormParam("message_id") String messageId) {
+    public Response changeMessageState(String requestBody) {
         try {
+            JsonObject body = JsonRequestUtil.parseBody(requestBody);
+            String messageId = JsonRequestUtil.getString(body, "message_id");
             String result = messageService.changeMessageState(messageId);
             return Response.ok().entity(result).build();
         } catch (Exception e) {

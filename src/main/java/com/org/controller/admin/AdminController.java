@@ -7,7 +7,7 @@ import jakarta.ws.rs.core.Response;
 
 @Path("/admin")
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+@Consumes(MediaType.APPLICATION_JSON)
 public class AdminController {
     
     private final AdminService adminService = new AdminService();

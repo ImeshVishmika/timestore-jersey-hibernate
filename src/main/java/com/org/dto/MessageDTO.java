@@ -1,32 +1,31 @@
 package com.org.dto;
 
-import java.time.LocalDateTime;
-
 public class MessageDTO {
-    private Integer messageId;
+    private Integer message_id;
     private Integer status;
     private String message;
     private String sender;
     private String subject;
-    private LocalDateTime dateTime;
+    private String date_time;
 
-    public MessageDTO() {}
+    public MessageDTO() {
+    }
 
-    public MessageDTO(Integer messageId, Integer status, String message, String sender, String subject, LocalDateTime dateTime) {
-        this.messageId = messageId;
+    public MessageDTO(Integer message_id, Integer status, String message, String sender, String subject, String date_time) {
+        this.message_id = message_id;
         this.status = status;
         this.message = message;
         this.sender = sender;
         this.subject = subject;
-        this.dateTime = dateTime;
+        this.date_time = date_time;
     }
 
-    public Integer getMessageId() {
-        return messageId;
+    public Integer getMessage_id() {
+        return message_id;
     }
 
-    public void setMessageId(Integer messageId) {
-        this.messageId = messageId;
+    public void setMessage_id(Integer message_id) {
+        this.message_id = message_id;
     }
 
     public Integer getStatus() {
@@ -61,11 +60,11 @@ public class MessageDTO {
         this.subject = subject;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public String getDate_time() {
+        return date_time;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setDate_time(String date_time) {
+        this.date_time = date_time;
     }
 }

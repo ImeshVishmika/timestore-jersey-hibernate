@@ -3,16 +3,18 @@ package com.org.service;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.org.dto.DeliveryMethodDTO;
 import com.org.entity.DeliveryMethod;
 import com.org.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeliveryService {
-    
+
     private final Gson gson = new Gson();
 
     /**
@@ -26,7 +28,11 @@ public class DeliveryService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<DeliveryMethod> query = session.createQuery("from DeliveryMethod", DeliveryMethod.class);
             List<DeliveryMethod> methods = query.getResultList();
-            data = gson.toJsonTree(methods);
+            List<DeliveryMethodDTO> methodDTOs = new ArrayList<>();
+            for (DeliveryMethod method : methods) {
+                methodDTOs.add(convertToDTO(method));
+            }
+            data = gson.toJsonTree(methodDTOs);
 
         } catch (Exception e) {
             state = false;
@@ -46,23 +52,23 @@ public class DeliveryService {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             DeliveryMethod method = session.get(DeliveryMethod.class, Integer.parseInt(deliveryMethodId));
-            
+
             if (method == null) {
                 state = false;
                 message = "delivery method not found";
                 return jsonResponse(state, message, data);
             }
-            
+
             transaction = session.beginTransaction();
-            
+
             if (price != null && !price.isEmpty()) {
                 method.setPrice(Double.parseDouble(price));
             }
-            
+
             session.merge(method);
             transaction.commit();
-            
-            data = gson.toJsonTree(method);
+
+            data = gson.toJsonTree(convertToDTO(method));
             message = "delivery method updated successfully";
 
         } catch (Exception e) {
@@ -84,17 +90,17 @@ public class DeliveryService {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             DeliveryMethod method = session.get(DeliveryMethod.class, Integer.parseInt(deliveryMethodId));
-            
+
             if (method == null) {
                 state = false;
                 message = "delivery method not found";
                 return jsonResponse(state, message, data);
             }
-            
+
             transaction = session.beginTransaction();
             session.remove(method);
             transaction.commit();
-            
+
             message = "delivery method deleted successfully";
 
         } catch (Exception e) {
@@ -103,6 +109,15 @@ public class DeliveryService {
             message = "delivery method deletion failed: " + e.getMessage();
         }
         return jsonResponse(state, message, data);
+    }
+
+    private DeliveryMethodDTO convertToDTO(DeliveryMethod method) {
+        return new DeliveryMethodDTO(
+                method.getId(),
+                method.getDelivery_method(),
+                method.getPrice(),
+                method.getDelivery_days()
+        );
     }
 
     private String jsonResponse(boolean state, String message, JsonElement jsonElement) {

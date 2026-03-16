@@ -3,7 +3,6 @@ package com.org.dto;
 import com.org.entity.User;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class UserDTO {
     

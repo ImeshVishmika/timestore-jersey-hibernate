@@ -1,13 +1,15 @@
 package com.org.controller.user;
 
 import com.org.service.DeliveryService;
+import com.org.util.JsonRequestUtil;
+import com.google.gson.JsonObject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/delivery")
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+@Consumes(MediaType.APPLICATION_JSON)
 public class ApiDeliveryController {
     
     private final DeliveryService deliveryService = new DeliveryService();
@@ -26,10 +28,17 @@ public class ApiDeliveryController {
 
     @POST
     @Path("/update")
-    public Response updateDeliveryMethod(
-            @FormParam("delivery_method_id") String deliveryMethodId,
-            @FormParam("price") String price) {
+    public Response updateDeliveryMethod(String requestBody) {
         try {
+            JsonObject body = JsonRequestUtil.parseBody(requestBody);
+            String deliveryMethodId = JsonRequestUtil.getString(body, "delivery_method_id");
+            if (deliveryMethodId == null) {
+                deliveryMethodId = JsonRequestUtil.getString(body, "id");
+            }
+            String price = JsonRequestUtil.getString(body, "price");
+            if (price == null) {
+                price = JsonRequestUtil.getString(body, "new_price");
+            }
             String result = deliveryService.updateDeliveryMethod(deliveryMethodId, price);
             return Response.ok().entity(result).build();
         } catch (Exception e) {
@@ -40,8 +49,13 @@ public class ApiDeliveryController {
 
     @POST
     @Path("/delete")
-    public Response deleteDeliveryMethod(@FormParam("delivery_method_id") String deliveryMethodId) {
+    public Response deleteDeliveryMethod(String requestBody) {
         try {
+            JsonObject body = JsonRequestUtil.parseBody(requestBody);
+            String deliveryMethodId = JsonRequestUtil.getString(body, "delivery_method_id");
+            if (deliveryMethodId == null) {
+                deliveryMethodId = JsonRequestUtil.getString(body, "id");
+            }
             String result = deliveryService.deleteDeliveryMethod(deliveryMethodId);
             return Response.ok().entity(result).build();
         } catch (Exception e) {
