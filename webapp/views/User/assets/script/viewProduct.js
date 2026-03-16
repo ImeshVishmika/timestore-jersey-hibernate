@@ -6,9 +6,8 @@ let isLoggedIn = false;
 window.addEventListener("load", event => {
     const buyNowButton = document.getElementById("buyNow");
 
-    var pathname = window.location.pathname;
-    let id = pathname.searchParams.get("id");
-    alert(id);
+    var parm = new URLSearchParams(window.location.search);
+    let id = parm.get("id");
     loadModels(id);
 
 });
@@ -34,12 +33,16 @@ if (checkoutForm) {
 
 async function loadModels(product_id) {
     try {
-        const form = new FormData();
-        form.append("product_id", product_id);
+        const payload = {
+            product_id: product_id
+        };
 
         const request = await fetch("/api/model/load", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.ok) {
@@ -48,33 +51,34 @@ async function loadModels(product_id) {
             modelsTable.innerHTML = "";
             const fragment = document.createDocumentFragment();
 
-            jsonObject.models.forEach(model => {
-                models[model.model_id] = model;
+            jsonObject.data.forEach(model => {
+                models[model.modelId] = model;
                 const button = document.createElement("button");
-                button.dataset.model_id=model.model_id;
+                button.dataset.modelId=model.modelId;
                 button.classList.add("btn", "border", "rounded-3");
-                button.innerHTML=`<img src="${model.img_path}" width="50" alt="Side View">`;
+
+                button.innerHTML=`<img src=/api/model/img/${model.modelId} width="50" alt="Side View">`;
                 fragment.appendChild(button);
             });
             modelsTable.appendChild(fragment);
-            changeModel(jsonObject.models[0].model_id);
+            changeModel(jsonObject.data[0].modelId);
             maybeOpenBuyModal();
         } else {
             Notiflix.Notify.failure('Failed to load models');
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error:'+ error);
         Notiflix.Notify.failure('Error ' + error);
     }
 }
 
-function changeModel(model_id) {
-    buying_model_id = model_id;
-    const model =models[model_id]
-    document.getElementById("product_label").innerText = model.model_name;
-    document.getElementById("model").innerText = model.model_name;
+function changeModel(modelId) {
+    buying_model_id = modelId;
+    const model =models[modelId]
+    document.getElementById("product_label").innerText = model.model;
+    document.getElementById("model").innerText = model.model;
     document.getElementById("price").innerText = "Rs." + model.price;
-    document.getElementById("vimg").src = model.img_path;
+    document.getElementById("vimg").src =`/api/model/img/${model.modelId}`;
 }
 
 function buying_product(){
@@ -93,7 +97,7 @@ function buying_product(){
     buyingProductBrand.textContent = model.brand_id;
     buyingProductModel.textContent = model.model_name;
     buyingProductPrice.textContent = "Rs." + model.price;
-    buyingProductImg.src = model.img_path;
+    buyingProductImg.src = `/api/model/img/${model.modelId}`;
 }
 
 function toCheckout() {
@@ -124,14 +128,18 @@ async function checkoutSignIn() {
     }
 
     try {
-        const form = new FormData();
-        form.append("email", email);
-        form.append("password", password);
-        form.append("rememberMe", rememberMe);
+        const payload = {
+            email,
+            password,
+            rememberMe
+        };
 
         const request = await fetch("/api/user/logIn", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.status !== 200) {

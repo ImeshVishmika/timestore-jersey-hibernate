@@ -9,12 +9,16 @@ document.getElementById("userModal").addEventListener('show.bs.modal', async fun
     if (!email) return;
     
     try {
-        const form = new FormData();
-        form.append("email", email);
+        const payload = {
+            email: email
+        };
         
         const request = await fetch("/api/user/details", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.ok) {
@@ -76,12 +80,16 @@ async function loadUsers() {
     try {
         const status = document.getElementById("userStatusFilter").value;
 
-        const form = new FormData();
-        form.append("status", status);
+        const payload = {
+            status: status
+        };
 
         const request = await fetch("/api/user/load", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.ok) {

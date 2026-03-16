@@ -6,7 +6,11 @@ async function loadOrders() {
         orderTableBody.innerHTML = "";
 
         const request = await fetch("/api/order/load", {
-            method: "POST"
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
         });
 
         if (request.ok) {
@@ -65,12 +69,16 @@ document.getElementById("orderModal").addEventListener('show.bs.modal', async fu
             return;
         }
 
-        const form = new FormData();
-        form.append("order_id", button.dataset.order_id);
+        const payload = {
+            order_id: button.dataset.order_id
+        };
 
         const request = await fetch("/api/order/details", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.ok) {

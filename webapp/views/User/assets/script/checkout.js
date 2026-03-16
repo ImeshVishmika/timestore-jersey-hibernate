@@ -81,17 +81,21 @@ if (addressUpdateForm) {
                 return;
             }
 
-            const form = new FormData();
-            form.append("line_one", lineOne);
-            form.append("line_two", lineTwo);
-            form.append("district", district);
-            form.append("province", province);
-            form.append("city", city);
-            form.append("postal_code", postalCode);
+            const payload = {
+                line_one: lineOne,
+                line_two: lineTwo,
+                district: district,
+                province: province,
+                city: city,
+                postal_code: postalCode
+            };
 
             const request = await fetch("/api/user/updateAddress", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.ok) {
@@ -125,7 +129,11 @@ var delivery_method_id;
 async function loadUserDetails() {
     try {
         const request = await fetch("/api/user/userProfile", {
-            method: "POST"
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
         });
 
         if (request.ok) {
@@ -190,19 +198,24 @@ async function loadUserDetails() {
 
 async function loadModels() {
     try {
-        const form = new FormData();
-        form.append("model_id", id);
+        const payload = {
+            model_id: id
+        };
 
         const request = await fetch("/api/model/load", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.ok) {
             const jsonObject = await request.json();
 
             jsonObject.models.forEach(model => {
-                document.getElementById("modelImg").src = model.img_path;
+                const modelId = model.model_id ?? model.modelId;
+                document.getElementById("modelImg").src = modelId ? `/api/model/img/${modelId}` : (model.img_path || "");
                 document.getElementById("productName").innerHTML = model.model_name;
                 document.getElementById("brand").innerHTML = model.brand_name;
                 document.getElementById("price").innerHTML = "Rs." + model.price + " For each iteme(s) ";
@@ -222,7 +235,11 @@ async function loadModels() {
 async function loadDeliveryDetails() {
     try {
         const request = await fetch("/api/delivery/load", {
-            method: "POST"
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
         });
 
         if (request.ok) {
@@ -280,14 +297,18 @@ async function paynow() {
             return;
         }
 
-        const form = new FormData();
-        form.append("id", id);
-        form.append("qty", qty);
-        form.append("delivery_method_id", previous_method.dataset.id);
+        const payload = {
+            id: id,
+            qty: qty,
+            delivery_method_id: previous_method.dataset.id
+        };
 
         const request = await fetch("/api/order/new", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.ok) {
@@ -298,12 +319,16 @@ async function paynow() {
                 // Mark order as paid by updating order status
                 (async () => {
                     try {
-                        const statusUpdate = new FormData();
-                        statusUpdate.append("order_id", jsonObject.order_id);
+                        const statusUpdate = {
+                            order_id: jsonObject.order_id
+                        };
 
                         const statusRequest = await fetch("/api/order/updateStatusAfterPayment", {
                             method: "POST",
-                            body: statusUpdate
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(statusUpdate)
                         });
 
                         if (statusRequest.ok) {
@@ -402,12 +427,16 @@ async function cancelOrder(orderId) {
             return;
         }
 
-        const form = new FormData();
-        form.append("orderId", orderId);
+        const payload = {
+            orderId: orderId
+        };
 
         const request = await fetch("/api/order/cancel", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.ok) {

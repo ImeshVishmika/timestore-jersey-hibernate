@@ -13,14 +13,18 @@ async function signIn() {
             rememberMe = 0
         }
 
-        const form = new FormData();
-        form.append("email", email);
-        form.append("password", password);
-        form.append("rememberMe", rememberMe);
+        const payload = {
+            email,
+            password,
+            rememberMe
+        };
 
         const request = await fetch("/api/user/logIn", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.ok) {

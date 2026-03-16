@@ -16,14 +16,18 @@ if (updateDeliveryForm) {
                 return;
             }
             
-            const form = new FormData();
-            form.append("id", deliveryId);
-            form.append("new_price", newPrice);
-            form.append("new_days", newDays);
+            const payload = {
+                delivery_method_id: deliveryId,
+                price: newPrice,
+                new_days: newDays
+            };
             
             const request = await fetch("/api/delivery/update", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.ok) {
@@ -46,7 +50,11 @@ if (updateDeliveryForm) {
 async function loadDeliveryDetails() {
     try {
         const request = await fetch("/api/delivery/load", {
-            method: "POST"
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
         });
 
         if (request.ok) {
@@ -109,14 +117,18 @@ document.getElementById("deliveryDetailsTableBody").addEventListener("click", as
             const days = daysInput ? daysInput.value : "";
             const deliveryId = div.dataset.id;
 
-            const form = new FormData();
-            form.append("id", deliveryId);
-            form.append("new_price", price);
-            form.append("new_days", days);
+            const payload = {
+                delivery_method_id: deliveryId,
+                price: price,
+                new_days: days
+            };
 
             const request = await fetch("/api/delivery/update", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.ok) {
@@ -126,12 +138,16 @@ document.getElementById("deliveryDetailsTableBody").addEventListener("click", as
             }
         } else if (event.target.classList.contains("btn-outline-danger")) {
 
-            const form = new FormData();
-            form.append("id", div.dataset.id);
+            const payload = {
+                delivery_method_id: div.dataset.id
+            };
 
             const request = await fetch("/api/delivery/delete", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.ok) {

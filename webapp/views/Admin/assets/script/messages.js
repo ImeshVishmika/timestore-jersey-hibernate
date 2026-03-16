@@ -4,7 +4,11 @@ var messageButtons;
 async function loadMsgSenders() {
     try {
         const request = await fetch("/api/message/senders", {
-            method: "POST"
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
         });
 
         if (request.ok) {
@@ -61,12 +65,16 @@ document.getElementById("msgSenderTableBody").addEventListener("click", (event) 
 
 async function loadMessageItems(email) {
     try {
-        const form = new FormData();
-        form.append("sender", email);
+        const payload = {
+            sender_email: email
+        };
 
         const request = await fetch("/api/message/userMessages", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.ok) {
@@ -137,12 +145,16 @@ document.getElementById("userMsgTableBody").addEventListener("click", async (eve
 
     if (card.dataset.status == 2) {
         try {
-            const form = new FormData();
-            form.append("message_id", card.dataset.message_id);
+            const payload = {
+                message_id: card.dataset.message_id
+            };
 
             const request = await fetch("/api/message/changeState", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.ok) {

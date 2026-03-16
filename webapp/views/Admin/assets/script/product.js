@@ -3,6 +3,11 @@ var brandList = null;
 var brandId = null;
 var sortId = null;
 
+function getModelImageUrl(model) {
+    const modelId = model.model_id ?? model.modelId;
+    return modelId ? `/api/model/img/${modelId}` : (model.img_path || "");
+}
+
 document.getElementById("product-tab").addEventListener("click", () => {
     loadProducts(showProducts);
     loadBrands();
@@ -23,17 +28,20 @@ sort.addEventListener("change", () => {
 function loadProducts(next) {
     (async () => {
         try {
-            const form = new FormData();
+            const payload = {};
             if (brandId != null) {
-                form.append("brand", brandId);
+                payload.brand = brandId;
             }
             if (sortId != null) {
-                form.append("sort", sortId);
+                payload.sort = sortId;
             }
 
             const request = await fetch("/api/product/load", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.ok) {
@@ -60,7 +68,7 @@ function showProducts() {
             tr.innerHTML = `
                     <td class="ps-4">
                         <div class="bg-white border rounded-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                            <img src="`+ i.img_path + `" class="product-thumb" style="max-width: 100%; max-height: 100%;" alt="Thumb">
+                            <img src="${getModelImageUrl(i)}" class="product-thumb" style="max-width: 100%; max-height: 100%;" alt="Thumb">
                         </div>
                     </td>
                     <td>
@@ -108,7 +116,11 @@ function loadBrands() {
     (async () => {
         try {
             const request = await fetch("/api/brand/load", {
-                method: "POST"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({})
             });
 
             if (request.ok) {
@@ -254,28 +266,30 @@ modelSelect.addEventListener("change", () => {
 document.getElementById("addProduct").addEventListener("click", () => {
     (async () => {
         try {
-            const form = new FormData();
+            const payload = {};
 
             if (!brandSelect.classList.contains("d-none")) {
-                form.append("brand_id", brandSelect.value);
+                payload.brand_id = brandSelect.value;
             } else {
-                form.append("brand_name", brandInput.value);
+                payload.brand_name = brandInput.value;
             }
 
             if (!modelSelect.classList.contains("d-none")) {
-                form.append("product_id", modelSelect.value);
+                payload.product_id = modelSelect.value;
             } else {
-                form.append("product_name", modelInput.value);
+                payload.product_name = modelInput.value;
             }
 
-            form.append("img", document.getElementById("productImg").files[0]);
-            form.append("price", document.getElementById("productPrice").value);
-            form.append("qty", document.getElementById("productQty").value);
-            form.append("model_name", document.getElementById("modelName").value);
+            payload.price = document.getElementById("productPrice").value;
+            payload.qty = document.getElementById("productQty").value;
+            payload.model_name = document.getElementById("modelName").value;
 
             const request = await fetch("/api/product/add", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.ok) {
@@ -318,17 +332,21 @@ function loadModels(product_id) {
             updateProductBtn.dataset.product_id = product_id;
             renderProductChart(product_id);
 
-            const form = new FormData();
-            form.append("product_id", product_id);
+            const payload = {
+                product_id: product_id
+            };
 
             const request = await fetch("/api/model/load", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.ok) {
                 const jsonObject = await request.json();
-                document.getElementById("modalImg").src = jsonObject.models[0].img_path;
+                document.getElementById("modalImg").src = getModelImageUrl(jsonObject.models[0]);
 
                 const fragment = document.createDocumentFragment();
                 jsonObject.models.forEach(model => {
@@ -336,7 +354,7 @@ function loadModels(product_id) {
                     modalQty += parseInt(model.qty);
                     const modelItem =
                         `<td class="ps-4">
-                            <img src=`+ model.img_path + `
+                            <img src="${getModelImageUrl(model)}"
                                 class="rounded border bg-white p-1"
                                 width="40" height="40"
                                 style="object-fit: contain;">
@@ -390,13 +408,17 @@ updateProductModal.addEventListener('show.bs.modal', async function (event) {
     try {
         const button = event.relatedTarget;
 
-        const form = new FormData();
-        form.append("product_id", button.dataset.product_id);
-        form.append("model_id", button.dataset.model_id);
+        const payload = {
+            product_id: button.dataset.product_id,
+            model_id: button.dataset.model_id
+        };
 
         const request = await fetch("/api/model/load", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.ok) {
@@ -423,20 +445,22 @@ updateProductBtn.addEventListener("click", (event) => {
             const update_id = document.getElementById("update_id");
             const update_price = document.getElementById("update_price");
             const update_qty = document.getElementById("update_qty");
-            const update_img = document.getElementById("update_img");
             const update_desc = document.getElementById("update_desc");
 
-            const form = new FormData();
-            form.append("model_id", update_id.value);
-            form.append("img", update_img.files[0]);
-            form.append("model_name", update_model.value);
-            form.append("price", update_price.value);
-            form.append("qty", update_qty.value);
-            form.append("desc", update_desc.value);
+            const payload = {
+                model_id: update_id.value,
+                model_name: update_model.value,
+                price: update_price.value,
+                qty: update_qty.value,
+                desc: update_desc.value
+            };
 
             const request = await fetch("/api/model/update", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.ok) {
@@ -465,12 +489,16 @@ function renderProductChart(id) {
                 productChart.destroy();
             }
 
-            const form = new FormData();
-            form.append("product_id", id);
+            const payload = {
+                product_id: id
+            };
 
             const request = await fetch("/api/product/revenue", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.ok) {

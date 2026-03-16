@@ -52,7 +52,11 @@
     async function loadProfile() {
         try {
             const request = await fetch("/api/user/userProfile", {
-                method: "POST"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({})
             });
 
             if (request.status !== 200) {
@@ -118,14 +122,19 @@
         event.preventDefault();
 
         try {
-            const form = new FormData();
-            form.append("first_name", document.getElementById("fname").value.trim());
-            form.append("last_name", document.getElementById("lname").value.trim());
-            form.append("mobile", document.getElementById("mobile").value.trim());
+            const payload = {
+                first_name: document.getElementById("fname").value.trim(),
+                last_name: document.getElementById("lname").value.trim(),
+                mobile: document.getElementById("mobile").value.trim(),
+                email: document.getElementById("email").value.trim()
+            };
 
             const request = await fetch("/api/user/updateProfile", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.status !== 200) {
@@ -170,17 +179,22 @@
                 return;
             }
 
-            const form = new FormData();
-            form.append("line_one", lineOne);
-            form.append("line_two", lineTwo);
-            form.append("city", city);
-            form.append("district", district);
-            form.append("province", province);
-            form.append("postal_code", postalCode);
+            const payload = {
+                line_one: lineOne,
+                line_two: lineTwo,
+                city: city,
+                district: district,
+                province: province,
+                postal_code: postalCode,
+                email: document.getElementById("email").value.trim()
+            };
 
             const request = await fetch("/api/user/updateAddress", {
                 method: "POST",
-                body: form
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
             });
 
             if (request.status !== 200) {
@@ -212,7 +226,11 @@
     async function loadUserOrders() {
         try {
             const request = await fetch("/api/order/userOrders", {
-                method: "POST"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({})
             });
 
             if (!request.ok) {
@@ -257,7 +275,11 @@
     async function loadUserWishlist() {
         try {
             const request = await fetch("/api/wishlist/load", {
-                method: "POST"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({})
             });
 
             if (!request.ok) {
@@ -290,7 +312,7 @@
             col.innerHTML = `
                 <div class="card h-100 shadow-sm border-0">
                     <div class="p-3 text-center" style="background-color: #f8f9fa;">
-                        <img src="${item.img_path || '/timestore/app/media/icons/profile.png'}" 
+                        <img src="/api/model/img/${item.product_id}" 
                              class="card-img-top img-fluid" 
                              alt="${item.model_name}" 
                              style="max-height: 150px; object-fit: contain;">

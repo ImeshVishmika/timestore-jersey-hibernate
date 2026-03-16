@@ -9,12 +9,16 @@ async function loadRevenue() {
         const ctx = document.getElementById('revenueChart').getContext('2d');
         const revenuePeriod = document.getElementById("revenuePeriod");
 
-        const form = new FormData();
-        form.append('revenuePeriod', revenuePeriod.value)
+        const payload = {
+            revenuePeriod: revenuePeriod.value
+        };
 
         const request = await fetch("/api/product/revenue", {
             method: "POST",
-            body: form
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
         if (request.ok) {
@@ -111,7 +115,11 @@ async function loadRevenue() {
 async function loadDashboardStats() {
     try {
         const request = await fetch("/api/admin/dashboardStats", {
-            method: "POST"
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({})
         });
 
         if (request.ok) {
