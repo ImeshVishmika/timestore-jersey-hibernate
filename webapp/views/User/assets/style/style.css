@@ -1,0 +1,117 @@
+
+
+.fs-7 {
+    font-size: 10px;
+}
+
+.Bg {
+    backdrop-filter: blur(20px);
+}
+
+.icon {
+    width: 3vh;
+    height: 3vh;
+}
+
+.profile {
+    background: transparent;
+    border: none;
+}
+
+nav ul {
+    list-style: none;
+}
+
+.sidenav {
+    position: fixed;
+    width: 100%;
+    background-color: transparent;
+    backdrop-filter: blur(100px);
+    z-index: 999;
+    top: 0;
+    right: 0;
+}
+
+
+
+
+@media (min-width:993px) {
+    .sidenav {
+        display: none;
+    }
+
+    .showSideNav {
+        display: none;
+    }
+}
+
+
+@media (max-width:993px) {
+    .mnav {
+        display: none;
+    }
+}
+
+.checked {
+    color: red;
+}
+
+.qtyInput {
+    width: 30px;
+    height: 30px;
+    border: none;
+}
+
+.mt-6 {
+    padding-top: 18vh;
+}
+
+.mt-7 {
+    padding-top: 6vh;
+}
+
+.product-title {
+    min-height: 10;
+}
+
+.closebtn {
+    max-height: 2vh;
+    ;
+}
+
+.model-scrollbar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* smooth scrolling */
+    padding-bottom: 8px;
+    /* space so scrollbar doesn't overlap */
+}
+
+.sidebar-link {
+    background-color: #000;
+    border: #000;
+    color: #adb5bd;
+    transition: 0.3s;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: block;
+    font-weight: 600;
+}
+
+.sidebar-link:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-link.active {
+    color: #fff;
+    background-color: #dc3545;
+}
+
+/* Custom Toggle Switch */
+.form-check-input:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
