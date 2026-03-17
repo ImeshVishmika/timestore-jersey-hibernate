@@ -1,5 +1,7 @@
 package com.org.controller.user;
 
+import com.google.gson.Gson;
+import com.org.dto.FilterDTO;
 import com.org.service.ProductService;
 import com.org.util.JsonRequestUtil;
 import com.google.gson.JsonObject;
@@ -12,20 +14,19 @@ import jakarta.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 public class ApiProductController {
     
+    private final Gson gson = new Gson();
     private final ProductService productService = new ProductService();
 
     @POST
     @Path("/load")
     public Response loadProducts(String requestBody) {
         try {
-            JsonObject body = JsonRequestUtil.parseBody(requestBody);
-            String sort = JsonRequestUtil.getString(body, "sort");
-            String brand = JsonRequestUtil.getString(body, "brand");
-            String result = productService.loadProducts(sort, brand);
+            FilterDTO filterDTO = gson.fromJson(requestBody, FilterDTO.class);
+            String result = productService.loadProducts(filterDTO);
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"state\": false, \"message\": \"Error: " + e.getMessage() + "\"}").build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error: " + e.getMessage() + "\"}").build();
         }
     }
 
@@ -40,7 +41,7 @@ public class ApiProductController {
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"state\": false, \"message\": \"Error: " + e.getMessage() + "\"}").build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error: " + e.getMessage() + "\"}").build();
         }
     }
 
@@ -48,12 +49,13 @@ public class ApiProductController {
     @Path("/revenue")
     public Response getProductRevenue(String requestBody) {
         try {
-            JsonRequestUtil.parseBody(requestBody);
-            String result = productService.getProductRevenue();
+            JsonObject body = JsonRequestUtil.parseBody(requestBody);
+            Integer revenuePeriod = JsonRequestUtil.getInteger(body, "revenuePeriod", 7);
+            String result = productService.getProductRevenue(revenuePeriod);
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"state\": false, \"message\": \"Error: " + e.getMessage() + "\"}").build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error: " + e.getMessage() + "\"}").build();
         }
     }
 
