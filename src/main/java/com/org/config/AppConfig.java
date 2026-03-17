@@ -5,7 +5,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class AppConfig extends ResourceConfig {
 
     public AppConfig(){
-        packages("com.org.controller.user", "com.org.controller.admin");
+        packages("com.org.controller.user", "com.org.controller.admin", "com.org.filter");
     }
 
 }
