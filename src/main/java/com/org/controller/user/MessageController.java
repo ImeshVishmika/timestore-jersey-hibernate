@@ -10,7 +10,7 @@ import jakarta.ws.rs.core.Response;
 @Path("/message")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class ApiMessageController {
+public class MessageController {
     
     private final MessageService messageService = new MessageService();
 

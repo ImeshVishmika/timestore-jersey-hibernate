@@ -6,8 +6,6 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.List;
-
 @Path("/products")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -22,7 +20,7 @@ public class ProductController {
             return Response.ok().entity(products).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error fetching products: " + e.getMessage()).build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error fetching products: " + e.getMessage() + "\"}").build();
         }
     }
 
@@ -34,7 +32,7 @@ public class ProductController {
             return Response.ok().entity(product).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error fetching product: " + e.getMessage()).build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error fetching product: " + e.getMessage() + "\"}").build();
         }
     }
 
@@ -46,7 +44,7 @@ public class ProductController {
                     .entity(createdProduct).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error creating product: " + e.getMessage()).build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error creating product: " + e.getMessage() + "\"}").build();
         }
     }
 

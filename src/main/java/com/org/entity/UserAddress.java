@@ -13,17 +13,17 @@ import jakarta.persistence.Table;
 public class UserAddress {
 
     @Column(name = "address_line1", length = 100)
-    private String address_line1;
+    private String addressLine1;
 
     @Column(name = "address_line2", length = 100)
-    private String address_line2;
+    private String addressLine2;
 
     @Column(name = "address_city_id")
-    private Integer address_city_id;
+    private Integer addressCityId;
 
     @Id
     @Column(name = "users_email", nullable = false, length = 50)
-    private String users_email;
+    private String usersEmail;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_city_id", referencedColumnName = "city_id", insertable = false, updatable = false)

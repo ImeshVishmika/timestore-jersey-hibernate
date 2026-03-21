@@ -14,14 +14,14 @@ public class Province {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "province_id", nullable = false)
-    private Integer province_id;
+    private Integer provinceId;
 
     @Column(name = "province_en", nullable = false, length = 45)
-    private String province_en;
+    private String provinceEn;
 
     @Column(name = "province_si", length = 45)
-    private String province_si;
+    private String provinceSi;
 
     @Column(name = "province_ta", length = 45)
-    private String province_ta;
+    private String provinceTa;
 }

@@ -19,19 +19,23 @@ public class Product {
     @Column(name = "brand_id")
     private Integer brandId;
 
+    @Column(name = "description")
+    private String des;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id", referencedColumnName = "brand_id", insertable = false, updatable = false)
     private Brand brand;
 
     @OneToMany(mappedBy = "product" , fetch = FetchType.LAZY)
-    private List<Model> model;
+    private List<Model> modelList;
+
 
     public List<Model> getModel() {
-        return model;
+        return modelList;
     }
 
-    public void setModel(List<Model> model) {
-        this.model = model;
+    public void setModel(List<Model> modelList) {
+        this.modelList = modelList;
     }
 
     public Integer getProductId() {

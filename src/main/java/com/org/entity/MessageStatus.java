@@ -11,8 +11,8 @@ public class MessageStatus {
 
     @Id
     @Column(name = "msg_status_id", nullable = false)
-    private Integer msg_status_id;
+    private Integer msgStatusId;
 
     @Column(name = "msg_status", length = 15)
-    private String msg_status;
+    private String msgStatus;
 }

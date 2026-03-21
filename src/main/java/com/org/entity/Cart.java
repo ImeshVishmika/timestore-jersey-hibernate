@@ -17,16 +17,16 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_id", nullable = false)
-    private Integer cart_id;
+    private Integer cartId;
 
     @Column(name = "product_id", nullable = false)
-    private Integer product_id;
+    private Integer productId;
 
     @Column(name = "cart_qty")
-    private Integer cart_qty;
+    private Integer cartQty;
 
     @Column(name = "users_email", nullable = false, length = 50)
-    private String users_email;
+    private String usersEmail;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "model_id", insertable = false, updatable = false)

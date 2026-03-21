@@ -10,17 +10,33 @@ import jakarta.persistence.Embeddable;
 public class OrderHasModelId implements Serializable {
 
     @Column(name = "order_id", nullable = false)
-    private Integer order_id;
+    private Integer orderId;
 
     @Column(name = "model_id", nullable = false)
-    private Integer model_id;
+    private Integer modelId;
 
     public OrderHasModelId() {
     }
 
-    public OrderHasModelId(Integer order_id, Integer model_id) {
-        this.order_id = order_id;
-        this.model_id = model_id;
+    public OrderHasModelId(Integer orderId, Integer modelId) {
+        this.orderId = orderId;
+        this.modelId = modelId;
+    }
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+    public Integer getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(Integer modelId) {
+        this.modelId = modelId;
     }
 
     @Override
@@ -31,11 +47,11 @@ public class OrderHasModelId implements Serializable {
         if (!(object instanceof OrderHasModelId that)) {
             return false;
         }
-        return Objects.equals(order_id, that.order_id) && Objects.equals(model_id, that.model_id);
+        return Objects.equals(orderId, that.orderId) && Objects.equals(modelId, that.modelId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(order_id, model_id);
+        return Objects.hash(orderId, modelId);
     }
 }

@@ -2,10 +2,10 @@ package com.org.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.org.dto.MessageDTO;
 import com.org.entity.Message;
 import com.org.util.HibernateUtil;
+import com.org.util.JsonResponse;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -35,7 +35,7 @@ public class MessageService {
             state = false;
             message = "message senders loading failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
 
     /**
@@ -61,7 +61,7 @@ public class MessageService {
             state = false;
             message = "user messages loading failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
 
     /**
@@ -79,7 +79,7 @@ public class MessageService {
             if (messageEntity == null) {
                 state = false;
                 message = "message not found";
-                return jsonResponse(state, message, data);
+                return JsonResponse.response(state, message, data);
             }
 
             transaction = session.beginTransaction();
@@ -95,7 +95,7 @@ public class MessageService {
             state = false;
             message = "message state update failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
 
     private MessageDTO convertToDTO(Message messageEntity) {
@@ -109,11 +109,5 @@ public class MessageService {
         );
     }
 
-    private String jsonResponse(boolean state, String message, JsonElement jsonElement) {
-        JsonObject responseJson = new JsonObject();
-        responseJson.addProperty("state", state);
-        responseJson.addProperty("message", message);
-        responseJson.add("data", jsonElement);
-        return gson.toJson(responseJson);
-    }
 }
+

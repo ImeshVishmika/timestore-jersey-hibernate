@@ -1,0 +1,13 @@
+{
+  "name": "timestore-naming-rules",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Naming convention checks for TimeStore frontend scripts.",
+  "scripts": {
+    "lint:naming": "eslint \"webapp/views/**/assets/script/*.js\""
+  },
+  "devDependencies": {
+    "eslint": "^9.20.0"
+  }
+}

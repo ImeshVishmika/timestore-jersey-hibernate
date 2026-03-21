@@ -2,10 +2,10 @@ package com.org.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.org.dto.DeliveryMethodDTO;
 import com.org.entity.DeliveryMethod;
 import com.org.util.HibernateUtil;
+import com.org.util.JsonResponse;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -38,7 +38,7 @@ public class DeliveryService {
             state = false;
             message = "delivery method loading failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
 
     /**
@@ -56,7 +56,7 @@ public class DeliveryService {
             if (method == null) {
                 state = false;
                 message = "delivery method not found";
-                return jsonResponse(state, message, data);
+                return JsonResponse.response(state, message, data);
             }
 
             transaction = session.beginTransaction();
@@ -76,7 +76,7 @@ public class DeliveryService {
             state = false;
             message = "delivery method update failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
 
     /**
@@ -94,7 +94,7 @@ public class DeliveryService {
             if (method == null) {
                 state = false;
                 message = "delivery method not found";
-                return jsonResponse(state, message, data);
+                return JsonResponse.response(state, message, data);
             }
 
             transaction = session.beginTransaction();
@@ -108,7 +108,7 @@ public class DeliveryService {
             state = false;
             message = "delivery method deletion failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
 
     private DeliveryMethodDTO convertToDTO(DeliveryMethod method) {
@@ -120,11 +120,5 @@ public class DeliveryService {
         );
     }
 
-    private String jsonResponse(boolean state, String message, JsonElement jsonElement) {
-        JsonObject responseJson = new JsonObject();
-        responseJson.addProperty("state", state);
-        responseJson.addProperty("message", message);
-        responseJson.add("data", jsonElement);
-        return gson.toJson(responseJson);
-    }
 }
+

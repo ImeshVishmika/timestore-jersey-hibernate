@@ -19,19 +19,19 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", nullable = false)
-    private Integer order_id;
+    private Integer orderId;
 
     @Column(name = "email", nullable = false, length = 50)
     private String email;
 
     @Column(name = "ordered_date")
-    private LocalDateTime ordered_date;
+    private LocalDateTime orderedDate;
 
     @Column(name = "delivery_method")
-    private Integer delivery_method;
+    private Integer deliveryMethod;
 
     @Column(name = "order_status")
-    private Integer order_status;
+    private Integer orderStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false)
@@ -46,11 +46,11 @@ public class Order {
     private OrderStatus orderStatusRef;
 
     public Integer getOrder_id() {
-        return order_id;
+        return orderId;
     }
 
-    public void setOrder_id(Integer order_id) {
-        this.order_id = order_id;
+    public void setOrder_id(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public String getEmail() {
@@ -62,27 +62,27 @@ public class Order {
     }
 
     public LocalDateTime getOrdered_date() {
-        return ordered_date;
+        return orderedDate;
     }
 
-    public void setOrdered_date(LocalDateTime ordered_date) {
-        this.ordered_date = ordered_date;
+    public void setOrdered_date(LocalDateTime orderedDate) {
+        this.orderedDate = orderedDate;
     }
 
     public Integer getDelivery_method() {
-        return delivery_method;
+        return deliveryMethod;
     }
 
-    public void setDelivery_method(Integer delivery_method) {
-        this.delivery_method = delivery_method;
+    public void setDelivery_method(Integer deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
     }
 
     public Integer getOrder_status() {
-        return order_status;
+        return orderStatus;
     }
 
-    public void setOrder_status(Integer order_status) {
-        this.order_status = order_status;
+    public void setOrder_status(Integer orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public User getUser() {

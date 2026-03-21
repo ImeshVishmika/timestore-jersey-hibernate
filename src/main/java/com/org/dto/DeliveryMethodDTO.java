@@ -2,18 +2,18 @@ package com.org.dto;
 
 public class DeliveryMethodDTO {
     private Integer id;
-    private String delivery_method;
+    private String deliveryMethod;
     private Double price;
-    private String delivery_days;
+    private String deliveryDays;
 
     public DeliveryMethodDTO() {
     }
 
-    public DeliveryMethodDTO(Integer id, String delivery_method, Double price, String delivery_days) {
+    public DeliveryMethodDTO(Integer id, String deliveryMethod, Double price, String deliveryDays) {
         this.id = id;
-        this.delivery_method = delivery_method;
+        this.deliveryMethod = deliveryMethod;
         this.price = price;
-        this.delivery_days = delivery_days;
+        this.deliveryDays = deliveryDays;
     }
 
     public Integer getId() {
@@ -25,11 +25,11 @@ public class DeliveryMethodDTO {
     }
 
     public String getDelivery_method() {
-        return delivery_method;
+        return deliveryMethod;
     }
 
-    public void setDelivery_method(String delivery_method) {
-        this.delivery_method = delivery_method;
+    public void setDelivery_method(String deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
     }
 
     public Double getPrice() {
@@ -41,10 +41,10 @@ public class DeliveryMethodDTO {
     }
 
     public String getDelivery_days() {
-        return delivery_days;
+        return deliveryDays;
     }
 
-    public void setDelivery_days(String delivery_days) {
-        this.delivery_days = delivery_days;
+    public void setDelivery_days(String deliveryDays) {
+        this.deliveryDays = deliveryDays;
     }
 }

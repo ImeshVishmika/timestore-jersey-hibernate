@@ -3,7 +3,9 @@ package com.org.controller.user;
 import com.org.service.UserService;
 import com.org.util.JsonRequestUtil;
 import com.google.gson.JsonObject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -93,13 +95,13 @@ public class ApiUserController {
 
     @POST
     @Path("/logIn")
-    public Response logIn(String requestBody) {
+    public Response logIn(String requestBody, @Context HttpServletRequest request) {
         try {
             JsonObject body = JsonRequestUtil.parseBody(requestBody);
             String email = JsonRequestUtil.getString(body, "email");
             String password = JsonRequestUtil.getString(body, "password");
             JsonRequestUtil.getInteger(body, "rememberMe", 0);
-            String result = userService.loginUser(email, password);
+            String result = userService.loginUser(email, password,request.getSession());
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

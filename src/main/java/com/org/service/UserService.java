@@ -3,10 +3,11 @@ package com.org.service;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.org.dto.UserDTO;
 import com.org.entity.User;
 import com.org.util.HibernateUtil;
+import com.org.util.JsonResponse;
+import jakarta.servlet.http.HttpSession;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -41,12 +42,10 @@ public class UserService {
             state = false;
             message = "user loading failed :"+e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
     
-    /**
-     * Get user by email
-     */
+
     public String getUserByEmail(String email) {
         boolean state = true;
         String message = "success";
@@ -66,7 +65,7 @@ public class UserService {
             state = false;
             message = "user loading failed";
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
     
 
@@ -78,7 +77,7 @@ public class UserService {
         if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
             state = false;
             message = "email is required";
-            return jsonResponse(state, message, data);
+            return JsonResponse.response(state, message, data);
         }
         
         Transaction transaction = null;
@@ -88,7 +87,7 @@ public class UserService {
             if (existingUser != null) {
                 state = false;
                 message = "user already exists with this email";
-                return jsonResponse(state, message, data);
+                return JsonResponse.response(state, message, data);
             }
             
             transaction = session.beginTransaction();
@@ -113,7 +112,7 @@ public class UserService {
             state = false;
             message = "user creation failed";
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
     
 
@@ -129,7 +128,7 @@ public class UserService {
             if (user == null) {
                 state = false;
                 message = "user not found";
-                return jsonResponse(state, message, data);
+                return JsonResponse.response(state, message, data);
             }
             
             transaction = session.beginTransaction();
@@ -163,12 +162,10 @@ public class UserService {
             state = false;
             message = "user update failed";
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
     
-    /**
-     * Delete user by email
-     */
+
     public String deleteUser(String email) {
         boolean state = true;
         String message = "success";
@@ -181,7 +178,7 @@ public class UserService {
             if (user == null) {
                 state = false;
                 message = "user not found";
-                return jsonResponse(state, message, data);
+                return JsonResponse.response(state, message, data);
             }
             
             transaction = session.beginTransaction();
@@ -193,12 +190,10 @@ public class UserService {
             state = false;
             message = "user deletion failed";
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
     
-    /**
-     * Convert User entity to UserDTO
-     */
+
     private UserDTO convertToDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setEmail(user.getEmail());
@@ -244,7 +239,7 @@ public class UserService {
             state = false;
             message = "user loading failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
 
     /**
@@ -269,7 +264,7 @@ public class UserService {
             state = false;
             message = "user profile loading failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
 
     /**
@@ -287,7 +282,7 @@ public class UserService {
             if (user == null) {
                 state = false;
                 message = "user not found";
-                return jsonResponse(state, message, data);
+                return JsonResponse.response(state, message, data);
             }
             
             transaction = session.beginTransaction();
@@ -312,7 +307,7 @@ public class UserService {
             state = false;
             message = "user profile update failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
 
     /**
@@ -337,43 +332,37 @@ public class UserService {
             state = false;
             message = "address update failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
 
     /**
      * Login user
      */
-    public String loginUser(String email, String password) {
+    public String loginUser(String email, String password, HttpSession httpSession) {
         boolean state = true;
         String message = "success";
         JsonElement data = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             User user = session.get(User.class, email);
+            System.out.println(user.getEmail());
             
             if (user == null) {
                 state = false;
                 message = "user not found";
-            } else if (!BCrypt.verifyer().verify(password.toCharArray(), user.getPassword()).verified) {
+            } else if (!user.getPassword().equals(password)) {
                 state = false;
                 message = "incorrect password";
             } else {
-                data = gson.toJsonTree(convertToDTO(user));
+                httpSession.setAttribute("user",convertToDTO(user));
             }
 
         } catch (Exception e) {
             state = false;
             message = "login failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
+        return JsonResponse.response(state, message, data);
     }
 
-    private String jsonResponse(boolean state, String message, JsonElement jsonElement){
-        JsonObject responseJson = new JsonObject();
-        responseJson.addProperty("state",state);
-        responseJson.addProperty("message",message);
-        responseJson.add("data",jsonElement);
-
-        return gson.toJson(responseJson);
-    }
 }
+

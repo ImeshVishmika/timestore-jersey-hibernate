@@ -24,7 +24,7 @@ public class UserController {
             return Response.ok().entity(users).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error fetching users: " + e.getMessage()).build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error fetching users: " + e.getMessage() + "\"}").build();
         }
     }
 
@@ -37,13 +37,13 @@ public class UserController {
             
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("User not found with email: " + email).build();
+                        .entity("{\"state\":false,\"data\":null,\"error\":\"User not found with email: " + email + "\"}").build();
             }
             
             return Response.ok().entity(user).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error fetching user: " + e.getMessage()).build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error fetching user: " + e.getMessage() + "\"}").build();
         }
     }
     
@@ -57,10 +57,10 @@ public class UserController {
                     .entity(createdUser).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage()).build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"" + e.getMessage() + "\"}").build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error creating user: " + e.getMessage()).build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error creating user: " + e.getMessage() + "\"}").build();
         }
     }
     
@@ -74,10 +74,10 @@ public class UserController {
                     .entity(createdUser).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage()).build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"" + e.getMessage() + "\"}").build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error creating user: " + e.getMessage()).build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error creating user: " + e.getMessage() + "\"}").build();
         }
     }
 }

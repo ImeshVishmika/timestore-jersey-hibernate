@@ -1,5 +1,8 @@
 package com.org.controller.user;
 
+import com.google.gson.Gson;
+import com.org.dto.FilterDTO;
+import com.org.dto.OrderDTO;
 import com.org.service.OrderService;
 import com.org.util.JsonRequestUtil;
 import com.google.gson.JsonObject;
@@ -10,15 +13,17 @@ import jakarta.ws.rs.core.Response;
 @Path("/order")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class ApiOrderController {
+public class OrderController {
     
     private final OrderService orderService = new OrderService();
+    private final Gson gson = new Gson();
 
     @POST
     @Path("/load")
-    public Response loadOrders() {
+    public Response loadOrders(String requestBody) {
         try {
-            String result = orderService.loadAllOrders();
+            FilterDTO filterDTO = gson.fromJson(requestBody, FilterDTO.class);
+            String result = orderService.loadAllOrders(filterDTO);
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -30,9 +35,8 @@ public class ApiOrderController {
     @Path("/details")
     public Response getOrderDetails(String requestBody) {
         try {
-            JsonObject body = JsonRequestUtil.parseBody(requestBody);
-            String orderId = JsonRequestUtil.getString(body, "order_id");
-            String result = orderService.getOrderDetails(orderId);
+            OrderDTO orderDTO = gson.fromJson(requestBody, OrderDTO.class);
+            String result = orderService.getOrderDetails(orderDTO);
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -91,6 +95,18 @@ public class ApiOrderController {
             JsonObject body = JsonRequestUtil.parseBody(requestBody);
             String email = JsonRequestUtil.getString(body, "email");
             String result = orderService.getUserOrders(email);
+            return Response.ok().entity(result).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error: " + e.getMessage() + "\"}").build();
+        }
+    }
+
+    @POST
+    @Path("/statuses")
+    public Response loadOrderStatuses() {
+        try {
+            String result = orderService.loadAllOrderStatuses();
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
