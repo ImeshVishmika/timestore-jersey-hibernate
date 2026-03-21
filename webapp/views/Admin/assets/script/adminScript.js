@@ -31,7 +31,7 @@ async function adminLogIn() {
                 alert("test");
                 window.location = "/admin/dashboard.html";
             } else {
-                Notiflix.Notify.failure((jsonObject && jsonObject.error) ? jsonObject.error : "Admin login failed");
+                Notiflix.Notify.failure((jsonObject && jsonObject.error) ? jsonObject.error : "Admin login failed state");
             }
         } else {
             Notiflix.Notify.failure('Admin login failed');

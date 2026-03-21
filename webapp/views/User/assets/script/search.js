@@ -1,5 +1,4 @@
 window.addEventListener("load", () => {
-    alert("Welcome to the search page! Explore our products and find what you need.");
     loadProducts();
     loadBrands();
 });
@@ -9,11 +8,6 @@ filter.addEventListener("change", loadProducts);
 
 var brands = document.getElementById("brands");
 brands.addEventListener("change", loadProducts);
-
-function getModelImageUrl(model) {
-    const modelId = model.model_id ?? model.modelId;
-    return modelId ? `/api/model/img/${modelId}` : (model.img_path || "");
-}
 
 async function loadProducts() {
     try {
@@ -43,21 +37,20 @@ async function loadProducts() {
 
         if (request.ok) {
             const jsonObject = await request.json();
-            console.log(jsonObject);
 
             const productsTable = document.getElementById("modelsTable");
             productsTable.innerHTML = "";
             const fragment = document.createDocumentFragment();
 
-            jsonObject.data.forEach(model => {
+            jsonObject.data.models.forEach(model => {
                 const div = document.createElement("div");
 
                 div.classList.add("col-12", "col-sm-6", "col-lg-3");
                 div.innerHTML = `
-                <a href="/viewProduct/${model.productId}"  class="text-decoration-none">
+                <a href="/timestore/viewProduct/${model.product_id}"  class="text-decoration-none">
                     <div class="card border-0 h-100">
                         <div class="bg-light rounded-3 p-4 text-center mb-3">
-                            <img src=/api/model/img/${model.productId} class="img-fluid" style="height: 180px; object-fit: contain;" alt="Watch">
+                            <img src="${model.img_path}" class="img-fluid" style="height: 180px; object-fit: contain;" alt="Watch">
                         </div>
                         <div class="card-body px-0 pt-0">
                             <small class="text-muted fw-semibold">${model.brand}</small>
@@ -96,12 +89,12 @@ async function loadBrands() {
             brands.innerHTML = "";
             const fragment = document.createDocumentFragment();
 
-            jsonObject.data.forEach(brand => {
+            jsonObject.brands.forEach(brand => {
                 const div = document.createElement("div");
                 div.classList.add("form-check", "mb-2");
                 div.innerHTML = `
-                                <input class="form-check-input" type="checkbox" value="${brand.brandId}" >
-                                <label class="form-check-label" for="brand${brand.brandId}">${brand.brandName}</label>
+                                <input class="form-check-input" type="checkbox" value="${brand.id}" >
+                                <label class="form-check-label" for="brand${brand.id}">${brand.name}</label>
                 `;
                 fragment.appendChild(div);
             });

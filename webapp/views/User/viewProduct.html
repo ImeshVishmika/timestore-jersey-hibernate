@@ -12,204 +12,262 @@
 
 <body class="bg-light">
 
-    <main class="py-5 bg-white">
-        <div class="container">
+<main class="py-5 bg-white">
+    <div class="container">
 
-            <input id="product_id" value="" hidden>
+        <input id="product_id" value="" hidden>
 
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-muted">Home</a></li>
-                    <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-muted">Watches</a></li>
-                    <li class="breadcrumb-item active text-dark fw-bold" aria-current="page" id="product_label">G-Shock MRG-B2000</li>
-                </ol>
-            </nav>
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-muted">Home</a></li>
+                <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-muted">Watches</a></li>
+                <li class="breadcrumb-item active text-dark fw-bold" aria-current="page" id="product_label">G-Shock
+                    MRG-B2000
+                </li>
+            </ol>
+        </nav>
 
-            <div class="row g-5">
-                <div class="col-lg-6">
-                    <div class="border rounded-4 p-5 text-center mb-3 position-relative bg-light">
-                        <span class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2">Best Seller</span>
-                        <button class="btn btn-light rounded-circle shadow-sm position-absolute top-0 end-0 m-3">
-                            <i class="bi bi-heart" onclick="addToWishlist()"></i>
-                        </button>
-                        <img id="vimg" class="img-fluid" style="height: 400px; object-fit: contain;" alt="Product image">
-                    </div>
-
-                    <div  id="modelsTable" class="d-flex justify-content-center gap-3">
-
-                        <button class="btn border p-2 rounded-3" >
-                            <img src="" width="50" alt="Side View">
-                        </button>
-
-                    </div>
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <div class="border rounded-4 p-5 text-center mb-3 position-relative bg-light">
+                    <span class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2">Best Seller</span>
+                    <button class="btn btn-light rounded-circle shadow-sm position-absolute top-0 end-0 m-3">
+                        <i class="bi bi-heart" onclick="addToWishlist()"></i>
+                    </button>
+                    <img id="vimg" class="img-fluid" style="height: 400px; object-fit: contain;" alt="Product image">
                 </div>
 
-                <div class="col-lg-6">
-                    <div class="ps-lg-4">
-                        <h6 class="text-danger fw-bold text-uppercase ls-1"></h6>
-                        <h1 class="display-5 fw-bold mb-2" id="model"></h1>
+                <div id="modelsTable" class="d-flex justify-content-center gap-3">
 
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="text-warning small me-2">
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-half"></i>
-                            </div>
-                            <small class="text-muted">(124 Reviews)</small>
-                            <span class="mx-2 text-muted">|</span>
-                            <small class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>In Stock</small>
-                        </div>
+                    <button class="btn border p-2 rounded-3">
+                        <img src="" width="50" alt="Side View">
+                    </button>
 
-                        <div class="mb-4">
-                            <span class="display-6 fw-bold text-dark" id="price">Rs.</span>
-                            <span class="text-muted text-decoration-line-through fs-5 ms-2">Rs.1,250.00</span>
-                        </div>
-
-                        <p class="text-muted mb-4">
-                            The absolute toughest G-Shock ever created. Featuring a full titanium structure, sapphire crystal glass, and Bluetooth connectivity for precision timekeeping.
-                        </p>
-
-                        <div class="mb-4">
-                            <h6 class="fw-bold mb-2">Select Color</h6>
-                            <div class="btn-group" role="group">
-                                <input type="radio" class="btn-check" name="colorbtn" id="c1" autocomplete="off" checked>
-                                <label class="btn btn-outline-dark" for="c1">Obsidian Black</label>
-
-                                <input type="radio" class="btn-check" name="colorbtn" id="c2" autocomplete="off">
-                                <label class="btn btn-outline-dark" for="c2">Gunmetal Grey</label>
-                            </div>
-                        </div>
-
-                        <div class="d-grid gap-2 d-md-flex mb-4">
-                            <button class="btn btn-danger btn-lg px-5 rounded-1 fw-bold flex-grow-1" id="buyNow" data-auth="0" data-bs-toggle="modal" data-bs-target="#exampleModal">Buy Now</button>
-                            <button class="btn btn-dark btn-lg px-4 rounded-1 flex-grow-1">
-                                <i class="bi bi-bag me-2"></i> Add To Cart
-                            </button>
-                        </div>
-
-                        <div class="row border-top pt-4 g-3">
-                            <div class="col-6 col-md-4 text-center">
-                                <i class="bi bi-truck fs-3 text-muted"></i>
-                                <p class="small text-muted mt-2 mb-0">Free Shipping</p>
-                            </div>
-                            <div class="col-6 col-md-4 text-center">
-                                <i class="bi bi-shield-check fs-3 text-muted"></i>
-                                <p class="small text-muted mt-2 mb-0">2 Year Warranty</p>
-                            </div>
-                            <div class="col-6 col-md-4 text-center">
-                                <i class="bi bi-arrow-counterclockwise fs-3 text-muted"></i>
-                                <p class="small text-muted mt-2 mb-0">30 Day Returns</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <div class="row mt-5">
-                <div class="col-12">
-                    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active text-dark fw-bold" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc" type="button">Description</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link text-muted" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button">Specifications</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="desc">
-                            <p class="text-muted">Experience the pinnacle of toughness. This G-Shock model combines the latest in materials science with the classic aesthetic of the MR-G line.</p>
+            <div class="col-lg-6">
+                <div class="ps-lg-4">
+                    <h6 class="text-danger fw-bold text-uppercase ls-1"></h6>
+                    <h1 class="display-5 fw-bold mb-2" id="model"></h1>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="text-warning small me-2">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
                         </div>
-                        <div class="tab-pane fade" id="specs">
-                            <table class="table table-striped table-bordered w-50">
-                                <tbody>
-                                    <tr>
-                                        <th>Case Material</th>
-                                        <td>Titanium</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Glass</th>
-                                        <td>Sapphire Crystal</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Water Resistance</th>
-                                        <td>200 Meters</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <small class="text-muted">(124 Reviews)</small>
+                        <span class="mx-2 text-muted">|</span>
+                        <small class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>In Stock</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="display-6 fw-bold text-dark" id="price">Rs.</span>
+                        <span class="text-muted text-decoration-line-through fs-5 ms-2">Rs.1,250.00</span>
+                    </div>
+
+                    <p class="text-muted mb-4">
+                        The absolute toughest G-Shock ever created. Featuring a full titanium structure, sapphire
+                        crystal glass, and Bluetooth connectivity for precision timekeeping.
+                    </p>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-2">Select Color</h6>
+                        <div class="btn-group" role="group">
+                            <input type="radio" class="btn-check" name="colorbtn" id="c1" autocomplete="off" checked>
+                            <label class="btn btn-outline-dark" for="c1">Obsidian Black</label>
+
+                            <input type="radio" class="btn-check" name="colorbtn" id="c2" autocomplete="off">
+                            <label class="btn btn-outline-dark" for="c2">Gunmetal Grey</label>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex mb-4">
+                        <button class="btn btn-danger btn-lg px-5 rounded-1 fw-bold flex-grow-1" id="buyNow">
+                            Buy Now
+                        </button>
+                        <button class="btn btn-dark btn-lg px-4 rounded-1 flex-grow-1">
+                            <i class="bi bi-bag me-2"></i> Add To Cart
+                        </button>
+                    </div>
+
+                    <div class="row border-top pt-4 g-3">
+                        <div class="col-6 col-md-4 text-center">
+                            <i class="bi bi-truck fs-3 text-muted"></i>
+                            <p class="small text-muted mt-2 mb-0">Free Shipping</p>
+                        </div>
+                        <div class="col-6 col-md-4 text-center">
+                            <i class="bi bi-shield-check fs-3 text-muted"></i>
+                            <p class="small text-muted mt-2 mb-0">2 Year Warranty</p>
+                        </div>
+                        <div class="col-6 col-md-4 text-center">
+                            <i class="bi bi-arrow-counterclockwise fs-3 text-muted"></i>
+                            <p class="small text-muted mt-2 mb-0">30 Day Returns</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
 
-    <footer class="bg-light py-5 mt-5">
-        <div class="container text-center">
-            <small class="text-muted">&copy; 2024 TimeStore. All Rights Reserved.</small>
-        </div>
-    </footer>
-
-    <!-- Modal -->
-    <div class="modal mt-4 fade align-content-center" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog ">
-            <div class="modal-content rounded-3">
-                <div class="modal-body">
-                    <div class="card border-0 ">
-
-                        <div class="card-body p-5">
-
-                            <div class="text-center mb-4">
-                                <h3 class="fw-bold">Welcome Back</h3>
-                                <p class="text-muted">Sign in to your account</p>
-                            </div>
-
-                            <form action="#" method="POST" id="checkoutSignInForm">
-
-                                <div class="mb-3">
-                                    <label for="email" class="text-secondary form-label fw-semibold">Email Address</label>
-                                    <input type="email" class="form-control form-control-lg" id="email" placeholder="name@example.com" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password" class="text-secondary form-label fw-semibold">Password</label>
-                                    <input type="password" class="form-control form-control-lg" id="pw" placeholder="Enter password" required>
-                                </div>
-
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="rememberMe">
-                                        <label class="form-check-label text-secondary" for="rememberMe">
-                                            Remember me
-                                        </label>
-                                    </div>
-                                    <a href="#" class="text-decoration-none text-primary small">Forgot password?</a>
-                                </div>
-
-                                <button type="button" class="btn btn-primary w-100 btn-lg fw-bold shadow-sm" onclick="checkoutSignIn();">Sign In</button>
-
-                            </form>
-                            <hr>
-                            <div class="row g-2 mt-3">
-                                <div class="col-6">
-                                    <a href="#" class="btn w-100 py-2 d-flex align-items-center justify-content-center gap-2">
-                                        Sign Up
-                                    </a>
-                                </div>
-                            </div>
-
-                        </div>
-
+        <div class="row mt-5">
+            <div class="col-12">
+                <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active text-dark fw-bold" id="desc-tab" data-bs-toggle="tab"
+                                data-bs-target="#desc" type="button">Description
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-muted" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs"
+                                type="button">Specifications
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="desc">
+                        <p class="text-muted">Experience the pinnacle of toughness. This G-Shock model combines the
+                            latest in materials science with the classic aesthetic of the MR-G line.</p>
+                    </div>
+                    <div class="tab-pane fade" id="specs">
+                        <table class="table table-striped table-bordered w-50">
+                            <tbody>
+                            <tr>
+                                <th>Case Material</th>
+                                <td>Titanium</td>
+                            </tr>
+                            <tr>
+                                <th>Glass</th>
+                                <td>Sapphire Crystal</td>
+                            </tr>
+                            <tr>
+                                <th>Water Resistance</th>
+                                <td>200 Meters</td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</main>
 
-    <script src="assets/script/notiflix-aio-3.2.8.min.js"></script>
-    <script src="assets/script/bootstrap.bundle.js"></script>
-    <script src="assets/script/viewProduct.js"></script>
+<footer class="bg-light py-5 mt-5">
+    <div class="container text-center">
+        <small class="text-muted">&copy; 2024 TimeStore. All Rights Reserved.</small>
+    </div>
+</footer>
+
+<!--Sign In Modal -->
+<div class="modal mt-4 fade align-content-center" id="signInModal" tabindex="-1" aria-labelledby="signInModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content rounded-3">
+            <div class="modal-body">
+                <div class="card border-0 ">
+
+                    <div class="card-body p-5">
+
+                        <div class="text-center mb-4">
+                            <h3 class="fw-bold">Welcome Back</h3>
+                            <p class="text-muted">Sign in to your account</p>
+                        </div>
+
+                        <form action="#" method="POST" id="checkoutSignInForm">
+
+                            <div class="mb-3">
+                                <label for="email" class="text-secondary form-label fw-semibold">Email Address</label>
+                                <input type="email" class="form-control form-control-lg" id="email"
+                                       placeholder="name@example.com" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-secondary form-label fw-semibold">Password</label>
+                                <input type="password" class="form-control form-control-lg" id="pw"
+                                       placeholder="Enter password" required>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                    <label class="form-check-label text-secondary" for="rememberMe">
+                                        Remember me
+                                    </label>
+                                </div>
+                                <a href="#" class="text-decoration-none text-primary small">Forgot password?</a>
+                            </div>
+
+                            <button type="button" class="btn btn-primary w-100 btn-lg fw-bold shadow-sm"
+                                    onclick="checkoutSignIn();">Sign In
+                            </button>
+
+                        </form>
+                        <hr>
+                        <div class="row g-2 mt-3">
+                            <div class="col-6">
+                                <a href="#"
+                                   class="btn w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                                    Sign Up
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Buy Now Modal-->
+<div class="modal mt-4 fade align-content-center" id="buyNowModal" tabindex="-1" aria-labelledby="buyNowModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content rounded-3">
+            <div class="modal-body">
+                <div class="card border-0 ">
+                    <div class="card-body row ">
+                        <div class="col-12 col-md-6">
+                            <input class="d-none" id="buying_product_id">
+                            <img class="card-img-top" id="mimg" alt="Modal Product Image">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <h6 class="text-secondary" id="buying_product_brand"></h6>
+                            <h6 class="text-secondary" id="buying_product_name"></h6>
+                            <h4 class="card-title fw-bold " id="buying_product_model"></h4>
+                            <h6 class="text-secondary " id="buying_product_price"></h6>
+                            <div class="d-flex row mb-2">
+                                <div class="col-12 ">
+                                    <h6 class=" text-secondary mt-2">Quantity</h6>
+                                </div>
+                                <div class="col-12 ">
+                                    <button type="button" class="btn rounded-0" onclick="qtyDown();"><i
+                                            class="bi bi-dash-circle-fill fs-5"></i></button>
+                                    <input type="text" class="qtyInput text-center mt-1" value=1 id="pqty">
+                                    <button type="button" class="btn rounded-0" onclick="qtyUp();"><i
+                                            class="bi bi-plus-circle-fill fs-5"></i></button>
+                                </div>
+                            </div>
+                            <span class="text-danger" id="qtyWarning"></span>
+                            <div class="col-12 d-grid">
+                                <button onclick="toCheckout();" class="btn text-light fw-bold rounded-0"
+                                        style="background-color: #dc3545;">Buy Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/script/notiflix-aio-3.2.8.min.js"></script>
+<script src="assets/script/bootstrap.bundle.js"></script>
+<script src="assets/script/viewProduct.js"></script>
 
 </body>
 

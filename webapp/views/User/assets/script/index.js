@@ -9,6 +9,10 @@ function getModelImageUrl(model) {
     return modelId ? `/api/model/img/${modelId}` : (model.img_path || "");
 }
 
+function getApiError(jsonObject, fallbackMessage) {
+    return (jsonObject && jsonObject.error) ? jsonObject.error : fallbackMessage;
+}
+
 
 async function loadPopularItems() {
 
@@ -57,6 +61,8 @@ async function loadPopularItems() {
                     fragment.appendChild(div);
                 });
                 newItemesBody.appendChild(fragment);
+            } else {
+                Notiflix.Notify.failure(getApiError(jsonObject, 'Failed to fetch popular items'));
             }
         } else {
             Notiflix.Notify.failure('Failed to fetch popular items');
@@ -89,7 +95,7 @@ async function loadNewItems() {
 
                     div.classList.add("col-12", "col-sm-6", "col-lg-3");
                     div.innerHTML = `
-                <a href="/viewProduct/${model.productId}" class="text-decoration-none text-dark">
+                <a href="/viewProduct.html?id=${model.productId}" class="text-decoration-none text-dark">
     <div class="card h-100 border-0 shadow-sm transition-hover">
         <div class="m-2 bg-light rounded-3 p-4 text-center d-flex align-items-center justify-content-center" style="height: 240px;">
             <img src=/api/model/img/${model.productId}
@@ -114,6 +120,8 @@ async function loadNewItems() {
                     fragment.appendChild(div);
                 });
                 newItemesBody.appendChild(fragment);
+            } else {
+                Notiflix.Notify.failure(getApiError(jsonObject, 'Failed to fetch new items'));
             }
         } else {
             Notiflix.Notify.failure('Failed to fetch new items');

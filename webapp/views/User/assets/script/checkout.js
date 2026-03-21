@@ -24,7 +24,7 @@ window.addEventListener("load", function () {
     loadDeliveryDetails();
 });
 
-var previous_method = null;
+var previousMethod = null;
 
 var deliveryDetails = document.getElementById("deliveryDetails");
 deliveryDetails.addEventListener("click", function (event) {
@@ -40,9 +40,9 @@ deliveryDetails.addEventListener("click", function (event) {
 
     method.querySelector("input").checked = true;
 
-    if (previous_method != null) {
-        previous_method.classList.remove("bg-primary-subtle", "border-2", "border-primary");
-        previous_method.querySelector("input").checked = false;
+    if (previousMethod != null) {
+        previousMethod.classList.remove("bg-primary-subtle", "border-2", "border-primary");
+        previousMethod.querySelector("input").checked = false;
     }
 
     let subTotal = document.getElementById("subTotal").innerHTML.replace("Rs.", "");
@@ -50,13 +50,16 @@ deliveryDetails.addEventListener("click", function (event) {
     document.getElementById("deliveryFee").innerHTML = "Rs." + method.dataset.price;
     document.getElementById("grandTotal").innerHTML = "Rs." + (parseFloat(method.dataset.price) + parseFloat(subTotal));
 
-    previous_method = method;
-    delivery_method_warning.innerHTML = "";
+    previousMethod = method;
+    const deliveryMethodWarning = document.getElementById("delivery_method_warning");
+    if (deliveryMethodWarning) {
+        deliveryMethodWarning.innerHTML = "";
+    }
 
 });
 
-var payhere_payment = document.getElementById("payhere-payment");
-payhere_payment.addEventListener("click", function () {
+var payherePayment = document.getElementById("payhere-payment");
+payherePayment.addEventListener("click", function () {
     paynow();
 });
 
@@ -124,7 +127,7 @@ if (addressUpdateForm) {
 }
 
 
-var delivery_method_id;
+var deliveryMethodId;
 
 async function loadUserDetails() {
     try {
@@ -214,8 +217,7 @@ async function loadModels() {
             const jsonObject = await request.json();
 
             jsonObject.models.forEach(model => {
-                const modelId = model.model_id ?? model.modelId;
-                document.getElementById("modelImg").src = modelId ? `/api/model/img/${modelId}` : (model.img_path || "");
+                document.getElementById("modelImg").src = model.img_path;
                 document.getElementById("productName").innerHTML = model.model_name;
                 document.getElementById("brand").innerHTML = model.brand_name;
                 document.getElementById("price").innerHTML = "Rs." + model.price + " For each iteme(s) ";
@@ -291,16 +293,16 @@ async function paynow() {
             return;
         }
 
-        if (previous_method == null) {
-            const delivery_method_warning = document.getElementById("delivery_method_warning");
-            delivery_method_warning.innerHTML = " * Please choose a delivery method";
+        if (previousMethod == null) {
+            const deliveryMethodWarning = document.getElementById("delivery_method_warning");
+            deliveryMethodWarning.innerHTML = " * Please choose a delivery method";
             return;
         }
 
         const payload = {
             id: id,
             qty: qty,
-            delivery_method_id: previous_method.dataset.id
+            delivery_method_id: previousMethod.dataset.id
         };
 
         const request = await fetch("/api/order/new", {

@@ -1,6 +1,6 @@
 const models = {};
 const OPEN_BUY_MODAL_KEY = "timestore:openBuyModal";
-let buying_model_id = 0;
+let buyingModelId = 0;
 let isLoggedIn = false;
 
 window.addEventListener("load", event => {
@@ -20,7 +20,7 @@ document.getElementById("buyNow").addEventListener("click", function () {
     if (!isLoggedIn) {
         return;
     }
-    buying_product();
+    buyingProduct();
 });
 
 const checkoutForm = document.getElementById("checkoutSignInForm");
@@ -31,10 +31,10 @@ if (checkoutForm) {
     });
 }
 
-async function loadModels(product_id) {
+async function loadModels(productId) {
     try {
         const payload = {
-            product_id: product_id
+            product_id: productId
         };
 
         const request = await fetch("/api/model/load", {
@@ -51,38 +51,37 @@ async function loadModels(product_id) {
             modelsTable.innerHTML = "";
             const fragment = document.createDocumentFragment();
 
-            jsonObject.data.forEach(model => {
-                models[model.modelId] = model;
+            jsonObject.models.forEach(model => {
+                models[model.model_id] = model;
                 const button = document.createElement("button");
-                button.dataset.modelId=model.modelId;
+                button.dataset.model_id=model.model_id;
                 button.classList.add("btn", "border", "rounded-3");
-
-                button.innerHTML=`<img src=/api/model/img/${model.modelId} width="50" alt="Side View">`;
+                button.innerHTML=`<img src="${model.img_path}" width="50" alt="Side View">`;
                 fragment.appendChild(button);
             });
             modelsTable.appendChild(fragment);
-            changeModel(jsonObject.data[0].modelId);
+            changeModel(jsonObject.models[0].model_id);
             maybeOpenBuyModal();
         } else {
             Notiflix.Notify.failure('Failed to load models');
         }
     } catch (error) {
-        console.error('Error:'+ error);
+        console.error('Error:', error);
         Notiflix.Notify.failure('Error ' + error);
     }
 }
 
 function changeModel(modelId) {
-    buying_model_id = modelId;
-    const model =models[modelId]
-    document.getElementById("product_label").innerText = model.model;
-    document.getElementById("model").innerText = model.model;
+    buyingModelId = modelId;
+    const model = models[modelId];
+    document.getElementById("product_label").innerText = model.model_name;
+    document.getElementById("model").innerText = model.model_name;
     document.getElementById("price").innerText = "Rs." + model.price;
-    document.getElementById("vimg").src =`/api/model/img/${model.modelId}`;
+    document.getElementById("vimg").src = model.img_path;
 }
 
-function buying_product(){
-    const model = models[buying_model_id];
+function buyingProduct() {
+    const model = models[buyingModelId];
     const buyingProductId = document.getElementById("buying_product_id");
     const buyingProductBrand = document.getElementById("buying_product_brand");
     const buyingProductModel = document.getElementById("buying_product_model");
@@ -93,19 +92,19 @@ function buying_product(){
         return;
     }
 
-    buyingProductId.value = buying_model_id;
+    buyingProductId.value = buyingModelId;
     buyingProductBrand.textContent = model.brand_id;
     buyingProductModel.textContent = model.model_name;
     buyingProductPrice.textContent = "Rs." + model.price;
-    buyingProductImg.src = `/api/model/img/${model.modelId}`;
+    buyingProductImg.src = model.img_path;
 }
 
 function toCheckout() {
 
-    var buying_product_qty = document.getElementById("pqty");
-    var buying_product_id = document.getElementById("buying_product_id");
+    var buyingProductQty = document.getElementById("pqty");
+    var buyingProductId = document.getElementById("buying_product_id");
 
-    window.location = "/timestore/checkout/" + buying_product_id.value+"/"+buying_product_qty.value;
+    window.location = "/timestore/checkout/" + buyingProductId.value + "/" + buyingProductQty.value;
 
 }
 
@@ -178,7 +177,7 @@ function maybeOpenBuyModal() {
     }
 
     localStorage.removeItem(OPEN_BUY_MODAL_KEY);
-    buying_product();
+    buyingProduct();
 
     const modalElement = document.getElementById("exampleModal");
     if (modalElement && window.bootstrap && window.bootstrap.Modal) {
