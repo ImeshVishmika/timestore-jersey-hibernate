@@ -10,7 +10,7 @@ import jakarta.ws.rs.core.Response;
 @Path("/wishlist")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class ApiWishlistController {
+public class WishlistController {
     
     private final WishlistService wishlistService = new WishlistService();
 

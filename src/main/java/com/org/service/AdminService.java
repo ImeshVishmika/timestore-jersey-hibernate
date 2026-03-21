@@ -92,7 +92,6 @@ public class AdminService {
         return result != null ? result.doubleValue() : 0.0;
     }
 
-
     public String loginAdmin(String email, String password, HttpSession httpSession) {
         boolean state = true;
         String message = "success";

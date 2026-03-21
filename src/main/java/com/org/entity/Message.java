@@ -20,7 +20,7 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id", nullable = false)
-    private Integer message_id;
+    private Integer messageId;
 
     @Column(name = "status")
     private Integer status;
@@ -37,18 +37,18 @@ public class Message {
     private String subject;
 
     @Column(name = "date_time")
-    private LocalDateTime date_time;
+    private LocalDateTime dateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender", referencedColumnName = "email", insertable = false, updatable = false)
     private User user;
 
     public Integer getMessage_id() {
-        return message_id;
+        return messageId;
     }
 
-    public void setMessage_id(Integer message_id) {
-        this.message_id = message_id;
+    public void setMessage_id(Integer messageId) {
+        this.messageId = messageId;
     }
 
     public Integer getStatus() {
@@ -84,11 +84,11 @@ public class Message {
     }
 
     public LocalDateTime getDate_time() {
-        return date_time;
+        return dateTime;
     }
 
-    public void setDate_time(LocalDateTime date_time) {
-        this.date_time = date_time;
+    public void setDate_time(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public User getUser() {

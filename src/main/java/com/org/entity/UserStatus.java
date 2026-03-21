@@ -14,7 +14,7 @@ public class UserStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "status_id", nullable = false)
-    private Integer status_id;
+    private Integer statusId;
 
     @Column(name = "status", length = 50)
     private String status;

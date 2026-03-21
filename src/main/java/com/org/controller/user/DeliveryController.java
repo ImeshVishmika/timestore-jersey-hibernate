@@ -10,7 +10,7 @@ import jakarta.ws.rs.core.Response;
 @Path("/delivery")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class ApiDeliveryController {
+public class DeliveryController {
     
     private final DeliveryService deliveryService = new DeliveryService();
 

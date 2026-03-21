@@ -312,7 +312,7 @@
             col.innerHTML = `
                 <div class="card h-100 shadow-sm border-0">
                     <div class="p-3 text-center" style="background-color: #f8f9fa;">
-                        <img src="/api/model/img/${item.product_id}" 
+                        <img src="${item.img_path || '/timestore/app/media/icons/profile.png'}" 
                              class="card-img-top img-fluid" 
                              alt="${item.model_name}" 
                              style="max-height: 150px; object-fit: contain;">

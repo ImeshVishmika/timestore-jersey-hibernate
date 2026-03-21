@@ -2,9 +2,9 @@ package com.org.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.org.dto.WishlistDTO;
 import com.org.util.HibernateUtil;
+import com.org.util.JsonResponse;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -35,14 +35,7 @@ public class WishlistService {
             state = false;
             message = "wishlist loading failed: " + e.getMessage();
         }
-        return jsonResponse(state, message, data);
-    }
-
-    private String jsonResponse(boolean state, String message, JsonElement jsonElement) {
-        JsonObject responseJson = new JsonObject();
-        responseJson.addProperty("state", state);
-        responseJson.addProperty("message", message);
-        responseJson.add("data", jsonElement);
-        return gson.toJson(responseJson);
+        return JsonResponse.response(state, message, data);
     }
 }
+

@@ -17,28 +17,28 @@ public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "city_id", nullable = false)
-    private Integer city_id;
+    private Integer cityId;
 
     @Column(name = "district_id", nullable = false)
-    private Integer district_id;
+    private Integer districtId;
 
     @Column(name = "city_en", length = 45)
-    private String city_en;
+    private String cityEn;
 
     @Column(name = "city_si", length = 45)
-    private String city_si;
+    private String citySi;
 
     @Column(name = "city_ta", length = 45)
-    private String city_ta;
+    private String cityTa;
 
     @Column(name = "sub_name_en", length = 45)
-    private String sub_name_en;
+    private String subNameEn;
 
     @Column(name = "sub_name_si", length = 45)
-    private String sub_name_si;
+    private String subNameSi;
 
     @Column(name = "sub_name_ta", length = 45)
-    private String sub_name_ta;
+    private String subNameTa;
 
     @Column(name = "postcode", length = 15)
     private String postcode;

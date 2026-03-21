@@ -327,6 +327,32 @@ hibernate.cfg.xml
 mvn clean install
 ```
 
+## Naming Convention
+
+All variables in Java code should follow lowerCamelCase naming.
+
+Examples:
+
+* productName
+* deliveryMethodId
+* createdAt
+
+Automated validation runs during Maven `validate` via Checkstyle.
+
+To run only naming validation:
+
+```
+mvn checkstyle:check
+```
+
+JavaScript variable naming is enforced via ESLint camelCase rules.
+
+To run JavaScript naming validation:
+
+```
+npm run lint:naming
+```
+
 ---
 
 ## Deploy to Tomcat

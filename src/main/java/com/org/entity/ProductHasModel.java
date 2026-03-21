@@ -19,10 +19,10 @@ public class ProductHasModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "model_id", nullable = false)
-    private Integer model_id;
+    private Integer modelId;
 
     @Column(name = "product_id")
-    private Integer product_id;
+    private Integer productId;
 
     @Column(name = "model", length = 45)
     private String model;
@@ -34,26 +34,26 @@ public class ProductHasModel {
     private Integer qty;
 
     @Column(name = "added_time")
-    private LocalDateTime added_time;
+    private LocalDateTime addedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id", insertable = false, updatable = false)
     private Product product;
 
     public Integer getModel_id() {
-        return model_id;
+        return modelId;
     }
 
-    public void setModel_id(Integer model_id) {
-        this.model_id = model_id;
+    public void setModel_id(Integer modelId) {
+        this.modelId = modelId;
     }
 
     public Integer getProduct_id() {
-        return product_id;
+        return productId;
     }
 
-    public void setProduct_id(Integer product_id) {
-        this.product_id = product_id;
+    public void setProduct_id(Integer productId) {
+        this.productId = productId;
     }
 
     public String getModel() {
@@ -81,11 +81,11 @@ public class ProductHasModel {
     }
 
     public LocalDateTime getAdded_time() {
-        return added_time;
+        return addedTime;
     }
 
-    public void setAdded_time(LocalDateTime added_time) {
-        this.added_time = added_time;
+    public void setAdded_time(LocalDateTime addedTime) {
+        this.addedTime = addedTime;
     }
 
     public Product getProduct() {

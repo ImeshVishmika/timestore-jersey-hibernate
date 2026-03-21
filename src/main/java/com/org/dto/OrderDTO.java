@@ -1,29 +1,106 @@
 package com.org.dto;
 
+import java.util.List;
+
 public class OrderDTO {
-    private Integer order_id;
+    private Integer orderId;
     private String email;
-    private String ordered_date;
-    private Integer delivery_method;
-    private Integer order_status;
+    private String firstName;
+    private String lastName;
+    private String orderedDate;
+    private Integer deliveryMethod;
+    private Double deliveryFee;
+    private Integer orderStatus;
+    private String orderStatusName;
+    private double total;
+    private List<ModelDTO> orderItems;
 
     public OrderDTO() {
     }
 
-    public OrderDTO(Integer order_id, String email, String ordered_date, Integer delivery_method, Integer order_status) {
-        this.order_id = order_id;
+    public OrderDTO(Integer orderId, String email, String firstName, String lastName, double total, String orderedDate, Integer deliveryMethod, Double deliveryFee, Integer orderStatus, String orderStatusName) {
+        this.orderId = orderId;
         this.email = email;
-        this.ordered_date = ordered_date;
-        this.delivery_method = delivery_method;
-        this.order_status = order_status;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.orderedDate = orderedDate;
+        this.total = total;
+        this.deliveryMethod = deliveryMethod;
+        this.deliveryFee = deliveryFee;
+        this.orderStatus = orderStatus;
+        this.orderStatusName = orderStatusName;
+    }
+
+    public List<ModelDTO> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<ModelDTO> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getOrderedDate() {
+        return orderedDate;
+    }
+
+    public void setOrderedDate(String orderedDate) {
+        this.orderedDate = orderedDate;
+    }
+
+    public Integer getDeliveryMethod() {
+        return deliveryMethod;
+    }
+
+    public void setDeliveryMethod(Integer deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
+    }
+
+    public Integer getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(Integer orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Integer getOrder_id() {
-        return order_id;
+        return orderId;
     }
 
-    public void setOrder_id(Integer order_id) {
-        this.order_id = order_id;
+    public void setOrder_id(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public String getEmail() {
@@ -35,26 +112,42 @@ public class OrderDTO {
     }
 
     public String getOrdered_date() {
-        return ordered_date;
+        return orderedDate;
     }
 
-    public void setOrdered_date(String ordered_date) {
-        this.ordered_date = ordered_date;
+    public void setOrdered_date(String orderedDate) {
+        this.orderedDate = orderedDate;
     }
 
     public Integer getDelivery_method() {
-        return delivery_method;
+        return deliveryMethod;
     }
 
-    public void setDelivery_method(Integer delivery_method) {
-        this.delivery_method = delivery_method;
+    public void setDelivery_method(Integer deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
     }
 
     public Integer getOrder_status() {
-        return order_status;
+        return orderStatus;
     }
 
-    public void setOrder_status(Integer order_status) {
-        this.order_status = order_status;
+    public void setOrder_status(Integer orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public Double getDeliveryFee() {
+        return deliveryFee;
+    }
+
+    public void setDeliveryFee(Double deliveryFee) {
+        this.deliveryFee = deliveryFee;
+    }
+
+    public String getOrderStatusName() {
+        return orderStatusName;
+    }
+
+    public void setOrderStatusName(String orderStatusName) {
+        this.orderStatusName = orderStatusName;
     }
 }

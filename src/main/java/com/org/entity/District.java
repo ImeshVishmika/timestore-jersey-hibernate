@@ -17,19 +17,19 @@ public class District {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "district_id", nullable = false)
-    private Integer district_id;
+    private Integer districtId;
 
     @Column(name = "province_id", nullable = false)
-    private Integer province_id;
+    private Integer provinceId;
 
     @Column(name = "district_en", length = 45)
-    private String district_en;
+    private String districtEn;
 
     @Column(name = "district_si", length = 45)
-    private String district_si;
+    private String districtSi;
 
     @Column(name = "district_ta", length = 45)
-    private String district_ta;
+    private String districtTa;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "province_id", referencedColumnName = "province_id", insertable = false, updatable = false)

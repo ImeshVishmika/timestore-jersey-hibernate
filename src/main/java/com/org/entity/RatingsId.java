@@ -10,17 +10,17 @@ import jakarta.persistence.Embeddable;
 public class RatingsId implements Serializable {
 
     @Column(name = "user_email", nullable = false, length = 50)
-    private String user_email;
+    private String userEmail;
 
     @Column(name = "product_id", nullable = false)
-    private Integer product_id;
+    private Integer productId;
 
     public RatingsId() {
     }
 
-    public RatingsId(String user_email, Integer product_id) {
-        this.user_email = user_email;
-        this.product_id = product_id;
+    public RatingsId(String userEmail, Integer productId) {
+        this.userEmail = userEmail;
+        this.productId = productId;
     }
 
     @Override
@@ -31,11 +31,11 @@ public class RatingsId implements Serializable {
         if (!(object instanceof RatingsId that)) {
             return false;
         }
-        return Objects.equals(user_email, that.user_email) && Objects.equals(product_id, that.product_id);
+        return Objects.equals(userEmail, that.userEmail) && Objects.equals(productId, that.productId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user_email, product_id);
+        return Objects.hash(userEmail, productId);
     }
 }

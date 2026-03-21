@@ -1,5 +1,8 @@
 package com.org.controller.user;
 
+import com.google.gson.Gson;
+import com.org.dto.FilterDTO;
+import com.org.dto.ModelDTO;
 import com.org.service.ModelService;
 import com.org.util.JsonRequestUtil;
 import com.google.gson.JsonObject;
@@ -11,23 +14,21 @@ import jakarta.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ModelController {
-    
+
+    private final Gson gson = new Gson();
     private final ModelService modelService = new ModelService();
 
     @POST
     @Path("/load")
     public Response loadModels(String requestBody) {
         try {
-            JsonObject body = JsonRequestUtil.parseBody(requestBody);
-            String productId = JsonRequestUtil.getString(body, "product_id");
-            if (productId == null) {
-                productId = JsonRequestUtil.getString(body, "model_id");
-            }
-            String result = modelService.loadModels(productId);
+            FilterDTO filterDTO = gson.fromJson(requestBody, FilterDTO.class);
+            System.out.println(filterDTO.getProductId());
+            String result = modelService.loadModels(filterDTO);
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"state\": false, \"message\": \"Error: " + e.getMessage() + "\"}").build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error: " + e.getMessage() + "\"}").build();
         }
     }
 
@@ -44,16 +45,48 @@ public class ModelController {
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"state\": false, \"message\": \"Error: " + e.getMessage() + "\"}").build();
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error: " + e.getMessage() + "\"}").build();
         }
     }
+
+    @POST
+    @Path("/add")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addModel(String requestBody) {
+        try {
+            ModelDTO modelDTO = gson.fromJson(requestBody, ModelDTO.class);
+            String result = modelService.addModel(modelDTO);
+            return Response.ok().entity(result).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error: " + e.getMessage() + "\"}").build();
+        }
+    }
+
 
     @GET
     @Path("/img/{id}")
     @Consumes(MediaType.WILDCARD)
     @Produces({"image/jpeg", "image/png", "image/webp", "image/gif", MediaType.APPLICATION_OCTET_STREAM})
     public Response getImage(@PathParam("id") Integer id) {
-        System.out.println(id);
         return modelService.getImg(id);
+    }
+
+    @DELETE
+    @Path("/{modelId}")
+    public Response deleteModel(@PathParam("modelId") Integer modelId) {
+        try {
+            if (modelId == null || modelId <= 0) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"state\": false, \"message\": \"Invalid model id\"}").build();
+            }
+            System.out.println(modelId);
+            String result = modelService.deleteModel(modelId);
+            return Response.ok().entity(result).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"state\": false, \"message\": \"Error: " + e.getMessage() + "\"}").build();
+        }
     }
 }

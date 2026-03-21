@@ -19,19 +19,19 @@ public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "invoice_id", nullable = false)
-    private Integer invoice_id;
+    private Integer invoiceId;
 
     @Column(name = "order_id", nullable = false)
-    private Integer order_id;
+    private Integer orderId;
 
     @Column(name = "invoice_date", nullable = false)
-    private LocalDateTime invoice_date;
+    private LocalDateTime invoiceDate;
 
     @Column(name = "email", nullable = false, length = 50)
     private String email;
 
     @Column(name = "delivery_fee")
-    private Double delivery_fee;
+    private Double deliveryFee;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false)

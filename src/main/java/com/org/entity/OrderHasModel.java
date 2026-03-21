@@ -25,4 +25,44 @@ public class OrderHasModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "model_id", referencedColumnName = "model_id", insertable = false, updatable = false)
     private Model model;
+
+    public OrderHasModel() {
+    }
+
+    public OrderHasModel(OrderHasModelId id, Integer qty) {
+        this.id = id;
+        this.qty = qty;
+    }
+
+    public OrderHasModelId getId() {
+        return id;
+    }
+
+    public void setId(OrderHasModelId id) {
+        this.id = id;
+    }
+
+    public Integer getQty() {
+        return qty;
+    }
+
+    public void setQty(Integer qty) {
+        this.qty = qty;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+    }
 }

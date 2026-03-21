@@ -22,13 +22,13 @@ public class UserHistory {
     private Integer id;
 
     @Column(name = "user_id", length = 50)
-    private String user_id;
+    private String userId;
 
     @Column(name = "product_id")
-    private Integer product_id;
+    private Integer productId;
 
     @Column(name = "buy_datetime")
-    private LocalDateTime buy_datetime;
+    private LocalDateTime buyDatetime;
 
     @Column(name = "amount")
     private Integer amount;

@@ -17,13 +17,13 @@ public class DeliveryMethod {
     private Integer id;
 
     @Column(name = "delivery_method", length = 50)
-    private String delivery_method;
+    private String deliveryMethod;
 
     @Column(name = "price")
     private Double price;
 
     @Column(name = "delivery_days", length = 50)
-    private String delivery_days;
+    private String deliveryDays;
 
     public Integer getId() {
         return id;
@@ -34,11 +34,11 @@ public class DeliveryMethod {
     }
 
     public String getDelivery_method() {
-        return delivery_method;
+        return deliveryMethod;
     }
 
-    public void setDelivery_method(String delivery_method) {
-        this.delivery_method = delivery_method;
+    public void setDelivery_method(String deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
     }
 
     public Double getPrice() {
@@ -50,10 +50,10 @@ public class DeliveryMethod {
     }
 
     public String getDelivery_days() {
-        return delivery_days;
+        return deliveryDays;
     }
 
-    public void setDelivery_days(String delivery_days) {
-        this.delivery_days = delivery_days;
+    public void setDelivery_days(String deliveryDays) {
+        this.deliveryDays = deliveryDays;
     }
 }

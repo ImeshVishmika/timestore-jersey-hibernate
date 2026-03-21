@@ -43,7 +43,7 @@ public class UserDTO {
         this.joinedDate = joinedDate.toString();
     }
 
-    // Getters and Setters
+    // Getters andSetters
     public String getEmail() {
         return email;
     }
