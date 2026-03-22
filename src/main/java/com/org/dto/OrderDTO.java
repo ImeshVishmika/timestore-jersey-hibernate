@@ -1,5 +1,6 @@
 package com.org.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderDTO {
@@ -18,12 +19,12 @@ public class OrderDTO {
     public OrderDTO() {
     }
 
-    public OrderDTO(Integer orderId, String email, String firstName, String lastName, double total, String orderedDate, Integer deliveryMethod, Double deliveryFee, Integer orderStatus, String orderStatusName) {
+    public OrderDTO(Integer orderId, String email, String firstName, String lastName, Double total, LocalDateTime orderedDate, Integer deliveryMethod, Double deliveryFee, Integer orderStatus, String orderStatusName) {
         this.orderId = orderId;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.orderedDate = orderedDate;
+        this.orderedDate = orderedDate.toString();
         this.total = total;
         this.deliveryMethod = deliveryMethod;
         this.deliveryFee = deliveryFee;

@@ -2202,6 +2202,7 @@ CREATE TABLE `order_data` (
 CREATE TABLE IF NOT EXISTS `order_has_model` (
   `order_id` int NOT NULL,
   `model_id` int NOT NULL,
+	`model_price` double DEFAULT NULL,
   `qty` int DEFAULT NULL,
   PRIMARY KEY (`order_id`,`model_id`),
   KEY `order_has_model_ibfk_1` (`model_id`),
@@ -2210,19 +2211,19 @@ CREATE TABLE IF NOT EXISTS `order_has_model` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- Dumping data for table timestore.order_has_model: ~12 rows (approximately)
-INSERT INTO `order_has_model` (`order_id`, `model_id`, `qty`) VALUES
-	(5001, 101, 1),
-	(5002, 102, 1),
-	(197934294, 111, 2),
-	(252847174, 115, 4),
-	(321806464, 115, 1),
-	(327620435, 112, 1),
-	(374916360, 115, 1),
-	(426274874, 113, 2),
-	(484606335, 112, 1),
-	(539311991, 114, 1),
-	(969524328, 113, 1),
-	(993320418, 111, 11);
+INSERT INTO `order_has_model` (`order_id`, `model_id`, `model_price`, `qty`) VALUES
+	(5001, 101, 38990, 1),
+	(5002, 102, 185000, 1),
+	(197934294, 111, 1111, 2),
+	(252847174, 115, 1300, 4),
+	(321806464, 115, 1300, 1),
+	(327620435, 112, 1300, 1),
+	(374916360, 115, 1300, 1),
+	(426274874, 113, 1200, 2),
+	(484606335, 112, 1300, 1),
+	(539311991, 114, 1542, 1),
+	(969524328, 113, 1200, 1),
+	(993320418, 111, 1111, 11);
 
 -- Dumping structure for table timestore.order_status
 CREATE TABLE IF NOT EXISTS `order_status` (

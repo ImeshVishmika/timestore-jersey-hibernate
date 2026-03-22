@@ -18,6 +18,9 @@ public class OrderHasModel {
     @Column(name = "qty")
     private Integer qty;
 
+    @Column(name = "model_price")
+    private Double modelPrice;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", referencedColumnName = "order_id", insertable = false, updatable = false)
     private Order order;
@@ -29,9 +32,10 @@ public class OrderHasModel {
     public OrderHasModel() {
     }
 
-    public OrderHasModel(OrderHasModelId id, Integer qty) {
+    public OrderHasModel(OrderHasModelId id, Integer qty, Double modelPrice) {
         this.id = id;
         this.qty = qty;
+        this.modelPrice = modelPrice;
     }
 
     public OrderHasModelId getId() {
@@ -48,6 +52,14 @@ public class OrderHasModel {
 
     public void setQty(Integer qty) {
         this.qty = qty;
+    }
+
+    public Double getModelPrice() {
+        return modelPrice;
+    }
+
+    public void setModelPrice(Double modelPrice) {
+        this.modelPrice = modelPrice;
     }
 
     public Order getOrder() {

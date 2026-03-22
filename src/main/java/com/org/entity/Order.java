@@ -1,16 +1,9 @@
 package com.org.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "`order`")
@@ -44,6 +37,49 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_status", referencedColumnName = "order_status_id", insertable = false, updatable = false)
     private OrderStatus orderStatusRef;
+
+    @OneToMany(mappedBy = "order" , fetch = FetchType.LAZY)
+    private List<OrderHasModel> orderItems;
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+    public LocalDateTime getOrderedDate() {
+        return orderedDate;
+    }
+
+    public void setOrderedDate(LocalDateTime orderedDate) {
+        this.orderedDate = orderedDate;
+    }
+
+    public Integer getDeliveryMethod() {
+        return deliveryMethod;
+    }
+
+    public void setDeliveryMethod(Integer deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
+    }
+
+    public Integer getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(Integer orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public List<OrderHasModel> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderHasModel> orderItems) {
+        this.orderItems = orderItems;
+    }
 
     public Integer getOrder_id() {
         return orderId;

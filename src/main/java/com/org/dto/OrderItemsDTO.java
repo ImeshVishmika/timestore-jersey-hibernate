@@ -27,10 +27,13 @@ public class OrderItemsDTO {
             this.orderId = orderHasModel.getId().getOrderId();
             this.modelId = orderHasModel.getId().getModelId();
             this.qty = orderHasModel.getQty();
+            this.price = orderHasModel.getModelPrice();
             
             if (orderHasModel.getModel() != null) {
                 this.modelName = orderHasModel.getModel().getModel();
-                this.price = orderHasModel.getModel().getPrice();
+                if (this.price == null) {
+                    this.price = orderHasModel.getModel().getPrice();
+                }
                 
                 if (orderHasModel.getModel().getProduct() != null) {
                     this.productName = orderHasModel.getModel().getProduct().getProductName();

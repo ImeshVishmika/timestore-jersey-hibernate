@@ -257,6 +257,7 @@ CREATE TABLE `order_data` (
 CREATE TABLE IF NOT EXISTS `order_has_model` (
   `order_id` int NOT NULL,
   `model_id` int NOT NULL,
+  `model_price` double DEFAULT NULL,
   `qty` int DEFAULT NULL,
   PRIMARY KEY (`order_id`,`model_id`),
   KEY `order_has_model_ibfk_1` (`model_id`),

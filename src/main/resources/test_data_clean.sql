@@ -218,10 +218,10 @@ INSERT INTO `order` (`order_id`, `email`, `ordered_date`, `delivery_method`, `or
 	(3, 'imesh@gmail.com', '2026-02-15 10:20:00', 1, 1);
 
 -- Order Has Model
-INSERT INTO `order_has_model` (`order_id`, `model_id`, `qty`) VALUES
-	(1, 101, 1),
-	(2, 102, 1),
-	(3, 103, 1);
+INSERT INTO `order_has_model` (`order_id`, `model_id`, `model_price`, `qty`) VALUES
+	(1, 101, 15000.00, 1),
+	(2, 102, 12000.00, 1),
+	(3, 103, 35000.00, 1);
 
 -- ========================================
 -- 7. INVOICES
