@@ -22,8 +22,25 @@ public class OrderController {
     @Path("/load")
     public Response loadOrders(String requestBody) {
         try {
+            System.out.println(requestBody);
             FilterDTO filterDTO = gson.fromJson(requestBody, FilterDTO.class);
             String result = orderService.loadAllOrders(filterDTO);
+            System.out.println(result);
+            return Response.ok().entity(result).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error: " + e.getMessage() + "\"}").build();
+        }
+    }
+
+    @POST
+    @Path("/search")
+    public Response searchOrders(String requestBody) {
+        try {
+            System.out.println(requestBody);
+            JsonObject body = JsonRequestUtil.parseBody(requestBody);
+            String searchQuery = JsonRequestUtil.getString(body, "searchQuery");
+            String result = orderService.searchOrders(searchQuery);
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -107,6 +124,18 @@ public class OrderController {
     public Response loadOrderStatuses() {
         try {
             String result = orderService.loadAllOrderStatuses();
+            return Response.ok().entity(result).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"state\":false,\"data\":null,\"error\":\"Error: " + e.getMessage() + "\"}").build();
+        }
+    }
+
+    @POST
+    @Path("/statusCounts")
+    public Response loadOrderStatusCounts() {
+        try {
+            String result = orderService.loadOrderStatusCounts();
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

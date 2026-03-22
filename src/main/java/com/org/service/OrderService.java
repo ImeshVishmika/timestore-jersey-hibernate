@@ -18,38 +18,39 @@ import org.hibernate.query.Query;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class OrderService {
 
     private final Gson gson = new Gson();
+    private static final String ORDER_TOTAL_SUBQUERY =
+            "(SELECT COALESCE(SUM(ohm.qty * ohm.model_price), 0.0) " +
+            "FROM OrderHasModel ohm WHERE ohm.id.orderId = o.orderId)";
 
-    /**
-     * Load all orders with advanced filtering (admin)
-     */
     public String loadAllOrders(FilterDTO filterDTO) {
         boolean state = true;
         String message = "success";
         JsonElement data = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            StringBuilder queryString = new StringBuilder("FROM Order o WHERE 1=1");
-
-            // Build WHERE clause based on valid parameters
+            StringBuilder queryString = new StringBuilder("SELECT new com.org.dto.OrderDTO( " +
+                    "o.id, " +
+                    "o.email, "+
+                    "o.user.firstName, " +
+                    "o.user.lastName , " +
+                    "coalesce(SUM(ol.qty*ol.modelPrice),0.0d) as total," +
+                    "o.orderedDate," +
+                    "o.deliveryMethod," +
+                    "o.deliveryMethodRef.price," +
+                    "o.orderStatus," +
+                    "o.orderStatusRef.status) "+
+                    "FROM Order o JOIN o.orderItems ol WHERE 1=1");
             
             // Filter by Order Status
             if (filterDTO != null && filterDTO.getOrderStausId() != null && filterDTO.getOrderStausId() > 0) {
-                queryString.append(" AND o.orderStatus = :orderStatusId");
+                queryString.append(" AND o.orderStatus =:orderStatusId ");
             }
 
-            // Filter by Minimum Price
-            if (filterDTO != null && filterDTO.getMinPrice() != null && filterDTO.getMinPrice() >= 0) {
-                queryString.append(" AND o.total >= :minPrice");
-            }
-
-            // Filter by Maximum Price
-            if (filterDTO != null && filterDTO.getMaxPrice() != null && filterDTO.getMaxPrice() >= 0) {
-                queryString.append(" AND o.total <= :maxPrice");
-            }
 
             // Filter by Date From
             if (filterDTO != null && filterDTO.getDateFrom() != null && !filterDTO.getDateFrom().trim().isEmpty()) {
@@ -70,9 +71,28 @@ public class OrderService {
                     // Invalid date format, skip this filter
                 }
             }
+            queryString.append(" GROUP BY o.id ");
+
+            queryString.append(
+                    " HAVING 1=1 "
+            );
+
+            // Filter by Minimum Price
+            if (filterDTO != null && filterDTO.getMinPrice() != null && filterDTO.getMinPrice() >= 0) {
+                queryString.append(
+                        " AND coalesce(SUM(ol.qty * ol.modelPrice), 0.0d) >= :minPrice "
+                );
+            }
+
+            // Filter by Maximum Price
+            if (filterDTO != null && filterDTO.getMaxPrice() != null && filterDTO.getMaxPrice() >= 0) {
+                queryString.append(
+                        " AND coalesce(SUM(ol.qty * ol.modelPrice), 0.0d) <= :maxPrice "
+                );
+            }
 
             // Create query with final WHERE clause
-            Query<Order> query = session.createQuery(queryString.toString(), Order.class);
+            Query<OrderDTO> query = session.createQuery(queryString.toString(),OrderDTO.class);
 
             // Bind parameters
             if (filterDTO != null) {
@@ -107,12 +127,9 @@ public class OrderService {
                 }
             }
 
-            List<Order> orders = query.getResultList();
-            List<OrderDTO> orderDTOs = new ArrayList<>();
-            for (Order order : orders) {
-                orderDTOs.add(convertToDTO(order));
-            }
-            data = gson.toJsonTree(orderDTOs);
+            List<OrderDTO> orders = query.getResultList();
+
+            data = gson.toJsonTree(orders);
 
         } catch (Exception e) {
             state = false;
@@ -138,7 +155,7 @@ public class OrderService {
             } else {
                 // Create response object with order and items
                 JsonObject responseObj = new JsonObject();
-                responseObj.add("order", gson.toJsonTree(convertToDTO(order)));
+                responseObj.add("order", gson.toJsonTree(convertToDTO(order, session)));
                 
                 // Get order items
                 Query<OrderHasModel> itemsQuery = session.createQuery(
@@ -184,7 +201,7 @@ public class OrderService {
             session.persist(order);
             transaction.commit();
 
-            data = gson.toJsonTree(convertToDTO(order));
+            data = gson.toJsonTree(convertToDTO(order, session));
             message = "order created successfully";
 
         } catch (Exception e) {
@@ -218,7 +235,7 @@ public class OrderService {
             session.merge(order);
             transaction.commit();
 
-            data = gson.toJsonTree(convertToDTO(order));
+            data = gson.toJsonTree(convertToDTO(order, session));
             message = "order status updated successfully";
 
         } catch (Exception e) {
@@ -252,7 +269,7 @@ public class OrderService {
             session.merge(order);
             transaction.commit();
 
-            data = gson.toJsonTree(convertToDTO(order));
+            data = gson.toJsonTree(convertToDTO(order, session));
             message = "order cancelled successfully";
 
         } catch (Exception e) {
@@ -278,7 +295,7 @@ public class OrderService {
             List<Order> orders = query.getResultList();
             List<OrderDTO> orderDTOs = new ArrayList<>();
             for (Order order : orders) {
-                orderDTOs.add(convertToDTO(order));
+                orderDTOs.add(convertToDTO(order, session));
             }
             data = gson.toJsonTree(orderDTOs);
 
@@ -289,10 +306,19 @@ public class OrderService {
         return JsonResponse.response(state, message, data);
     }
 
-    private OrderDTO convertToDTO(Order order) {
+    private OrderDTO convertToDTO(Order order, Session session) {
+        Double orderTotal = getOrderTotal(order.getOrder_id(), session);
+
         Double deliveryFee = null;
         if (order.getDeliveryMethodRef() != null) {
             deliveryFee = order.getDeliveryMethodRef().getPrice();
+        }
+
+        String firstName = null;
+        String lastName = null;
+        if (order.getUser() != null) {
+            firstName = order.getUser().getFirstName();
+            lastName = order.getUser().getLastName();
         }
         
         String orderStatusName = null;
@@ -303,16 +329,27 @@ public class OrderService {
         return new OrderDTO(
                 order.getOrder_id(),
                 order.getEmail(),
-                order.getUser().getFirstName(),
-                order.getUser().getLastName(),
-                1000.00,
-                order.getOrdered_date().toString(),
+                firstName,
+                lastName,
+                orderTotal,
+                order.getOrdered_date(),
                 order.getDelivery_method(),
                 deliveryFee,
                 order.getOrder_status(),
                 orderStatusName
         );
     }
+
+            private Double getOrderTotal(Integer orderId, Session session) {
+            Query<Double> totalQuery = session.createQuery(
+                "SELECT COALESCE(SUM(ohm.qty * COALESCE(ohm.modelPrice, ohm.model.price)), 0.0) " +
+                    "FROM OrderHasModel ohm WHERE ohm.id.orderId = :orderId",
+                Double.class
+            );
+            totalQuery.setParameter("orderId", orderId);
+            Double total = totalQuery.uniqueResult();
+            return total != null ? total : 0.0;
+            }
 
     /**
      * Load all order statuses
@@ -329,6 +366,100 @@ public class OrderService {
         } catch (Exception e) {
             state = false;
             message = "order statuses loading failed: " + e.getMessage();
+        }
+        return JsonResponse.response(state, message, data);
+    }
+
+    public String loadOrderStatusCounts() {
+        boolean state = true;
+        String message = "success";
+        JsonElement data = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Object[]> query = session.createQuery(
+                    "SELECT os.status, COUNT(o.orderId) " +
+                            "FROM Order o JOIN o.orderStatusRef os " +
+                            "GROUP BY os.status",
+                    Object[].class
+            );
+
+            long processing = 0;
+            long inTransit = 0;
+            long delivered = 0;
+
+            List<Object[]> rows = query.getResultList();
+            for (Object[] row : rows) {
+                String status = row[0] != null
+                        ? row[0].toString().toLowerCase(Locale.ROOT)
+                        : "";
+                long count = row[1] != null ? ((Number) row[1]).longValue() : 0;
+
+                if (status.contains("processing") || status.contains("pending") || status.contains("order places")) {
+                    processing += count;
+                } else if (status.contains("in-transit") || status.contains("in transit") || status.contains("shipped")) {
+                    inTransit += count;
+                } else if (status.contains("delivered") || status.contains("completed")) {
+                    delivered += count;
+                }
+            }
+
+            JsonObject counts = new JsonObject();
+            counts.addProperty("processing", processing);
+            counts.addProperty("inTransit", inTransit);
+            counts.addProperty("delivered", delivered);
+            data = counts;
+
+        } catch (Exception e) {
+            state = false;
+            message = "order status counts loading failed: " + e.getMessage();
+        }
+
+        return JsonResponse.response(state, message, data);
+    }
+
+    /**
+     * Search orders by Order ID, Email, First Name, or Last Name
+     */
+    public String searchOrders(String searchQuery) {
+        boolean state = true;
+        String message = "success";
+        JsonElement data = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            if (searchQuery == null || searchQuery.trim().isEmpty()) {
+                state = false;
+                message = "search query is empty";
+                return JsonResponse.response(state, message, data);
+            }
+
+            String searchPattern = "%" + searchQuery + "%";
+
+            StringBuilder queryString = new StringBuilder("SELECT new com.org.dto.OrderDTO( " +
+                    "o.id, " +
+                    "o.email, " +
+                    "o.user.firstName, " +
+                    "o.user.lastName, " +
+                    "coalesce(SUM(ol.qty*ol.modelPrice),0.0d) as total," +
+                    "o.orderedDate," +
+                    "o.deliveryMethod," +
+                    "o.deliveryMethodRef.price," +
+                    "o.orderStatus," +
+                    "o.orderStatusRef.status) " +
+                    "FROM Order o JOIN o.orderItems ol WHERE (LOWER(CAST(o.id AS string)) LIKE LOWER(:searchPattern) " +
+                    "OR LOWER(o.email) LIKE LOWER(:searchPattern) " +
+                    "OR LOWER(o.user.firstName) LIKE LOWER(:searchPattern) " +
+                    "OR LOWER(o.user.lastName) LIKE LOWER(:searchPattern)) " +
+                    "GROUP BY o.id");
+
+            Query<OrderDTO> query = session.createQuery(queryString.toString(), OrderDTO.class);
+            query.setParameter("searchPattern", searchPattern);
+
+            List<OrderDTO> orders = query.getResultList();
+            data = gson.toJsonTree(orders);
+
+        } catch (Exception e) {
+            state = false;
+            message = "order search failed: " + e.getMessage();
         }
         return JsonResponse.response(state, message, data);
     }
