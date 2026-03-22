@@ -21,7 +21,7 @@ public class Main {
             HibernateUtil.getSessionFactory().openSession();
 
             Tomcat tomcat = new Tomcat();
-            tomcat.setPort(8080);
+            tomcat.setPort(8081);
             tomcat.getConnector();
 
             // User context at /timestore

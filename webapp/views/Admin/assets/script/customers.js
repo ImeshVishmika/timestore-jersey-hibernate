@@ -1,87 +1,150 @@
 document.getElementById("customers-tab").addEventListener("click", loadUsers);
 document.getElementById("userStatusFilter").addEventListener("change", loadUsers);
+const customerSearchInput = document.getElementById("customerSearchInput");
+const minOrderCountFilter = document.getElementById("minOrderCountFilter");
+const maxOrderCountFilter = document.getElementById("maxOrderCountFilter");
+const minSpentFilter = document.getElementById("minSpentFilter");
+const maxSpentFilter = document.getElementById("maxSpentFilter");
+const joinedDateFromFilter = document.getElementById("joinedDateFromFilter");
+const joinedDateToFilter = document.getElementById("joinedDateToFilter");
+const clearCustomerFiltersBtn = document.getElementById("clearCustomerFiltersBtn");
+
+let customerSearchTimeout;
+
+if (customerSearchInput) {
+    customerSearchInput.addEventListener("input", () => {
+        clearTimeout(customerSearchTimeout);
+        customerSearchTimeout = setTimeout(() => {
+            loadUsers();
+        }, 300);
+    });
+}
+
+[minOrderCountFilter, maxOrderCountFilter, minSpentFilter, maxSpentFilter, joinedDateFromFilter, joinedDateToFilter]
+    .forEach((element) => {
+        if (element) {
+            element.addEventListener("change", loadUsers);
+        }
+    });
+
+if (clearCustomerFiltersBtn) {
+    clearCustomerFiltersBtn.addEventListener("click", () => {
+        if (customerSearchInput) customerSearchInput.value = "";
+        if (minOrderCountFilter) minOrderCountFilter.value = "";
+        if (maxOrderCountFilter) maxOrderCountFilter.value = "";
+        if (minSpentFilter) minSpentFilter.value = "";
+        if (maxSpentFilter) maxSpentFilter.value = "";
+        if (joinedDateFromFilter) joinedDateFromFilter.value = "";
+        if (joinedDateToFilter) joinedDateToFilter.value = "";
+        const statusFilter = document.getElementById("userStatusFilter");
+        if (statusFilter) statusFilter.value = "0";
+        loadUsers();
+    });
+}
 
 // Add modal show handler to populate customer details
-document.getElementById("userModal").addEventListener('show.bs.modal', async function (event) {
-    const button = event.relatedTarget;
-    const email = button.dataset.email;
-    
-    if (!email) return;
-    
-    try {
-        const payload = {
-            email: email
-        };
-        
-        const request = await fetch("/api/user/details", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (request.ok) {
-            const jsonObject = await request.json();
-            
-            if (jsonObject && jsonObject.user) {
-                const user = jsonObject.user;
-                const address = jsonObject.address || {};
-                const orders = jsonObject.orders || [];
-                
-                // Populate personal information
-                document.getElementById("userName").textContent = (user.first_name || '') + ' ' + (user.last_name || '');
-                document.getElementById("userEmail").textContent = user.email || '';
-                document.getElementById("orderCount").textContent = user.order_count || '0';
-                document.getElementById("totalSpend").textContent = 'Rs. ' + (user.total_spent ? 
-                    new Intl.NumberFormat('en-LK').format(user.total_spent) : '0');
-                document.getElementById("mobile").textContent = user.mobile || '-';
-                
-                // Populate address
-                document.getElementById("line_one").textContent = address.line_one || '';
-                document.getElementById("line_two").textContent = address.line_two ? ', ' + address.line_two : '';
-                document.getElementById("city").textContent = address.city || '';
-                document.getElementById("district").textContent = address.district || '';
-                document.getElementById("province").textContent = address.province || '';
-                document.getElementById("postalCode").textContent = address.postal_code || '';
-                
-                // Populate recent orders
-                const recenOtrders = document.getElementById("recenOtrders");
-                recenOtrders.innerHTML = '';
-                
-                if (orders && orders.length > 0) {
-                    orders.slice(0, 5).forEach(order => {
-                        const orderDiv = document.createElement("div");
-                        orderDiv.className = "list-group-item px-0 d-flex justify-content-between align-items-center border-bottom";
-                        orderDiv.innerHTML = `
-                            <div>
-                                <p class="mb-0 fw-bold small">#${order.order_id}</p>
-                                <small class="text-muted" style="font-size: 11px;">${order.ordered_date}</small>
-                            </div>
-                            <span class="badge bg-success bg-opacity-10 text-success rounded-pill">${order.status}</span>
-                            <span class="fw-bold small">Rs. ${new Intl.NumberFormat('en-LK').format(order.total)}</span>
-                        `;
-                        recenOtrders.appendChild(orderDiv);
-                    });
-                } else {
-                    recenOtrders.innerHTML = '<p class="text-muted small">No orders yet</p>';
-                }
-            }
-        } else {
-            Notiflix.Notify.failure('Failed to fetch user details');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        Notiflix.Notify.failure('Error ' + error);
-    }
-});
+// document.getElementById("userModal").addEventListener('show.bs.modal', async function (event) {
+//     const button = event.relatedTarget;
+//     const email = button.dataset.email;
+//
+//     if (!email) return;
+//
+//     try {
+//         const payload = {
+//             email: email
+//         };
+//
+//         const request = await fetch("/api/user/details", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify(payload)
+//         });
+//
+//         if (request.ok) {
+//             const jsonObject = await request.json();
+//
+//             if (jsonObject && jsonObject.user) {
+//                 const user = jsonObject.user;
+//                 const address = jsonObject.address || {};
+//                 const orders = jsonObject.orders || [];
+//
+//                 // Populate personal information
+//                 document.getElementById("userName").textContent = (user.first_name || '') + ' ' + (user.last_name || '');
+//                 document.getElementById("userEmail").textContent = user.email || '';
+//                 document.getElementById("orderCount").textContent = user.order_count || '0';
+//                 document.getElementById("totalSpend").textContent = 'Rs. ' + (user.total_spent ?
+//                     new Intl.NumberFormat('en-LK').format(user.total_spent) : '0');
+//                 document.getElementById("mobile").textContent = user.mobile || '-';
+//
+//                 // Populate address
+//                 document.getElementById("line_one").textContent = address.line_one || '';
+//                 document.getElementById("line_two").textContent = address.line_two ? ', ' + address.line_two : '';
+//                 document.getElementById("city").textContent = address.city || '';
+//                 document.getElementById("district").textContent = address.district || '';
+//                 document.getElementById("province").textContent = address.province || '';
+//                 document.getElementById("postalCode").textContent = address.postal_code || '';
+//
+//                 // Populate recent orders
+//                 const recenOtrders = document.getElementById("recenOtrders");
+//                 recenOtrders.innerHTML = '';
+//
+//                 if (orders && orders.length > 0) {
+//                     orders.slice(0, 5).forEach(order => {
+//                         const orderDiv = document.createElement("div");
+//                         orderDiv.className = "list-group-item px-0 d-flex justify-content-between align-items-center border-bottom";
+//                         orderDiv.innerHTML = `
+//                             <div>
+//                                 <p class="mb-0 fw-bold small">#${order.order_id}</p>
+//                                 <small class="text-muted" style="font-size: 11px;">${order.ordered_date}</small>
+//                             </div>
+//                             <span class="badge bg-success bg-opacity-10 text-success rounded-pill">${order.status}</span>
+//                             <span class="fw-bold small">Rs. ${new Intl.NumberFormat('en-LK').format(order.total)}</span>
+//                         `;
+//                         recenOtrders.appendChild(orderDiv);
+//                     });
+//                 } else {
+//                     recenOtrders.innerHTML = '<p class="text-muted small">No orders yet</p>';
+//                 }
+//             }
+//         } else {
+//             Notiflix.Notify.failure('Failed to fetch user details');
+//         }
+//     } catch (error) {
+//         console.error('Error:', error);
+//         Notiflix.Notify.failure('Error ' + error);
+//     }
+// });
 
 async function loadUsers() {
     try {
         const status = document.getElementById("userStatusFilter").value;
+        const searchText = customerSearchInput ? customerSearchInput.value.trim() : "";
+        const minOrderCount = minOrderCountFilter && minOrderCountFilter.value !== ""
+            ? parseInt(minOrderCountFilter.value, 10)
+            : null;
+        const maxOrderCount = maxOrderCountFilter && maxOrderCountFilter.value !== ""
+            ? parseInt(maxOrderCountFilter.value, 10)
+            : null;
+        const minSpent = minSpentFilter && minSpentFilter.value !== ""
+            ? parseFloat(minSpentFilter.value)
+            : null;
+        const maxSpent = maxSpentFilter && maxSpentFilter.value !== ""
+            ? parseFloat(maxSpentFilter.value)
+            : null;
+        const joinedDateFrom = joinedDateFromFilter ? joinedDateFromFilter.value : "";
+        const joinedDateTo = joinedDateToFilter ? joinedDateToFilter.value : "";
 
         const payload = {
-            status: status
+            orderStausId: status === "" ? null : parseInt(status, 10),
+            searchQuery: searchText,
+            minOrderCount: minOrderCount,
+            maxOrderCount: maxOrderCount,
+            minPrice: minSpent,
+            maxPrice: maxSpent,
+            dateFrom: joinedDateFrom,
+            dateTo: joinedDateTo
         };
 
         const request = await fetch("/api/user/load", {
@@ -93,31 +156,27 @@ async function loadUsers() {
         });
 
         if (request.ok) {
-            const jsonObject = await request.json();
+            let jsonObject = await request.json();
+            console.log(jsonObject);
 
-            document.getElementById("totalUserCount").innerHTML = jsonObject.users.length;
-            document.getElementById("activeUserCount").innerHTML = jsonObject.active;
-            document.getElementById("blockedUserCount").innerHTML = jsonObject.blocked;
+            // document.getElementById("activeUserCount").innerHTML = jsonObject.active;
+            // document.getElementById("blockedUserCount").innerHTML = jsonObject.blocked;
 
             const customerTableBody = document.getElementById("customerTableBody");
             customerTableBody.innerHTML = "";
 
             const fragment = document.createDocumentFragment();
 
-            jsonObject.users.forEach(user => {
+            jsonObject.data.forEach(user => {
                 const tr = document.createElement("tr");
                 let statusBadgeClass = "bg-success bg-opacity-10 text-success";
-
-                if (user.status === "Blocked") {
-                    statusBadgeClass = "bg-success bg-opacity-10 text-danger";
-                }
 
                 tr.innerHTML = `
                     <td class="ps-4">
                         <div class="d-flex align-items-center">
                             <div class="avatar-circle me-3"></div>
                             <div>
-                                <h6 class="fw-bold text-dark mb-0">${user.first_name + " " + user.last_name}</h6>
+                                <h6 class="fw-bold text-dark mb-0">${user.firstName + " " + user.lastName}</h6>
                                 <small class="text-muted">ID: #USR-<?php echo rand(100, 999); ?></small>
                             </div>
                         </div>
@@ -135,7 +194,7 @@ async function loadUsers() {
                             <small class="text-success fw-bold">LKR ${new Intl.NumberFormat('en-LK').format(user.total_spent || 0)}</small>
                         </div>
                     </td>
-                    <td class="text-secondary small fw-bold">${user.joined_date}</td>
+                    <td class="text-secondary small fw-bold">${user.joinedDate}</td>
                     <td class="text-center">
                         <span class="badge ${statusBadgeClass} rounded-pill px-3">${user.status}</span>
                     </td>

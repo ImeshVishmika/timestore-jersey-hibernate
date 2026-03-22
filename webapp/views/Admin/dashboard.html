@@ -306,24 +306,34 @@
                         </div>
 
                         <div class="row g-3 mb-4">
-                            <div class="col-md-3">
-                                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center justify-content-between">
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center justify-content-between" id="processingCard" role="button" tabindex="0" style="cursor: pointer;">
                                     <div>
-                                        <h6 class="text-secondary fw-bold mb-1">New Orders</h6>
-                                        <h4 class="fw-bold mb-0">12</h4>
+                                        <h6 class="text-secondary fw-bold mb-1">Processing</h6>
+                                        <h4 class="fw-bold mb-0" id="processingCount">0</h4>
                                     </div>
                                     <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-circle"><i
-                                            class="bi bi-bell-fill"></i></div>
+                                            class="bi bi-hourglass-split"></i></div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center justify-content-between">
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center justify-content-between" id="inTransitCard" role="button" tabindex="0" style="cursor: pointer;">
                                     <div>
-                                        <h6 class="text-secondary fw-bold mb-1">To Ship</h6>
-                                        <h4 class="fw-bold mb-0">05</h4>
+                                        <h6 class="text-secondary fw-bold mb-1">In Transit</h6>
+                                        <h4 class="fw-bold mb-0" id="inTransitCount">0</h4>
                                     </div>
-                                    <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle"><i
-                                            class="bi bi-box-seam"></i></div>
+                                    <div class="bg-info bg-opacity-10 text-info p-3 rounded-circle"><i
+                                            class="bi bi-truck"></i></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center justify-content-between" id="deliveredCard" role="button" tabindex="0" style="cursor: pointer;">
+                                    <div>
+                                        <h6 class="text-secondary fw-bold mb-1">Delivered</h6>
+                                        <h4 class="fw-bold mb-0" id="deliveredCount">0</h4>
+                                    </div>
+                                    <div class="bg-success bg-opacity-10 text-success p-3 rounded-circle"><i
+                                            class="bi bi-check2-circle"></i></div>
                                 </div>
                             </div>
                         </div>
@@ -336,7 +346,7 @@
                                         <div class="input-group">
                                             <span class="input-group-text bg-white border-end-0"><i
                                                     class="bi bi-search text-secondary"></i></span>
-                                            <input type="text" class="form-control border-start-0 ps-0"
+                                            <input type="text" id="orderSearchInput" class="form-control border-start-0 ps-0"
                                                    placeholder="Search Order ID or Customer...">
                                         </div>
                                     </div>
@@ -513,16 +523,69 @@
                                         <div class="input-group">
                                             <span class="input-group-text bg-white border-end-0"><i
                                                     class="bi bi-search text-secondary"></i></span>
-                                            <input type="text" class="form-control border-start-0 ps-0"
+                                            <input type="text" id="customerSearchInput" class="form-control border-start-0 ps-0"
                                                    placeholder="Search by name, email or mobile...">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <select class="form-select text-secondary fw-bold" id="userStatusFilter">
                                             <option value="0" selected>Status: All</option>
                                             <option value="1">Active</option>
                                             <option value="2">Blocked</option>
                                         </select>
+                                    </div>
+                                    <div class="col-md-3 text-end">
+                                        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#customerAdvancedFilters" aria-expanded="false" aria-controls="customerAdvancedFilters">
+                                            <i class="bi bi-funnel me-2"></i>Advanced Filters
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="collapse" id="customerAdvancedFilters">
+                                <div class="card-body border-top">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-bold text-secondary mb-2">Order Count</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white text-secondary" style="font-size: 0.85rem;">Min</span>
+                                                <input type="number" min="0" id="minOrderCountFilter" class="form-control text-secondary fw-bold" placeholder="0">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-bold text-secondary mb-2">&nbsp;</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white text-secondary" style="font-size: 0.85rem;">Max</span>
+                                                <input type="number" min="0" id="maxOrderCountFilter" class="form-control text-secondary fw-bold" placeholder="9999">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-bold text-secondary mb-2">Total Spent</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white text-secondary" style="font-size: 0.85rem;">Min LKR</span>
+                                                <input type="number" min="0" step="0.01" id="minSpentFilter" class="form-control text-secondary fw-bold" placeholder="0">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-bold text-secondary mb-2">&nbsp;</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white text-secondary" style="font-size: 0.85rem;">Max LKR</span>
+                                                <input type="number" min="0" step="0.01" id="maxSpentFilter" class="form-control text-secondary fw-bold" placeholder="1000000">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-bold text-secondary mb-2">Joined Date Range</label>
+                                            <input type="date" id="joinedDateFromFilter" class="form-control text-secondary fw-bold" title="Joined Date From">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-bold text-secondary mb-2">&nbsp;</label>
+                                            <input type="date" id="joinedDateToFilter" class="form-control text-secondary fw-bold" title="Joined Date To">
+                                        </div>
+                                        <div class="col-md-6 text-end pt-2">
+                                            <button class="btn btn-outline-danger btn-sm" id="clearCustomerFiltersBtn" type="button">
+                                                <i class="bi bi-arrow-counterclockwise me-1"></i>Clear All Filters
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
