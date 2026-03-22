@@ -16,12 +16,23 @@ document.getElementById("modelsTable").addEventListener("click", function(event)
     var button = event.target.closest(".btn");
     changeModel(button.dataset.model_id);
 });
-document.getElementById("buyNow").addEventListener("click", function () {
-    if (!isLoggedIn) {
-        return;
+
+async function handleBuyNow() {
+    try {
+        const response = await fetch("/api/user/signinstatus");
+        const data = await response.json();
+        
+        if (data.status) {
+            buyingProduct();
+            new bootstrap.Modal(document.getElementById("buyNowModal")).show();
+        } else {
+            new bootstrap.Modal(document.getElementById("signInModal")).show();
+        }
+    } catch (error) {
+        console.error('Error checking sign in status:', error);
+        new bootstrap.Modal(document.getElementById("signInModal")).show();
     }
-    buyingProduct();
-});
+}
 
 const checkoutForm = document.getElementById("checkoutSignInForm");
 if (checkoutForm) {
@@ -34,7 +45,7 @@ if (checkoutForm) {
 async function loadModels(productId) {
     try {
         const payload = {
-            product_id: productId
+            productId: [productId]
         };
 
         const request = await fetch("/api/model/load", {
@@ -51,16 +62,16 @@ async function loadModels(productId) {
             modelsTable.innerHTML = "";
             const fragment = document.createDocumentFragment();
 
-            jsonObject.models.forEach(model => {
-                models[model.model_id] = model;
+            jsonObject.data.forEach(model => {
+                models[model.modelId] = model;
                 const button = document.createElement("button");
-                button.dataset.model_id=model.model_id;
+                button.dataset.model_id=model.modelId;
                 button.classList.add("btn", "border", "rounded-3");
-                button.innerHTML=`<img src="${model.img_path}" width="50" alt="Side View">`;
+                button.innerHTML=`<img src=api/model/img/${model.modelId} width="50" alt="Side View">`;
                 fragment.appendChild(button);
             });
             modelsTable.appendChild(fragment);
-            changeModel(jsonObject.models[0].model_id);
+            changeModel(jsonObject.data[0].modelId);
             maybeOpenBuyModal();
         } else {
             Notiflix.Notify.failure('Failed to load models');
@@ -74,10 +85,10 @@ async function loadModels(productId) {
 function changeModel(modelId) {
     buyingModelId = modelId;
     const model = models[modelId];
-    document.getElementById("product_label").innerText = model.model_name;
-    document.getElementById("model").innerText = model.model_name;
+    document.getElementById("product_label").innerText = model.model;
+    document.getElementById("model").innerText = model.model;
     document.getElementById("price").innerText = "Rs." + model.price;
-    document.getElementById("vimg").src = model.img_path;
+    document.getElementById("vimg").src = `api/model/img/${modelId}`;
 }
 
 function buyingProduct() {
@@ -93,10 +104,10 @@ function buyingProduct() {
     }
 
     buyingProductId.value = buyingModelId;
-    buyingProductBrand.textContent = model.brand_id;
-    buyingProductModel.textContent = model.model_name;
+    buyingProductBrand.textContent = model.brandId;
+    buyingProductModel.textContent = model.modelName;
     buyingProductPrice.textContent = "Rs." + model.price;
-    buyingProductImg.src = model.img_path;
+    buyingProductImg.src = `api/model/img/${buyingModelId}`;
 }
 
 function toCheckout() {
@@ -104,7 +115,7 @@ function toCheckout() {
     var buyingProductQty = document.getElementById("pqty");
     var buyingProductId = document.getElementById("buying_product_id");
 
-    window.location = "/timestore/checkout/" + buyingProductId.value + "/" + buyingProductQty.value;
+    window.location = "/checkout.html/?" + buyingProductId.value + "/" + buyingProductQty.value;
 
 }
 

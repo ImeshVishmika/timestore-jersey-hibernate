@@ -111,6 +111,21 @@ public class ApiUserController {
         }
     }
 
+    @GET
+    @Path("/signinstatus")
+    public Response getSignInStatus(@Context HttpServletRequest request) {
+        try {
+            JsonObject response = new JsonObject();
+            Object user = request.getSession().getAttribute("user");
+            response.addProperty("status", user != null);
+            return Response.ok().entity(response.toString()).build();
+        } catch (Exception e) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", false);
+            return Response.ok().entity(response.toString()).build();
+        }
+    }
+
     @POST
     @Path("/search")
     public Response searchUsers(String requestBody) {
