@@ -1,5 +1,6 @@
 package com.org.dto;
 
+import com.google.gson.annotations.SerializedName;
 import com.org.entity.User;
 
 import java.time.LocalDate;
@@ -16,6 +17,8 @@ public class UserDTO {
     private String joinedDate;
     private String genderName;
     private String statusName;
+    private Integer orderCount;
+    private Double totalSpent;
 
 
     public UserDTO() {
@@ -122,5 +125,21 @@ public class UserDTO {
 
     public void setStatusName(String statusName) {
         this.statusName = statusName;
+    }
+
+    public Integer getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(Integer orderCount) {
+        this.orderCount = orderCount;
+    }
+
+    public Double getTotalSpent() {
+        return totalSpent;
+    }
+
+    public void setTotalSpent(Double totalSpent) {
+        this.totalSpent = totalSpent;
     }
 }

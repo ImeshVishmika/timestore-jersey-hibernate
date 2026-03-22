@@ -1,5 +1,7 @@
 package com.org.controller.user;
 
+import com.google.gson.Gson;
+import com.org.dto.FilterDTO;
 import com.org.service.UserService;
 import com.org.util.JsonRequestUtil;
 import com.google.gson.JsonObject;
@@ -15,6 +17,7 @@ import jakarta.ws.rs.core.Response;
 public class ApiUserController {
     
     private final UserService userService = new UserService();
+    private final Gson gson = new Gson();
 
     @POST
     @Path("/details")
@@ -28,19 +31,18 @@ public class ApiUserController {
         }
     }
 
-    @POST
-    @Path("/load")
-    public Response loadUsers(String requestBody) {
-        try {
-            JsonObject body = JsonRequestUtil.parseBody(requestBody);
-            String status = JsonRequestUtil.getString(body, "status", "1");
-            String result = userService.loadUsersByStatus(status != null ? status : "1");
-            return Response.ok().entity(result).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"state\": false, \"message\": \"Error: " + e.getMessage() + "\"}").build();
-        }
-    }
+//    @POST
+//    @Path("/load")
+//    public Response loadUsers(String requestBody) {
+//        try {
+//            FilterDTO filterDTO = gson.fromJson(requestBody, FilterDTO.class);
+//            String result = userService.loadUsersByFilters(filterDTO);
+//            return Response.ok().entity(result).build();
+//        } catch (Exception e) {
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+//                    .entity("{\"state\": false, \"message\": \"Error: " + e.getMessage() + "\"}").build();
+//        }
+//    }
 
     @POST
     @Path("/userProfile")
@@ -106,6 +108,22 @@ public class ApiUserController {
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("error").build();
+        }
+    }
+
+    @POST
+    @Path("/search")
+    public Response searchUsers(String requestBody) {
+        try {
+            JsonObject body = JsonRequestUtil.parseBody(requestBody);
+            String firstName = JsonRequestUtil.getString(body, "firstName");
+            String lastName = JsonRequestUtil.getString(body, "lastName");
+            String email = JsonRequestUtil.getString(body, "email");
+            String result = userService.searchUsers(firstName, lastName, email);
+            return Response.ok().entity(result).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"state\": false, \"message\": \"Error: " + e.getMessage() + "\"}").build();
         }
     }
 }

@@ -3,6 +3,7 @@ package com.org.service;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.org.dto.FilterDTO;
 import com.org.dto.UserDTO;
 import com.org.entity.User;
 import com.org.util.HibernateUtil;
@@ -15,7 +16,10 @@ import org.hibernate.query.Query;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Locale;
 
 public class UserService {
     
@@ -215,31 +219,171 @@ public class UserService {
         return dto;
     }
 
-    /**
-     * Load users by status
-     */
-    public String loadUsersByStatus(String status) {
-        boolean state = true;
-        String message = "success";
-        JsonElement data = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<User> query = session.createQuery("from User where status = :status", User.class);
-            query.setParameter("status", Integer.parseInt(status));
-            List<User> users = query.getResultList();
-            List<UserDTO> userDTOs = new ArrayList<>();
-            
-            for (User user : users) {
-                userDTOs.add(convertToDTO(user));
-            }
-            
-            data = gson.toJsonTree(userDTOs);
+//    public String loadUsersByFilters(FilterDTO filterDTO) {
+//        if (filterDTO == null) {
+//            filterDTO = new FilterDTO();
+//        }
+//
+//        String status = filterDTO.getOrderStausId() != null ? String.valueOf(filterDTO.getOrderStausId()) : "0";
+//        return loadUsersByFilters(
+//                status,
+//                filterDTO.getSearchQuery(),
+//                filterDTO.getMinOrderCount(),
+//                filterDTO.getMaxOrderCount(),
+//                filterDTO.getMinPrice(),
+//                filterDTO.getMaxPrice(),
+//                filterDTO.getDateFrom(),
+//                filterDTO.getDateTo()
+//        );
+//    }
 
-        } catch (Exception e) {
-            state = false;
-            message = "user loading failed: " + e.getMessage();
+//    public String loadUsersByFilters(FilterDTO filterDTO) {
+//        boolean state = true;
+//        String message = "success";
+//        JsonElement data = null;
+//
+//        Integer status =1;
+//
+//        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+//            StringBuilder userQueryString = new StringBuilder("from User where 1=1");
+//            Integer parsedStatus = null;
+//            if (status != null && !status.isBlank()) {
+//                try {
+//                    parsedStatus = Integer.parseInt(status);
+//                } catch (NumberFormatException ignored) {
+//                    parsedStatus = null;
+//                }
+//            }
+//
+//            if (parsedStatus != null && parsedStatus > 0) {
+//                userQueryString.append(" and status = :status");
+//            }
+//
+//            Query<User> query = session.createQuery(userQueryString.toString(), User.class);
+//            if (parsedStatus != null && parsedStatus > 0) {
+//                query.setParameter("status", parsedStatus);
+//            }
+//            List<User> users = query.getResultList();
+//
+//            Map<String, Object[]> userOrderSummaryMap = new HashMap<>();
+//            if (!users.isEmpty()) {
+//                List<String> userEmails = users.stream().map(User::getEmail).toList();
+//                Query<Object[]> summaryQuery = session.createQuery(
+//                        "SELECT o.email, COUNT(DISTINCT o.orderId), " +
+//                                "COALESCE(SUM(ohm.qty * COALESCE(ohm.modelPrice, ohm.model.price)), 0.0) " +
+//                                "FROM Order o " +
+//                                "LEFT JOIN o.orderItems ohm " +
+//                                "WHERE o.email IN (:userEmails) " +
+//                                "GROUP BY o.email",
+//                        Object[].class
+//                );
+//                summaryQuery.setParameter("userEmails", userEmails);
+//
+//                List<Object[]> summaryRows = summaryQuery.getResultList();
+//                for (Object[] summaryRow : summaryRows) {
+//                    String email = (String) summaryRow[0];
+//                    userOrderSummaryMap.put(email, summaryRow);
+//                }
+//            }
+//
+//            List<UserDTO> userDTOs = new ArrayList<>();
+//            LocalDate joinedFromDate = parseDate(joinedDateFrom);
+//            LocalDate joinedToDate = parseDate(joinedDateTo);
+//            String normalizedSearchText = searchText != null ? searchText.trim().toLowerCase(Locale.ROOT) : null;
+//
+//            for (User user : users) {
+//                UserDTO userDTO = convertToDTO(user);
+//                Object[] summary = userOrderSummaryMap.get(user.getEmail());
+//                int orderCount = 0;
+//                double totalSpent = 0.0;
+//
+//                if (summary != null) {
+//                    orderCount = ((Number) summary[1]).intValue();
+//                    totalSpent = ((Number) summary[2]).doubleValue();
+//                }
+//
+//                userDTO.setOrderCount(orderCount);
+//                userDTO.setTotalSpent(totalSpent);
+//
+//                if (!matchesSearch(user, normalizedSearchText)) {
+//                    continue;
+//                }
+//
+//                if (minOrderCount != null && orderCount < minOrderCount) {
+//                    continue;
+//                }
+//
+//                if (maxOrderCount != null && orderCount > maxOrderCount) {
+//                    continue;
+//                }
+//
+//                if (minSpent != null && totalSpent < minSpent) {
+//                    continue;
+//                }
+//
+//                if (maxSpent != null && totalSpent > maxSpent) {
+//                    continue;
+//                }
+//
+//                if (!matchesJoinedDate(user.getJoinedDate(), joinedFromDate, joinedToDate)) {
+//                    continue;
+//                }
+//
+//                userDTOs.add(userDTO);
+//            }
+//
+//            data = gson.toJsonTree(userDTOs);
+//
+//        } catch (Exception e) {
+//            state = false;
+//            message = "user loading failed: " + e.getMessage();
+//        }
+//        return JsonResponse.response(state, message, data);
+//    }
+
+    private LocalDate parseDate(String date) {
+        if (date == null || date.isBlank()) {
+            return null;
         }
-        return JsonResponse.response(state, message, data);
+
+        try {
+            return LocalDate.parse(date);
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    private boolean matchesJoinedDate(LocalDate joinedDate, LocalDate joinedFromDate, LocalDate joinedToDate) {
+        if (joinedDate == null) {
+            return joinedFromDate == null && joinedToDate == null;
+        }
+
+        if (joinedFromDate != null && joinedDate.isBefore(joinedFromDate)) {
+            return false;
+        }
+
+        if (joinedToDate != null && joinedDate.isAfter(joinedToDate)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean matchesSearch(User user, String searchText) {
+        if (searchText == null || searchText.isBlank()) {
+            return true;
+        }
+
+        String firstName = user.getFirstName() != null ? user.getFirstName().toLowerCase(Locale.ROOT) : "";
+        String lastName = user.getLastName() != null ? user.getLastName().toLowerCase(Locale.ROOT) : "";
+        String email = user.getEmail() != null ? user.getEmail().toLowerCase(Locale.ROOT) : "";
+        String mobile = user.getMobile() != null ? user.getMobile().toLowerCase(Locale.ROOT) : "";
+
+        return firstName.contains(searchText)
+                || lastName.contains(searchText)
+                || email.contains(searchText)
+                || mobile.contains(searchText);
     }
 
     /**
@@ -361,6 +505,79 @@ public class UserService {
             state = false;
             message = "login failed: " + e.getMessage();
         }
+        return JsonResponse.response(state, message, data);
+    }
+
+    /**
+     * Search users by firstName, lastName, email, or combinations
+     * @param firstName first name search term (optional, supports partial match)
+     * @param lastName last name search term (optional, supports partial match)
+     * @param email email search term (optional, supports partial match)
+     * @return JSON response containing matching users
+     */
+    public String searchUsers(String firstName, String lastName, String email) {
+        boolean state = true;
+        String message = "success";
+        JsonElement data = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            StringBuilder queryString = new StringBuilder("FROM User WHERE 1=1 ");
+            
+            // Build dynamic WHERE clause based on provided parameters
+            if (firstName != null && !firstName.trim().isEmpty()) {
+                queryString.append("AND LOWER(firstName) LIKE LOWER(:firstName) ");
+            }
+            
+            if (lastName != null && !lastName.trim().isEmpty()) {
+                queryString.append("AND LOWER(lastName) LIKE LOWER(:lastName) ");
+            }
+            
+            if (email != null && !email.trim().isEmpty()) {
+                queryString.append("AND LOWER(email) LIKE LOWER(:email) ");
+            }
+            
+            // If no search criteria provided, return empty result
+            if ((firstName == null || firstName.trim().isEmpty()) &&
+                (lastName == null || lastName.trim().isEmpty()) &&
+                (email == null || email.trim().isEmpty())) {
+                state = false;
+                message = "at least one search parameter is required";
+                return JsonResponse.response(state, message, data);
+            }
+            
+            Query<User> query = session.createQuery(queryString.toString(), User.class);
+            
+            // Bind parameters with LIKE wildcards for partial matching
+            if (firstName != null && !firstName.trim().isEmpty()) {
+                query.setParameter("firstName", "%" + firstName.trim() + "%");
+            }
+            
+            if (lastName != null && !lastName.trim().isEmpty()) {
+                query.setParameter("lastName", "%" + lastName.trim() + "%");
+            }
+            
+            if (email != null && !email.trim().isEmpty()) {
+                query.setParameter("email", "%" + email.trim() + "%");
+            }
+            
+            List<User> users = query.getResultList();
+            List<UserDTO> userDTOs = new ArrayList<>();
+            
+            for (User user : users) {
+                userDTOs.add(convertToDTO(user));
+            }
+            
+            data = gson.toJsonTree(userDTOs);
+            
+            if (users.isEmpty()) {
+                message = "no users found matching the criteria";
+            }
+
+        } catch (Exception e) {
+            state = false;
+            message = "user search failed: " + e.getMessage();
+        }
+        
         return JsonResponse.response(state, message, data);
     }
 

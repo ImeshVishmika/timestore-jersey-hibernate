@@ -22,6 +22,9 @@ public class FilterDTO {
     private Double minPrice;
     private Double maxPrice;
     private Integer orderStausId;
+    private String searchQuery;
+    private Integer minOrderCount;
+    private Integer maxOrderCount;
 
     public String getViewBy() {
         viewBy=(viewBy==null)?"DAY":viewBy;
@@ -171,5 +174,29 @@ public class FilterDTO {
 
     public void setMaxPrice(Double maxPrice) {
         this.maxPrice = maxPrice;
+    }
+
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+
+    public Integer getMinOrderCount() {
+        return minOrderCount;
+    }
+
+    public void setMinOrderCount(Integer minOrderCount) {
+        this.minOrderCount = minOrderCount;
+    }
+
+    public Integer getMaxOrderCount() {
+        return maxOrderCount;
+    }
+
+    public void setMaxOrderCount(Integer maxOrderCount) {
+        this.maxOrderCount = maxOrderCount;
     }
 }
