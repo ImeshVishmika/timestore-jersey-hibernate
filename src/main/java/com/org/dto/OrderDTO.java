@@ -13,6 +13,8 @@ public class OrderDTO {
     private Double deliveryFee;
     private Integer orderStatus;
     private String orderStatusName;
+    private String hash;
+    private String merchantId;
     private double total;
     private List<ModelDTO> orderItems;
 
@@ -30,6 +32,22 @@ public class OrderDTO {
         this.deliveryFee = deliveryFee;
         this.orderStatus = orderStatus;
         this.orderStatusName = orderStatusName;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public String getMerchantId() {
+        return merchantId;
+    }
+
+    public void setMerchantId(String merchantId) {
+        this.merchantId = merchantId;
     }
 
     public List<ModelDTO> getOrderItems() {

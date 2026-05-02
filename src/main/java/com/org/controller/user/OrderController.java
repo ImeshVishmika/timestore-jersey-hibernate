@@ -3,10 +3,13 @@ package com.org.controller.user;
 import com.google.gson.Gson;
 import com.org.dto.FilterDTO;
 import com.org.dto.OrderDTO;
+import com.org.dto.UserDTO;
 import com.org.service.OrderService;
 import com.org.util.JsonRequestUtil;
 import com.google.gson.JsonObject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -63,13 +66,19 @@ public class OrderController {
 
     @POST
     @Path("/new")
-    public Response createNewOrder(String requestBody) {
+    public Response createNewOrder(String requestBody, @Context HttpServletRequest request) {
         try {
+            UserDTO userDTO = (UserDTO) request.getSession().getAttribute("user");
+            if (userDTO == null || userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("{\"state\":false,\"data\":null,\"message\":\"Please sign in first\"}").build();
+            }
+
             JsonObject body = JsonRequestUtil.parseBody(requestBody);
             String modelId = JsonRequestUtil.getString(body, "id");
             String quantity = JsonRequestUtil.getString(body, "qty");
             String deliveryMethodId = JsonRequestUtil.getString(body, "delivery_method_id");
-            String result = orderService.createNewOrder(modelId, quantity, deliveryMethodId);
+            String result = orderService.createNewOrder(modelId, quantity, deliveryMethodId, userDTO.getEmail());
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

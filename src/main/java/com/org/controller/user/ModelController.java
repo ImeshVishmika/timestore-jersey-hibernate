@@ -22,8 +22,8 @@ public class ModelController {
     @Path("/load")
     public Response loadModels(String requestBody) {
         try {
+            System.out.println(requestBody);
             FilterDTO filterDTO = gson.fromJson(requestBody, FilterDTO.class);
-            System.out.println(filterDTO.getProductId());
             String result = modelService.loadModels(filterDTO);
             return Response.ok().entity(result).build();
         } catch (Exception e) {

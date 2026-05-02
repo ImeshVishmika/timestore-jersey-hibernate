@@ -1,41 +1,34 @@
-var id;
-var qty;
-var address;
+let id;
+let qty;
+let modelData;
+let deliveryData ={};
+let address;
+let currentUserProfile;
 
+window.addEventListener("load", async function () {
 
-window.addEventListener("load", function () {
-    let pathname = window.location.pathname;
-    let pattern = /^\/timestore\/checkout\/([0-9]+)\/([0-9]+)$/;
-    let match = pathname.match(pattern);
-    
-    // Check if URL matches pattern before proceeding
-    if (!match) {
-        console.error("Invalid checkout URL format. Expected: /timestore/checkout/{id}/{qty}");
-        window.location.href = "/timestore/index.php";
-        return;
-    }
-    
-    let matches = Array.from(match);
-    id = matches[1];
-    qty = matches[2];
+    let param = new URLSearchParams(window.location.search);
 
-    loadUserDetails();
-    loadModels();
-    loadDeliveryDetails();
+    id = param.get("id");
+    qty = param.get("qty");
+
+    await loadUserDetails();
+    await loadModels();
+    await loadDeliveryDetails();
+
 });
 
-var previousMethod = null;
+let previousMethod = null;
 
-var deliveryDetails = document.getElementById("deliveryDetails");
+let deliveryDetails = document.getElementById("deliveryDetails");
 deliveryDetails.addEventListener("click", function (event) {
 
-    var method = event.target.closest(".btn");
-    
-    // Guard against null if clicking on non-button element
+    let method = event.target.closest(".btn");
+
     if (!method) {
         return;
     }
-    
+
     method.classList.add("bg-primary-subtle", "border-2", "border-primary");
 
     method.querySelector("input").checked = true;
@@ -47,8 +40,8 @@ deliveryDetails.addEventListener("click", function (event) {
 
     let subTotal = document.getElementById("subTotal").innerHTML.replace("Rs.", "");
 
-    document.getElementById("deliveryFee").innerHTML = "Rs." + method.dataset.price;
-    document.getElementById("grandTotal").innerHTML = "Rs." + (parseFloat(method.dataset.price) + parseFloat(subTotal));
+    document.getElementById("deliveryFee").innerHTML = "Rs." + (method.dataset.price).toLocaleString('us-en');
+    document.getElementById("grandTotal").innerHTML = "Rs." + (parseFloat(modelData[0].price*qty)+parseFloat(method.dataset.price)).toLocaleString('us-en');
 
     previousMethod = method;
     const deliveryMethodWarning = document.getElementById("delivery_method_warning");
@@ -58,12 +51,12 @@ deliveryDetails.addEventListener("click", function (event) {
 
 });
 
-var payherePayment = document.getElementById("payhere-payment");
-payherePayment.addEventListener("click", function () {
-    paynow();
+let payherePayment = document.getElementById("payhere-payment");
+payherePayment.addEventListener("click", async function () {
+    await paynow();
 });
 
-var addressUpdateForm = document.getElementById("addressUpdateForm");
+let addressUpdateForm = document.getElementById("addressUpdateForm");
 if (addressUpdateForm) {
     addressUpdateForm.addEventListener("submit", async function (event) {
         event.preventDefault();
@@ -127,7 +120,7 @@ if (addressUpdateForm) {
 }
 
 
-var deliveryMethodId;
+let deliveryMethodId;
 
 async function loadUserDetails() {
     try {
@@ -136,20 +129,37 @@ async function loadUserDetails() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({})
         });
 
         if (request.ok) {
             const jsonObject = await request.json();
-            const user = jsonObject.user;
+            if (!jsonObject || !jsonObject.state || !jsonObject.data) {
+                Notiflix.Notify.failure((jsonObject && jsonObject.message) ? jsonObject.message : "Failed to fetch user details");
+                return;
+            }
 
-            document.getElementById("deliveryName").innerHTML = user.first_name + " " + user.last_name;
-            document.getElementById("email").innerHTML = user.email;
-            address = jsonObject.address;
+
+            const profileData = jsonObject.data;
+            currentUserProfile = profileData;
+            const firstName = profileData.firstName || profileData.first_name || "";
+            const lastName = profileData.lastName || profileData.last_name || "";
+            const fullName = [firstName, lastName].filter(Boolean).join(" ");
+
+            document.getElementById("deliveryName").innerHTML = fullName;
+            document.getElementById("email").innerHTML = profileData.email || "";
+            address = {
+                line_one: profileData.line_one,
+                line_two: profileData.line_two,
+                city: profileData.city,
+                district: profileData.district,
+                province: profileData.province,
+                postal_code: profileData.postal_code,
+                state: Boolean(profileData.line_one && profileData.city)
+            };
 
             const addressEl = document.getElementById("address");
             if (addressEl) {
-                if (address) {
+                if (address.line_one || address.line_two || address.city || address.district || address.province || address.postal_code) {
                     const parts = [];
                     if (address.line_one) {
                         parts.push(address.line_one);
@@ -182,7 +192,7 @@ async function loadUserDetails() {
             const city = document.getElementById("city");
             const postalCode = document.getElementById("postalCode");
 
-            if (address && lineOne && lineTwo && district && province && city && postalCode) {
+            if (lineOne && lineTwo && district && province && city && postalCode) {
                 lineOne.value = address.line_one || "";
                 lineTwo.value = address.line_two || "";
                 district.value = address.district || "";
@@ -202,7 +212,7 @@ async function loadUserDetails() {
 async function loadModels() {
     try {
         const payload = {
-            model_id: id
+            modelId: [id]
         };
 
         const request = await fetch("/api/model/load", {
@@ -216,15 +226,18 @@ async function loadModels() {
         if (request.ok) {
             const jsonObject = await request.json();
 
-            jsonObject.models.forEach(model => {
-                document.getElementById("modelImg").src = model.img_path;
-                document.getElementById("productName").innerHTML = model.model_name;
-                document.getElementById("brand").innerHTML = model.brand_name;
-                document.getElementById("price").innerHTML = "Rs." + model.price + " For each iteme(s) ";
-                document.getElementById("qty").innerHTML = qty + " items";
-                document.getElementById("subTotal").innerHTML = "Rs." + (parseFloat(model.price) * parseFloat(qty));
-                document.getElementById("total").innerHTML = "Rs." + (parseFloat(model.price) * parseFloat(qty));
-            });
+            if(jsonObject.state) {
+                modelData=jsonObject.data;
+                modelData.forEach(model => {
+                    document.getElementById("modelImg").src = `/api/model/img/${id}`;
+                    document.getElementById("productName").innerHTML = model.model;
+                    document.getElementById("brand").innerHTML = model.brandName;
+                    document.getElementById("price").innerHTML = "Rs." + model.price + " For each iteme(s) ";
+                    document.getElementById("qty").innerHTML = qty + " items";
+                    document.getElementById("subTotal").innerHTML = "Rs." + (parseFloat(model.price) * parseFloat(qty)).toLocaleString('en-US');
+                    document.getElementById("total").innerHTML = "Rs." + (parseFloat(model.price) * parseFloat(qty)).toLocaleString('en-US');
+                });
+            }
         } else {
             Notiflix.Notify.failure('Failed to fetch models');
         }
@@ -252,10 +265,12 @@ async function loadDeliveryDetails() {
 
             const fragment = document.createDocumentFragment();
 
-            jsonObject.forEach(delivery => {
-                const div = document.createElement("div");
-                div.classList = "card col-10 col-md-6 border-0";
-                div.innerHTML = `
+            if (jsonObject.state) {
+                jsonObject.data.forEach(delivery => {
+                    deliveryData[delivery.id]=delivery;
+                    const div = document.createElement("div");
+                    div.classList = "card col-10 col-md-6 border-0";
+                    div.innerHTML = `
                             <button class="btn  m-1 p-0 border-secondary-subtle" data-price="${delivery.price}" data-id="${delivery.id}" >
                                 <div class="card-body  row  text-start">
                                     <div class="col-1">
@@ -263,18 +278,18 @@ async function loadDeliveryDetails() {
                                     </div>
 
                                     <div class="col-10">
-                                        <h5 class="text-primary fw-bold">${delivery.method}</h5>
+                                        <h5 class="text-primary fw-bold">${delivery.deliveryMethod}</h5>
                                         <p class="card-title text-success fw-bold">Rs.${delivery.price}</p>
                                         </p>
-                                        <p class="card-title fw-bold">Guaranteed by</p>
-                                        <p class="card-title text-secondary fw-bolder">${delivery.delivery_days}</p>
-
+                                        <p class="card-title fw-bold">Guaranteed In</p>
+                                        <p class="card-title text-secondary fw-bolder">${delivery.deliveryDays} Days</p>
                                     </div>
 
                                 </div>
                             </button>`;
-                fragment.appendChild(div);
-            });
+                    fragment.appendChild(div);
+                });
+            }
             deliveryDetails.appendChild(fragment);
         } else {
             Notiflix.Notify.failure('Failed to fetch delivery details');
@@ -287,8 +302,8 @@ async function loadDeliveryDetails() {
 
 async function paynow() {
     try {
-        // Check if address is valid (should be an object with keys, not null or empty)
-        if (!address || Object.keys(address).length === 0) {
+        //Check if address is valid (should be an object with keys, not null or empty)
+        if (!address || !address.state) {
             document.getElementById("address_warning").innerHTML = " * Please add a delivery address";
             return;
         }
@@ -313,16 +328,41 @@ async function paynow() {
             body: JSON.stringify(payload)
         });
 
-        if (request.ok) {
-            const jsonObject = await request.json();
+        let jsonObject = null;
+        try {
+            jsonObject = await request.json();
+        } catch (error) {
+            jsonObject = null;
+        }
+
+        if (!request.ok) {
+            Notiflix.Notify.failure((jsonObject && (jsonObject.message || jsonObject.error))
+                ? (jsonObject.message || jsonObject.error)
+                : 'Failed to create order');
+            return;
+        }
+
+        if (!jsonObject || !jsonObject.state || !jsonObject.data) {
+            Notiflix.Notify.failure((jsonObject && (jsonObject.message || jsonObject.error))
+                ? (jsonObject.message || jsonObject.error)
+                : 'Failed to create order');
+            return;
+        }
+
+        const orderData = jsonObject.data;
+        const payhereSdk = window.payhere;
+        if (!payhereSdk || typeof payhereSdk.startPayment !== "function") {
+            Notiflix.Notify.failure("PayHere is not available. Please disable ad blockers and try again.");
+            return;
+        }
 
             // Payment completed. It can be a successful failure.
-            payhere.onCompleted = function onCompleted() {
+            payhereSdk.onCompleted = function onCompleted() {
                 // Mark order as paid by updating order status
                 (async () => {
                     try {
                         const statusUpdate = {
-                            order_id: jsonObject.order_id
+                            order_id: orderData.orderId || orderData.order_id
                         };
 
                         const statusRequest = await fetch("/api/order/updateStatusAfterPayment", {
@@ -344,17 +384,17 @@ async function paynow() {
                                     confirmButtonText: 'Continue Shopping'
                                 }).then((result) => {
                                     // Redirect to home or order tracking page
-                                    window.location.href = "/timestore/profile";
+                                    window.location.href = "/profile.html";
                                 });
                             } else {
                                 // Payment received but status update failed - still a success
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Payment Received!',
-                                    text: 'Your payment has been received. Order ID: ' + jsonObject.order_id,
+                                    text: 'Your payment has been received. Order ID: ' + (orderData.orderId || orderData.order_id),
                                     confirmButtonText: 'View Orders'
                                 }).then((result) => {
-                                    window.location.href = "/timestore/profile";
+                                    window.location.href = "/profile.html";
                                 });
                             }
                         } else {
@@ -368,12 +408,12 @@ async function paynow() {
             };
 
             // Payment window closed
-            payhere.onDismissed = function onDismissed() {
-                cancelOrder(jsonObject.order_id);
+            payhereSdk.onDismissed = function onDismissed() {
+                cancelOrder(orderData.orderId || orderData.order_id);
             };
 
             // Error occurred
-            payhere.onError = function onError(error) {
+            payhereSdk.onError = function onError(error) {
                 // Log error and show user-friendly message
                 console.error("PayHere Payment Error:", error);
                 Swal.fire({
@@ -388,35 +428,59 @@ async function paynow() {
             };
 
             // Put the payment variables here
+            const selectedModel = Array.isArray(modelData) && modelData.length > 0 ? modelData[0] : null;
+            const firstName = (currentUserProfile && (currentUserProfile.firstName || currentUserProfile.first_name)) || "Customer";
+            const lastName = (currentUserProfile && (currentUserProfile.lastName || currentUserProfile.last_name)) || "";
+            const phone = (currentUserProfile && currentUserProfile.mobile) || "0770000000";
+            const items = (jsonObject.items || orderData.items || (selectedModel ? selectedModel.model : null));
+            const amountValue = Number(jsonObject.amount || orderData.amount || orderData.total || 0);
+            const amount = Number.isFinite(amountValue) && amountValue > 0 ? amountValue.toFixed(2) : null;
+            const addressLine = jsonObject.address || orderData.address || [address?.line_one, address?.line_two].filter(Boolean).join(", ");
+            const city = jsonObject.city || orderData.city || address?.city || "Colombo";
+            const country = jsonObject.country || orderData.country || "Sri Lanka";
+
+            const merchantId = jsonObject.merchant_id || orderData.merchant_id;
+            const hash = jsonObject.hash || orderData.hash;
+            const orderId = orderData.orderId || orderData.order_id;
+
+            if (!merchantId || !hash) {
+                Notiflix.Notify.failure("Payment initialization data is missing (merchant_id/hash). Please contact support.");
+                cancelOrder(orderId);
+                return;
+            }
+
+            if (!items || !amount || !orderId) {
+                Notiflix.Notify.failure("Payment details are incomplete. Please try again.");
+                cancelOrder(orderId);
+                return;
+            }
+
             const payment = {
                 "sandbox": true,
-                "merchant_id": jsonObject.merchant_id,    // Replace your Merchant ID
-                "return_url": "http://localhost/timestore/index.php",
-                "cancel_url": "http://localhost/timestore/index.php",
-                "notify_url": "http://localhost/timestore/index.php",
-                "order_id": jsonObject.order_id,
-                "items": jsonObject.items,
-                "amount": jsonObject.amount,
-                "currency": jsonObject.currency,
-                "hash": jsonObject.hash, // *Replace with generated hash retrieved from backend
-                "first_name": jsonObject.first_name,
-                "last_name": jsonObject.last_name,
-                "email": jsonObject.email,
-                "phone": jsonObject.phone,
-                "address": jsonObject.address,
-                "city": jsonObject.city,
-                "country": jsonObject.country,
-                "delivery_address": jsonObject.address,
-                "delivery_city": jsonObject.city,
-                "delivery_country": jsonObject.country,
+                "merchant_id": merchantId,
+                "return_url": "http://localhost/index.php",
+                "cancel_url": "http://localhost/index.php",
+                "notify_url": "http://localhost/index.php",
+                "order_id": orderId,
+                "items": items,
+                "amount": amount,
+                "currency": jsonObject.currency || orderData.currency || "LKR",
+                "hash": hash,
+                "first_name": jsonObject.first_name || orderData.first_name || firstName,
+                "last_name": jsonObject.last_name || orderData.last_name || lastName,
+                "email": jsonObject.email || orderData.email || (currentUserProfile ? currentUserProfile.email : ""),
+                "phone": jsonObject.phone || orderData.phone || phone,
+                "address": addressLine,
+                "city": city,
+                "country": country,
+                "delivery_address": addressLine,
+                "delivery_city": city,
+                "delivery_country": country,
                 "custom_1": "",
                 "custom_2": ""
             };
             // Show the payhere.js popup, when "PayHere Pay" is clicked
-            payhere.startPayment(payment);
-        } else {
-            Notiflix.Notify.failure('Failed to create order');
-        }
+            payhereSdk.startPayment(payment);
     } catch (error) {
         console.error('Error:', error);
         Notiflix.Notify.failure('Error ' + error);

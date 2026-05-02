@@ -353,6 +353,9 @@
                                     <div class="col-md-4">
                                         <select id="orderStatusSelect" class="form-select text-secondary fw-bold">
                                             <option selected>Status: All</option>
+                                            <option>Processing</option>
+                                            <option>In Transit</option>
+                                            <option>Delivered</option>
                                         </select>
                                     </div>
                                     <div class="col-md-3 text-end">
@@ -485,7 +488,7 @@
 
                         <div class="row g-3 mb-4">
                             <div class="col-md-4">
-                                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center justify-content-between">
+                                <div id="totalUsersCard" data-statusid="default"  class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center justify-content-between" style="cursor: pointer; transition: all 0.3s ease;">
                                     <div>
                                         <h6 class="text-secondary fw-bold mb-1">Total Users</h6>
                                         <h4 class="fw-bold mb-0" id="totalUserCount">842</h4>
@@ -495,7 +498,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center justify-content-between">
+                                <div id="activeUsersCard" data-statusid=1 class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center justify-content-between" style="cursor: pointer; transition: all 0.3s ease;">
                                     <div>
                                         <h6 class="text-secondary fw-bold mb-1">Active Users</h6>
                                         <h4 class="fw-bold mb-0" id="activeUserCount">820</h4>
@@ -505,7 +508,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center justify-content-between">
+                                <div id="blockedUsersCard" data-statusid=2 class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center justify-content-between" style="cursor: pointer; transition: all 0.3s ease;">
                                     <div>
                                         <h6 class="text-secondary fw-bold mb-1">Blocked</h6>
                                         <h4 class="fw-bold mb-0" id="blockedUserCount">22</h4>
@@ -529,9 +532,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <select class="form-select text-secondary fw-bold" id="userStatusFilter">
-                                            <option value="0" selected>Status: All</option>
-                                            <option value="1">Active</option>
-                                            <option value="2">Blocked</option>
+                                            <option value="default" selected>Status: All</option>
+                                            <option value=1 >Active</option>
+                                            <option value=2 >Blocked</option>
                                         </select>
                                     </div>
                                     <div class="col-md-3 text-end">

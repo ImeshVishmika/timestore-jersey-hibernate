@@ -74,44 +74,45 @@
                 return;
             }
 
-            const user = data.user || {};
-            const address = data.address || {};
-            const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ");
+            const profileData = data.data || {};
+            const firstName = profileData.firstName || profileData.first_name || "";
+            const lastName = profileData.lastName || profileData.last_name || "";
+            const fullName = [firstName, lastName].filter(Boolean).join(" ");
 
             setImage("profileImage", "/timestore/userImg");
             setText("profileName", fullName);
-            setText("profileEmail", user.email || "");
+            setText("profileEmail", profileData.email || "");
 
             setText("overviewName", fullName);
-            setText("overviewMobile", user.mobile || "");
-            setText("overviewEmail", user.email || "");
+            setText("overviewMobile", profileData.mobile || "");
+            setText("overviewEmail", profileData.email || "");
 
-            setValue("fname", user.first_name || "");
-            setValue("lname", user.last_name || "");
-            setValue("email", user.email || "");
-            setValue("mobile", user.mobile || "");
+            setValue("fname", firstName);
+            setValue("lname", lastName);
+            setValue("email", profileData.email || "");
+            setValue("mobile", profileData.mobile || "");
 
-            setValue("line1", address.line_one || "");
-            setValue("line2", address.line_two || "");
-            setValue("city", address.city || "");
-            setValue("district", address.district || "");
-            setValue("province", address.province || "");
-            setValue("postal_code", address.postal_code || "");
+            setValue("line1", profileData.line_one || "");
+            setValue("line2", profileData.line_two || "");
+            setValue("city", profileData.city || "");
+            setValue("district", profileData.district || "");
+            setValue("province", profileData.province || "");
+            setValue("postal_code", profileData.postal_code || "");
 
             const addressParts = [
-                address.line_one,
-                address.line_two,
-                address.city,
-                address.district,
-                address.province,
-                address.postal_code
+                profileData.line_one,
+                profileData.line_two,
+                profileData.city,
+                profileData.district,
+                profileData.province,
+                profileData.postal_code
             ];
 
             setAddressLines("overviewAddress", addressParts);
             setAddressLines("shippingAddress", addressParts);
             setText("shippingName", fullName);
             setText("shippingAddressLine", addressParts.filter(Boolean).join(", "));
-            setText("shippingMobile", user.mobile ? "Mobile: " + user.mobile : "");
+            setText("shippingMobile", profileData.mobile ? "Mobile: " + profileData.mobile : "");
         } catch (error) {
             console.error('Error:', error);
             Notiflix.Notify.failure('Error ' + error);

@@ -20,6 +20,13 @@ public class MessageService {
     /**
      * Get message senders
      */
+    public String sendSenderData() {
+        return getMessageSenders();
+    }
+
+    /**
+     * Get message senders
+     */
     public String getMessageSenders() {
         boolean state = true;
         String message = "success";

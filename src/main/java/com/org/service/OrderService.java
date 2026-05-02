@@ -6,8 +6,10 @@ import com.google.gson.JsonObject;
 import com.org.dto.FilterDTO;
 import com.org.dto.OrderDTO;
 import com.org.dto.OrderItemsDTO;
+import com.org.entity.Model;
 import com.org.entity.Order;
 import com.org.entity.OrderHasModel;
+import com.org.entity.OrderHasModelId;
 import com.org.entity.OrderStatus;
 import com.org.util.HibernateUtil;
 import com.org.util.JsonResponse;
@@ -23,9 +25,6 @@ import java.util.Locale;
 public class OrderService {
 
     private final Gson gson = new Gson();
-    private static final String ORDER_TOTAL_SUBQUERY =
-            "(SELECT COALESCE(SUM(ohm.qty * ohm.model_price), 0.0) " +
-            "FROM OrderHasModel ohm WHERE ohm.id.orderId = o.orderId)";
 
     public String loadAllOrders(FilterDTO filterDTO) {
         boolean state = true;
@@ -35,7 +34,7 @@ public class OrderService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             StringBuilder queryString = new StringBuilder("SELECT new com.org.dto.OrderDTO( " +
                     "o.id, " +
-                    "o.email, "+
+                    "o.email, " +
                     "o.user.firstName, " +
                     "o.user.lastName , " +
                     "coalesce(SUM(ol.qty*ol.modelPrice),0.0d) as total," +
@@ -43,9 +42,9 @@ public class OrderService {
                     "o.deliveryMethod," +
                     "o.deliveryMethodRef.price," +
                     "o.orderStatus," +
-                    "o.orderStatusRef.status) "+
+                    "o.orderStatusRef.status) " +
                     "FROM Order o JOIN o.orderItems ol WHERE 1=1");
-            
+
             // Filter by Order Status
             if (filterDTO != null && filterDTO.getOrderStausId() != null && filterDTO.getOrderStausId() > 0) {
                 queryString.append(" AND o.orderStatus =:orderStatusId ");
@@ -92,7 +91,7 @@ public class OrderService {
             }
 
             // Create query with final WHERE clause
-            Query<OrderDTO> query = session.createQuery(queryString.toString(),OrderDTO.class);
+            Query<OrderDTO> query = session.createQuery(queryString.toString(), OrderDTO.class);
 
             // Bind parameters
             if (filterDTO != null) {
@@ -138,9 +137,6 @@ public class OrderService {
         return JsonResponse.response(state, message, data);
     }
 
-    /**
-     * Get order details with order items
-     */
     public String getOrderDetails(OrderDTO orderDTO) {
         boolean state = true;
         String message = "success";
@@ -156,19 +152,19 @@ public class OrderService {
                 // Create response object with order and items
                 JsonObject responseObj = new JsonObject();
                 responseObj.add("order", gson.toJsonTree(convertToDTO(order, session)));
-                
+
                 // Get order items
                 Query<OrderHasModel> itemsQuery = session.createQuery(
                         "from OrderHasModel where id.orderId = :orderId", OrderHasModel.class);
                 itemsQuery.setParameter("orderId", order.getOrder_id());
                 List<OrderHasModel> orderItems = itemsQuery.getResultList();
-                
+
                 List<OrderItemsDTO> orderItemsDTOs = new ArrayList<>();
                 for (OrderHasModel item : orderItems) {
                     orderItemsDTOs.add(new OrderItemsDTO(item));
                 }
                 responseObj.add("orderItemsDetails", gson.toJsonTree(orderItemsDTOs));
-                
+
                 data = responseObj;
             }
 
@@ -179,19 +175,41 @@ public class OrderService {
         return JsonResponse.response(state, message, data);
     }
 
-    /**
-     * Create new order
-     */
-    public String createNewOrder(String modelId, String quantity, String deliveryMethodId) {
+    public String createNewOrder(String modelId, String quantity, String deliveryMethodId, String userEmail) {
         boolean state = true;
         String message = "success";
         JsonElement data = null;
 
+        if (userEmail == null || userEmail.isBlank()) {
+            return JsonResponse.response(false, "user email is required", null);
+        }
+
+        if (modelId == null || modelId.isBlank()) {
+            return JsonResponse.response(false, "model id is required", null);
+        }
+
+        if (quantity == null || quantity.isBlank()) {
+            return JsonResponse.response(false, "quantity is required", null);
+        }
+
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Integer parsedModelId = Integer.parseInt(modelId);
+            Integer parsedQuantity = Integer.parseInt(quantity);
+
+            if (parsedQuantity <= 0) {
+                return JsonResponse.response(false, "quantity must be greater than zero", null);
+            }
+
+            Model model = session.get(Model.class, parsedModelId);
+            if (model == null) {
+                return JsonResponse.response(false, "model not found", null);
+            }
+
             transaction = session.beginTransaction();
 
             Order order = new Order();
+            order.setEmail(userEmail);
             if (deliveryMethodId != null && !deliveryMethodId.isEmpty()) {
                 order.setDelivery_method(Integer.parseInt(deliveryMethodId));
             }
@@ -199,6 +217,13 @@ public class OrderService {
             order.setOrder_status(1);
 
             session.persist(order);
+
+            OrderHasModel orderHasModel = new OrderHasModel();
+            orderHasModel.setId(new OrderHasModelId(order.getOrder_id(), parsedModelId));
+            orderHasModel.setQty(parsedQuantity);
+            orderHasModel.setModelPrice(model.getPrice());
+            session.persist(orderHasModel);
+
             transaction.commit();
 
             data = gson.toJsonTree(convertToDTO(order, session));
@@ -208,13 +233,11 @@ public class OrderService {
             if (transaction != null) transaction.rollback();
             state = false;
             message = "order creation failed: " + e.getMessage();
+            System.out.println(e.getMessage());
         }
         return JsonResponse.response(state, message, data);
     }
 
-    /**
-     * Update order status after payment
-     */
     public String updateOrderStatusAfterPayment(String orderId) {
         boolean state = true;
         String message = "success";
@@ -246,9 +269,6 @@ public class OrderService {
         return JsonResponse.response(state, message, data);
     }
 
-    /**
-     * Cancel order
-     */
     public String cancelOrder(String orderId) {
         boolean state = true;
         String message = "success";
@@ -280,9 +300,6 @@ public class OrderService {
         return JsonResponse.response(state, message, data);
     }
 
-    /**
-     * Get user orders
-     */
     public String getUserOrders(String email) {
         boolean state = true;
         String message = "success";
@@ -320,12 +337,12 @@ public class OrderService {
             firstName = order.getUser().getFirstName();
             lastName = order.getUser().getLastName();
         }
-        
+
         String orderStatusName = null;
         if (order.getOrderStatusRef() != null) {
             orderStatusName = order.getOrderStatusRef().getStatus();
         }
-        
+
         return new OrderDTO(
                 order.getOrder_id(),
                 order.getEmail(),
@@ -340,20 +357,17 @@ public class OrderService {
         );
     }
 
-            private Double getOrderTotal(Integer orderId, Session session) {
-            Query<Double> totalQuery = session.createQuery(
+    private Double getOrderTotal(Integer orderId, Session session) {
+        Query<Double> totalQuery = session.createQuery(
                 "SELECT COALESCE(SUM(ohm.qty * COALESCE(ohm.modelPrice, ohm.model.price)), 0.0) " +
-                    "FROM OrderHasModel ohm WHERE ohm.id.orderId = :orderId",
+                        "FROM OrderHasModel ohm WHERE ohm.id.orderId = :orderId",
                 Double.class
-            );
-            totalQuery.setParameter("orderId", orderId);
-            Double total = totalQuery.uniqueResult();
-            return total != null ? total : 0.0;
-            }
+        );
+        totalQuery.setParameter("orderId", orderId);
+        Double total = totalQuery.uniqueResult();
+        return total != null ? total : 0.0;
+    }
 
-    /**
-     * Load all order statuses
-     */
     public String loadAllOrderStatuses() {
         boolean state = true;
         String message = "success";
@@ -417,9 +431,6 @@ public class OrderService {
         return JsonResponse.response(state, message, data);
     }
 
-    /**
-     * Search orders by Order ID, Email, First Name, or Last Name
-     */
     public String searchOrders(String searchQuery) {
         boolean state = true;
         String message = "success";

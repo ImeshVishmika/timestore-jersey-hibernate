@@ -172,13 +172,27 @@ String result = modelService.addModel(modelDTO);  // Call with just DTO
 ## 🚀 How to Run Tests
 
 ### Option 1: Automated Tests (Fastest - 2 min)
+
 ```javascript
 // In browser DevTools Console:
-1. Open test-add-model-automated.js
-2. Copy all the code
-3. Paste in console
-4. Press Enter
-5. Watch results appear automatically
+1.
+Open
+test - add - modelData - automated.js
+2.
+Copy
+all
+the
+code
+3.
+Paste in console
+4.
+Press
+Enter
+5.
+Watch
+results
+appear
+automatically
 ```
 
 ### Option 2: Manual Tests (Thorough - 15 min)

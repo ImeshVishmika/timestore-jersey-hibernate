@@ -139,13 +139,37 @@
 ## 🧪 How to Run Automated Tests
 
 ### Option 1: Run in Browser Console (Recommended)
+
 ```javascript
-1. Open TimeStore Admin (http://localhost:8080/TimeStore/)
-2. Navigate to Dashboard
-3. Open DevTools: F12 or Ctrl+Shift+I
-4. Go to Console tab
-5. Copy & paste content from: test-add-model-automated.js
-6. Press Enter - Tests will run automatically
+1.
+Open
+TimeStore
+Admin(http
+://localhost:8080/TimeStore/)
+2.
+Navigate
+to
+Dashboard
+3.
+Open
+DevTools: F12
+or
+Ctrl + Shift + I
+4.
+Go
+to
+Console
+tab
+5.
+Copy & paste
+content
+from: test - add - modelData - automated.js
+6.
+Press
+Enter - Tests
+will
+run
+automatically
 ```
 
 ### Option 2: From File

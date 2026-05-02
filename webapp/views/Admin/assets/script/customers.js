@@ -1,46 +1,73 @@
-document.getElementById("customers-tab").addEventListener("click", loadUsers);
-document.getElementById("userStatusFilter").addEventListener("change", loadUsers);
-const customerSearchInput = document.getElementById("customerSearchInput");
-const minOrderCountFilter = document.getElementById("minOrderCountFilter");
-const maxOrderCountFilter = document.getElementById("maxOrderCountFilter");
-const minSpentFilter = document.getElementById("minSpentFilter");
-const maxSpentFilter = document.getElementById("maxSpentFilter");
-const joinedDateFromFilter = document.getElementById("joinedDateFromFilter");
-const joinedDateToFilter = document.getElementById("joinedDateToFilter");
+document.getElementById("customers-tab").addEventListener("click", function() {
+    loadUsers();
+    loadUserCountSummary();
+});
+
+const totalUsersCard = document.getElementById("totalUsersCard");
+const activeUsersCard = document.getElementById("activeUsersCard");
+const blockedUsersCard = document.getElementById("blockedUsersCard");
+
+const searchQuery = document.getElementById("customerSearchInput");
+const minOrderCount = document.getElementById("minOrderCountFilter");
+const maxOrderCount = document.getElementById("maxOrderCountFilter");
+const minSpent = document.getElementById("minSpentFilter");
+const maxSpent = document.getElementById("maxSpentFilter");
+const joinedDateFrom = document.getElementById("joinedDateFromFilter");
+const joinedDateTo = document.getElementById("joinedDateToFilter");
 const clearCustomerFiltersBtn = document.getElementById("clearCustomerFiltersBtn");
+const userStatusId = document.getElementById("userStatusFilter");
 
-let customerSearchTimeout;
+const filters = {
+    searchQuery,
+    userStatusId,
+    minOrderCount,
+    maxOrderCount,
+    minSpent,
+    maxSpent,
+    joinedDateFrom,
+    joinedDateTo
+};
 
-if (customerSearchInput) {
-    customerSearchInput.addEventListener("input", () => {
-        clearTimeout(customerSearchTimeout);
-        customerSearchTimeout = setTimeout(() => {
-            loadUsers();
-        }, 300);
+function clearAllFilters() {
+    Object.entries(filters).forEach(([variableName, element]) => {
+        element.value = "";
+        userFilterData[variableName] = "";
     });
+    searchQuery.value = "";
+    userFilterData["searchQuery"] = "";
 }
 
-[minOrderCountFilter, maxOrderCountFilter, minSpentFilter, maxSpentFilter, joinedDateFromFilter, joinedDateToFilter]
-    .forEach((element) => {
-        if (element) {
-            element.addEventListener("change", loadUsers);
-        }
-    });
+// searchQuery.addEventListener("keyup", () => {
+//     userFilterData["searchQuery"] = searchQuery.value;
+//     loadUsers();
+// });
 
-if (clearCustomerFiltersBtn) {
-    clearCustomerFiltersBtn.addEventListener("click", () => {
-        if (customerSearchInput) customerSearchInput.value = "";
-        if (minOrderCountFilter) minOrderCountFilter.value = "";
-        if (maxOrderCountFilter) maxOrderCountFilter.value = "";
-        if (minSpentFilter) minSpentFilter.value = "";
-        if (maxSpentFilter) maxSpentFilter.value = "";
-        if (joinedDateFromFilter) joinedDateFromFilter.value = "";
-        if (joinedDateToFilter) joinedDateToFilter.value = "";
-        const statusFilter = document.getElementById("userStatusFilter");
-        if (statusFilter) statusFilter.value = "0";
+let userFilterData = {};
+
+Object.entries(filters).forEach(([variableName, element]) => {
+    element.addEventListener("keyup", () => {
+        userFilterData[variableName] = numOrNull(element.value);
         loadUsers();
     });
+});
+
+const userStatusCards={
+    totalUsersCard,
+    activeUsersCard,
+    blockedUsersCard
 }
+
+Object.entries(userStatusCards).forEach(([cardName,element])=>{
+    element.addEventListener("click",()=>{
+        userStatusId.value=element.dataset.statusid;
+        userStatusId.dispatchEvent(new Event('change'));
+    });
+})
+
+clearCustomerFiltersBtn.addEventListener("click", () => {
+    clearAllFilters();
+    loadUsers();
+});
 
 // Add modal show handler to populate customer details
 // document.getElementById("userModal").addEventListener('show.bs.modal', async function (event) {
@@ -117,55 +144,66 @@ if (clearCustomerFiltersBtn) {
 //     }
 // });
 
+async function loadUserCountSummary() {
+    try {
+        const request = await fetch("/api/user/countSummary", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (request.ok) {
+            const jsonObject = await request.json();
+
+            if (jsonObject.state && jsonObject.data) {
+                document.getElementById("totalUserCount").textContent = jsonObject.data.totalUsers || 0;
+
+                if (jsonObject.data.statusBreakdown && Array.isArray(jsonObject.data.statusBreakdown)) {
+                    jsonObject.data.statusBreakdown.forEach(status => {
+                        if (status.statusId === 1) {
+                            document.getElementById("activeUserCount").textContent = status.count || 0;
+                        } else if (status.statusId === 2) {
+                            document.getElementById("blockedUserCount").textContent = status.count || 0;
+                        }
+                    });
+                }
+            } else {
+                Notiflix.Notify.failure('Failed to fetch user count summary');
+            }
+        } else {
+            Notiflix.Notify.failure('Failed to fetch user count summary');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Notiflix.Notify.failure('Error fetching user count: ' + error);
+    }
+}
+
 async function loadUsers() {
     try {
-        const status = document.getElementById("userStatusFilter").value;
-        const searchText = customerSearchInput ? customerSearchInput.value.trim() : "";
-        const minOrderCount = minOrderCountFilter && minOrderCountFilter.value !== ""
-            ? parseInt(minOrderCountFilter.value, 10)
-            : null;
-        const maxOrderCount = maxOrderCountFilter && maxOrderCountFilter.value !== ""
-            ? parseInt(maxOrderCountFilter.value, 10)
-            : null;
-        const minSpent = minSpentFilter && minSpentFilter.value !== ""
-            ? parseFloat(minSpentFilter.value)
-            : null;
-        const maxSpent = maxSpentFilter && maxSpentFilter.value !== ""
-            ? parseFloat(maxSpentFilter.value)
-            : null;
-        const joinedDateFrom = joinedDateFromFilter ? joinedDateFromFilter.value : "";
-        const joinedDateTo = joinedDateToFilter ? joinedDateToFilter.value : "";
 
-        const payload = {
-            orderStausId: status === "" ? null : parseInt(status, 10),
-            searchQuery: searchText,
-            minOrderCount: minOrderCount,
-            maxOrderCount: maxOrderCount,
-            minPrice: minSpent,
-            maxPrice: maxSpent,
-            dateFrom: joinedDateFrom,
-            dateTo: joinedDateTo
-        };
-
-        const request = await fetch("/api/user/load", {
+        const request = await fetch("/api/user", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(userFilterData)
         });
 
         if (request.ok) {
             let jsonObject = await request.json();
             console.log(jsonObject);
 
-            // document.getElementById("activeUserCount").innerHTML = jsonObject.active;
-            // document.getElementById("blockedUserCount").innerHTML = jsonObject.blocked;
-
             const customerTableBody = document.getElementById("customerTableBody");
             customerTableBody.innerHTML = "";
 
             const fragment = document.createDocumentFragment();
+
+            if (!jsonObject.state) {
+                Notiflix.Notify.failure('Failed to fetch users');
+                return;
+            }
 
             jsonObject.data.forEach(user => {
                 const tr = document.createElement("tr");
@@ -177,7 +215,7 @@ async function loadUsers() {
                             <div class="avatar-circle me-3"></div>
                             <div>
                                 <h6 class="fw-bold text-dark mb-0">${user.firstName + " " + user.lastName}</h6>
-                                <small class="text-muted">ID: #USR-<?php echo rand(100, 999); ?></small>
+<!--                                <small class="text-muted">ID: #USR-<?php echo rand(100, 999); ?></small>-->
                             </div>
                         </div>
                     </td>
@@ -190,8 +228,8 @@ async function loadUsers() {
                     
                     <td> 
                         <div class="d-flex flex-column">
-                            <small class="text-dark fw-bold">${user.order_count} Orders</small>
-                            <small class="text-success fw-bold">LKR ${new Intl.NumberFormat('en-LK').format(user.total_spent || 0)}</small>
+                            <small class="text-dark fw-bold">${user.orderCount} Orders</small>
+                            <small class="text-success fw-bold">LKR ${new Intl.NumberFormat('en-LK').format(user.totalSpent || 0)}</small>
                         </div>
                     </td>
                     <td class="text-secondary small fw-bold">${user.joinedDate}</td>
@@ -224,4 +262,11 @@ async function loadUsers() {
         console.error('Error:', error);
         Notiflix.Notify.failure('Error ' + error);
     }
+}
+
+function numOrNull(value){
+
+    return Number.isFinite(value.length>0 && Number(value.trim()))
+        ? value
+        : null;
 }

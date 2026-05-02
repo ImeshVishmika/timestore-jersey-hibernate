@@ -4,12 +4,19 @@ import java.util.List;
 
 public class FilterDTO {
 
+    private String email;
+    private String searchQuery;
+    private Integer userStatusId ;
+
     private List<Integer> brandId;
     private List<String> brandName;
+
     private List<Integer> productId;
     private String productName;
+
     private List<Integer> modelId;
     private String modelName;
+
     private String sort;
     private int periodDays;
     private String startDate;
@@ -21,19 +28,39 @@ public class FilterDTO {
     private double maxRevenue;
     private Double minPrice;
     private Double maxPrice;
+
     private Integer orderStausId;
-    private String searchQuery;
     private Integer minOrderCount;
     private Integer maxOrderCount;
+    private Double minSpent;
+    private Double maxSpent;
+    private String joinedDateFrom;
+    private String joinedDateTo;
 
     public String getViewBy() {
-        viewBy=(viewBy==null)?"DAY":viewBy;
+        viewBy=(viewBy==null)?"":viewBy;
         return switch (viewBy.toUpperCase()) {
             case "WEEK" -> "WEEK";
             case "MONTH" -> "MONTH";
             case "YEAR" -> "YEAR";
             default -> "DATE";
         };
+    }
+
+    public Integer getUserStatusId() {
+        return userStatusId;
+    }
+
+    public void setUserStatusId(Integer userStatusId) {
+        this.userStatusId = userStatusId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Integer getOrderStausId() {
@@ -160,6 +187,22 @@ public class FilterDTO {
         this.dateTo = dateTo;
     }
 
+    public String getJoinedDateFrom() {
+        return joinedDateFrom != null ? joinedDateFrom : dateFrom;
+    }
+
+    public void setJoinedDateFrom(String joinedDateFrom) {
+        this.joinedDateFrom = joinedDateFrom;
+    }
+
+    public String getJoinedDateTo() {
+        return joinedDateTo != null ? joinedDateTo : dateTo;
+    }
+
+    public void setJoinedDateTo(String joinedDateTo) {
+        this.joinedDateTo = joinedDateTo;
+    }
+
     public Double getMinPrice() {
         return minPrice;
     }
@@ -198,5 +241,21 @@ public class FilterDTO {
 
     public void setMaxOrderCount(Integer maxOrderCount) {
         this.maxOrderCount = maxOrderCount;
+    }
+
+    public Double getMinSpent() {
+        return minSpent;
+    }
+
+    public void setMinSpent(Double minSpent) {
+        this.minSpent = minSpent;
+    }
+
+    public Double getMaxSpent() {
+        return maxSpent;
+    }
+
+    public void setMaxSpent(Double maxSpent) {
+        this.maxSpent = maxSpent;
     }
 }

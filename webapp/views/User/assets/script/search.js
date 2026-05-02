@@ -24,10 +24,10 @@ async function loadProducts() {
             }
         });
         if (selectedBrands.length > 0) {
-            payload.brand = selectedBrands.join(",");
+            payload.brandId = selectedBrands;
         }
 
-        const request = await fetch("/api/product/load", {
+        const request = await fetch("/api/model/load", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -42,20 +42,20 @@ async function loadProducts() {
             productsTable.innerHTML = "";
             const fragment = document.createDocumentFragment();
 
-            jsonObject.data.models.forEach(model => {
+            jsonObject.data.forEach(model => {
                 const div = document.createElement("div");
 
                 div.classList.add("col-12", "col-sm-6", "col-lg-3");
                 div.innerHTML = `
-                <a href="/timestore/viewProduct/${model.product_id}"  class="text-decoration-none">
+                <a href="/viewProduct.html?id=${model.productId}"  class="text-decoration-none">
                     <div class="card border-0 h-100">
                         <div class="bg-light rounded-3 p-4 text-center mb-3">
-                            <img src="${model.img_path}" class="img-fluid" style="height: 180px; object-fit: contain;" alt="Watch">
+                            <img src=/api/model/img/${model.modelId} class="img-fluid" style="height: 180px; object-fit: contain;" alt="Watch">
                         </div>
                         <div class="card-body px-0 pt-0">
-                            <small class="text-muted fw-semibold">${model.brand}</small>
-                            <h6 class="card-title  fw-bold mb-1">${model.product_name}</h6>
-                            <p class="fw-bold text-dark">Rs.${model.price}</p>
+                            <small class="text-muted fw-semibold">${model.brandName}</small>
+                            <h6 class="card-title  fw-bold mb-1">${model.model}</h6>
+                             <p class="fw-bold text-dark">Rs.${model.price}</p>
                         </div>
                     </div>
                 </a>
@@ -74,12 +74,8 @@ async function loadProducts() {
 
 async function loadBrands() {
     try {
-        const request = await fetch("/api/brand/load", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({})
+        const request = await fetch("/api/brand", {
+            method: "GET"
         });
 
         if (request.ok) {
@@ -89,12 +85,12 @@ async function loadBrands() {
             brands.innerHTML = "";
             const fragment = document.createDocumentFragment();
 
-            jsonObject.brands.forEach(brand => {
+            jsonObject.data.forEach(brand => {
                 const div = document.createElement("div");
                 div.classList.add("form-check", "mb-2");
                 div.innerHTML = `
-                                <input class="form-check-input" type="checkbox" value="${brand.id}" >
-                                <label class="form-check-label" for="brand${brand.id}">${brand.name}</label>
+                                <input class="form-check-input" type="checkbox" value="${brand.brandId}" >
+                                <label class="form-check-label" for="brand${brand.brandId}">${brand.brandName}</label>
                 `;
                 fragment.appendChild(div);
             });

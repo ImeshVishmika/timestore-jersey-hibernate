@@ -5,7 +5,7 @@ document.getElementById("orders-tab").addEventListener("click", async () => {
 document.addEventListener('DOMContentLoaded', loadOrderStatusCounts);
 
 
-let filterData = {};
+let orderFilterData = {};
 let availableStatuses = [];
 const orderStatusSelect = document.getElementById("orderStatusSelect");
 const priceMinFilter = document.getElementById("priceMinFilter");
@@ -20,9 +20,9 @@ const orderSearchInput = document.getElementById("orderSearchInput");
 
 
 orderStatusSelect.addEventListener("change", async () => {
-    filterData.orderStausId = orderStatusSelect.value;
+    orderFilterData.orderStausId = orderStatusSelect.value;
     if (orderStatusSelect.selectedIndex === 0) {
-        filterData.orderStausId = null;
+        orderFilterData.orderStausId = null;
     }
 
     await loadOrders();
@@ -31,9 +31,9 @@ orderStatusSelect.addEventListener("change", async () => {
 priceMinFilter.addEventListener("change", async () => {
     const minValue = priceMinFilter.value.trim();
     if (minValue) {
-        filterData.minPrice = parseFloat(minValue);
+        orderFilterData.minPrice = parseFloat(minValue);
     } else {
-        delete filterData.minPrice;
+        delete orderFilterData.minPrice;
     }
     await loadOrders();
 });
@@ -41,9 +41,9 @@ priceMinFilter.addEventListener("change", async () => {
 priceMaxFilter.addEventListener("change", async () => {
     const maxValue = priceMaxFilter.value.trim();
     if (maxValue) {
-        filterData.maxPrice = parseFloat(maxValue);
+        orderFilterData.maxPrice = parseFloat(maxValue);
     } else {
-        delete filterData.maxPrice;
+        delete orderFilterData.maxPrice;
     }
     await loadOrders();
 });
@@ -51,9 +51,9 @@ priceMaxFilter.addEventListener("change", async () => {
 dateFromFilter.addEventListener("change", async () => {
     const dateValue = dateFromFilter.value;
     if (dateValue) {
-        filterData.dateFrom = dateValue;
+        orderFilterData.dateFrom = dateValue;
     } else {
-        delete filterData.dateFrom;
+        delete orderFilterData.dateFrom;
     }
     await loadOrders();
 });
@@ -61,9 +61,9 @@ dateFromFilter.addEventListener("change", async () => {
 dateToFilter.addEventListener("change", async () => {
     const dateValue = dateToFilter.value;
     if (dateValue) {
-        filterData.dateTo = dateValue;
+        orderFilterData.dateTo = dateValue;
     } else {
-        delete filterData.dateTo;
+        delete orderFilterData.dateTo;
     }
     await loadOrders();
 });
@@ -78,7 +78,7 @@ clearFiltersBtn.addEventListener("click", async () => {
     orderSearchInput.value = "";
     
     // Clear filter data
-    filterData = {};
+    orderFilterData = {};
     
     // Reload orders
     await loadOrders();
@@ -90,14 +90,14 @@ orderSearchInput.addEventListener("keyup", async (event) => {
     const searchText = event.target.value.trim();
     
     if (!searchText) {
-        delete filterData.searchQuery;
+        delete orderFilterData.searchQuery;
         await loadOrders();
         return;
     }
 
     // Debounce search to avoid excessive API calls
     searchTimeout = setTimeout(async () => {
-        filterData.searchQuery = searchText;
+        orderFilterData.searchQuery = searchText;
         await searchOrders();
     }, 300);
 });
@@ -113,7 +113,7 @@ async function searchOrders() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(filterData)
+            body: JSON.stringify(orderFilterData)
         });
 
         if (request.ok) {
@@ -185,7 +185,7 @@ deliveredCard.addEventListener("click", async () => {
 
 async function applyStatusFilterByCard(statusId) {
     orderStatusSelect.value=statusId;
-    filterData.orderStausId = statusId;
+    orderFilterData.orderStausId = statusId;
     loadOrders();
 }
 
@@ -253,7 +253,7 @@ async function loadOrders() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(filterData)
+            body: JSON.stringify(orderFilterData)
         });
 
         if (request.ok) {

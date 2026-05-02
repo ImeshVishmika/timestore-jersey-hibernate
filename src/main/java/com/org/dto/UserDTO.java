@@ -1,6 +1,5 @@
 package com.org.dto;
 
-import com.google.gson.annotations.SerializedName;
 import com.org.entity.User;
 
 import java.time.LocalDate;
@@ -19,6 +18,12 @@ public class UserDTO {
     private String statusName;
     private Integer orderCount;
     private Double totalSpent;
+    private String lineOne;
+    private String lineTwo;
+    private String city;
+    private String district;
+    private String province;
+    private String postalCode;
 
 
     public UserDTO() {
@@ -34,16 +39,42 @@ public class UserDTO {
     }
 
 
-    public UserDTO(String email, String firstName, String lastName, String password, 
-                   String mobile, Integer genderId, Integer status, LocalDate joinedDate) {
+    public UserDTO(String email,
+                   String firstName,
+                   String lastName,
+                   String mobile,
+                   Double totalSpent,
+                   Integer orderCount,
+                   Integer genderId,
+                   Integer status,
+                   LocalDate joinedDate) {
+
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = password;
         this.mobile = mobile;
         this.genderId = genderId;
+        this.totalSpent =totalSpent;
+        this.orderCount = orderCount;
         this.status = status;
         this.joinedDate = joinedDate.toString();
+    }
+
+    public UserDTO(String email,
+                   String firstName,
+                   String lastName,
+                   String mobile,
+                   Long orderCount,
+                   Double totalSpent,
+                   LocalDate joinedDate) {
+
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.mobile = mobile;
+        this.orderCount = orderCount == null ? 0 : orderCount.intValue();
+        this.totalSpent = totalSpent == null ? 0.0 : totalSpent;
+        this.joinedDate = joinedDate == null ? null : joinedDate.toString();
     }
 
     // Getters andSetters
@@ -141,5 +172,53 @@ public class UserDTO {
 
     public void setTotalSpent(Double totalSpent) {
         this.totalSpent = totalSpent;
+    }
+
+    public String getLineOne() {
+        return lineOne;
+    }
+
+    public void setLineOne(String lineOne) {
+        this.lineOne = lineOne;
+    }
+
+    public String getLineTwo() {
+        return lineTwo;
+    }
+
+    public void setLineTwo(String lineTwo) {
+        this.lineTwo = lineTwo;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 }

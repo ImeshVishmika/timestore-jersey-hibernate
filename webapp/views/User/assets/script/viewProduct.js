@@ -1,7 +1,7 @@
 const models = {};
 const OPEN_BUY_MODAL_KEY = "timestore:openBuyModal";
 let buyingModelId = 0;
-let isLoggedIn = false;
+let model
 
 window.addEventListener("load", event => {
     const buyNowButton = document.getElementById("buyNow");
@@ -9,28 +9,69 @@ window.addEventListener("load", event => {
     var parm = new URLSearchParams(window.location.search);
     let id = parm.get("id");
     loadModels(id);
+    checkLoginStatus();
 
 });
 
 document.getElementById("modelsTable").addEventListener("click", function(event) {
     var button = event.target.closest(".btn");
-    changeModel(button.dataset.model_id);
+    changeModel(button.dataset.modelId);
 });
 
 async function handleBuyNow() {
     try {
-        const response = await fetch("/api/user/signinstatus");
-        const data = await response.json();
-        
-        if (data.status) {
-            buyingProduct();
-            new bootstrap.Modal(document.getElementById("buyNowModal")).show();
+        const response = await fetch("/api/user/signinstatus", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (response.ok) {
+            const jsonResponse = await response.json();
+            if (jsonResponse.status) {
+                // User is logged in
+                isLoggedIn = true;
+                buyingProduct();
+                const buyNowModalElement = document.getElementById("buyNowModal");
+                if (buyNowModalElement && window.bootstrap && window.bootstrap.Modal) {
+                    const modalInstance = window.bootstrap.Modal.getOrCreateInstance(buyNowModalElement);
+                    modalInstance.show();
+                }
+            } else {
+                // User is not logged in
+                isLoggedIn = false;
+                const signInModalElement = document.getElementById("signInModal");
+                if (signInModalElement && window.bootstrap && window.bootstrap.Modal) {
+                    const modalInstance = window.bootstrap.Modal.getOrCreateInstance(signInModalElement);
+                    modalInstance.show();
+                }
+            }
         } else {
-            new bootstrap.Modal(document.getElementById("signInModal")).show();
+            Notiflix.Notify.failure('Failed to check login status');
         }
     } catch (error) {
-        console.error('Error checking sign in status:', error);
-        new bootstrap.Modal(document.getElementById("signInModal")).show();
+        console.error('Error:', error);
+        Notiflix.Notify.failure('Error: ' + error);
+    }
+}
+
+async function checkLoginStatus() {
+    try {
+        const response = await fetch("/api/user/signinstatus", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (response.ok) {
+            const jsonResponse = await response.json();
+            isLoggedIn = jsonResponse.status;
+        }
+    } catch (error) {
+        console.error('Error checking login status:', error);
+        isLoggedIn = false;
     }
 }
 
@@ -65,11 +106,12 @@ async function loadModels(productId) {
             jsonObject.data.forEach(model => {
                 models[model.modelId] = model;
                 const button = document.createElement("button");
-                button.dataset.model_id=model.modelId;
+                button.dataset.modelId=model.modelId;
                 button.classList.add("btn", "border", "rounded-3");
                 button.innerHTML=`<img src=api/model/img/${model.modelId} width="50" alt="Side View">`;
                 fragment.appendChild(button);
             });
+            console.log(models);
             modelsTable.appendChild(fragment);
             changeModel(jsonObject.data[0].modelId);
             maybeOpenBuyModal();
@@ -84,11 +126,11 @@ async function loadModels(productId) {
 
 function changeModel(modelId) {
     buyingModelId = modelId;
-    const model = models[modelId];
+    let model = models[modelId];
     document.getElementById("product_label").innerText = model.model;
     document.getElementById("model").innerText = model.model;
     document.getElementById("price").innerText = "Rs." + model.price;
-    document.getElementById("vimg").src = `api/model/img/${modelId}`;
+    document.getElementById("vimg").src = `api/model/img/${buyingModelId}`;
 }
 
 function buyingProduct() {
@@ -104,8 +146,8 @@ function buyingProduct() {
     }
 
     buyingProductId.value = buyingModelId;
-    buyingProductBrand.textContent = model.brandId;
-    buyingProductModel.textContent = model.modelName;
+    buyingProductBrand.textContent = model.brand_id;
+    buyingProductModel.textContent = model.model_name;
     buyingProductPrice.textContent = "Rs." + model.price;
     buyingProductImg.src = `api/model/img/${buyingModelId}`;
 }
@@ -115,7 +157,7 @@ function toCheckout() {
     var buyingProductQty = document.getElementById("pqty");
     var buyingProductId = document.getElementById("buying_product_id");
 
-    window.location = "/checkout.html/?" + buyingProductId.value + "/" + buyingProductQty.value;
+    window.location = "/checkout.html?id=" + buyingProductId.value + "&qty=" + buyingProductQty.value;
 
 }
 
