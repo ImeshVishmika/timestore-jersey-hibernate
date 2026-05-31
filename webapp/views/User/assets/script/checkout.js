@@ -1,7 +1,7 @@
 let id;
 let qty;
 let modelData;
-let deliveryData ={};
+let deliveryData = {};
 let address;
 let currentUserProfile;
 
@@ -41,7 +41,7 @@ deliveryDetails.addEventListener("click", function (event) {
     let subTotal = document.getElementById("subTotal").innerHTML.replace("Rs.", "");
 
     document.getElementById("deliveryFee").innerHTML = "Rs." + (method.dataset.price).toLocaleString('us-en');
-    document.getElementById("grandTotal").innerHTML = "Rs." + (parseFloat(modelData[0].price*qty)+parseFloat(method.dataset.price)).toLocaleString('us-en');
+    document.getElementById("grandTotal").innerHTML = "Rs." + (parseFloat(modelData[0].price * qty) + parseFloat(method.dataset.price)).toLocaleString('us-en');
 
     previousMethod = method;
     const deliveryMethodWarning = document.getElementById("delivery_method_warning");
@@ -57,68 +57,66 @@ payherePayment.addEventListener("click", async function () {
 });
 
 let addressUpdateForm = document.getElementById("addressUpdateForm");
-if (addressUpdateForm) {
-    addressUpdateForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
 
-        try {
-            const lineOne = document.getElementById("addressLine1").value.trim();
-            const lineTwo = document.getElementById("addressLine2").value.trim();
-            const district = document.getElementById("district").value.trim();
-            const province = document.getElementById("province").value.trim();
-            const city = document.getElementById("city").value.trim();
-            const postalCode = document.getElementById("postalCode").value.trim();
+addressUpdateForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-            if (!lineOne || !district || !province || !city || !postalCode) {
-                const warning = document.getElementById("address_warning");
-                if (warning) {
-                    warning.innerHTML = " * Please complete all required address fields";
-                }
+    try {
+        const lineOne = document.getElementById("addressLine1").value.trim();
+        const lineTwo = document.getElementById("addressLine2").value.trim();
+        const district = document.getElementById("district").value.trim();
+        const province = document.getElementById("province").value.trim();
+        const city = document.getElementById("city").value.trim();
+        const postalCode = document.getElementById("postalCode").value.trim();
+
+        if (!lineOne || !district || !province || !city || !postalCode) {
+            const warning = document.getElementById("address_warning");
+            if (warning) {
+                warning.innerHTML = " * Please complete all required address fields";
+            }
+            return;
+        }
+
+        const payload = {
+            line_one: lineOne,
+            line_two: lineTwo,
+            district: district,
+            province: province,
+            city: city,
+            postal_code: postalCode
+        };
+
+        const request = await fetch("/api/user/updateAddress", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (request.ok) {
+            const response = await request.json();
+
+            if (!response || !response.state) {
+                alert((response && response.message) ? response.message : "Address update failed.");
                 return;
             }
 
-            const payload = {
-                line_one: lineOne,
-                line_two: lineTwo,
-                district: district,
-                province: province,
-                city: city,
-                postal_code: postalCode
-            };
-
-            const request = await fetch("/api/user/updateAddress", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (request.ok) {
-                const response = await request.json();
-
-                if (!response || !response.state) {
-                    alert((response && response.message) ? response.message : "Address update failed.");
-                    return;
-                }
-
-                const warning = document.getElementById("address_warning");
-                if (warning) {
-                    warning.innerHTML = "";
-                }
-
-                Notiflix.Notify.success('Address updated successfully');
-                loadUserDetails();
-            } else {
-                Notiflix.Notify.failure("Address update failed.");
+            const warning = document.getElementById("address_warning");
+            if (warning) {
+                warning.innerHTML = "";
             }
-        } catch (error) {
-            console.error('Error:', error);
-            Notiflix.Notify.failure('Error ' + error);
-        }
-    });
-}
 
+            Notiflix.Notify.success('Address updated successfully');
+            loadUserDetails();
+        } else {
+            Notiflix.Notify.failure("Address update failed.");
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Notiflix.Notify.failure('Error ' + error);
+    }
+});
 
 let deliveryMethodId;
 
@@ -133,19 +131,15 @@ async function loadUserDetails() {
 
         if (request.ok) {
             const jsonObject = await request.json();
-            if (!jsonObject || !jsonObject.state || !jsonObject.data) {
+            if (!jsonObject.state || !jsonObject.data) {
                 Notiflix.Notify.failure((jsonObject && jsonObject.message) ? jsonObject.message : "Failed to fetch user details");
                 return;
             }
 
-
             const profileData = jsonObject.data;
             currentUserProfile = profileData;
-            const firstName = profileData.firstName || profileData.first_name || "";
-            const lastName = profileData.lastName || profileData.last_name || "";
-            const fullName = [firstName, lastName].filter(Boolean).join(" ");
 
-            document.getElementById("deliveryName").innerHTML = fullName;
+            document.getElementById("deliveryName").innerHTML = [profileData.firstName, profileData.lastName].filter(Boolean).join(" ");
             document.getElementById("email").innerHTML = profileData.email || "";
             address = {
                 line_one: profileData.line_one,
@@ -226,8 +220,8 @@ async function loadModels() {
         if (request.ok) {
             const jsonObject = await request.json();
 
-            if(jsonObject.state) {
-                modelData=jsonObject.data;
+            if (jsonObject.state) {
+                modelData = jsonObject.data;
                 modelData.forEach(model => {
                     document.getElementById("modelImg").src = `/api/model/img/${id}`;
                     document.getElementById("productName").innerHTML = model.model;
@@ -267,7 +261,7 @@ async function loadDeliveryDetails() {
 
             if (jsonObject.state) {
                 jsonObject.data.forEach(delivery => {
-                    deliveryData[delivery.id]=delivery;
+                    deliveryData[delivery.id] = delivery;
                     const div = document.createElement("div");
                     div.classList = "card col-10 col-md-6 border-0";
                     div.innerHTML = `
@@ -303,7 +297,7 @@ async function loadDeliveryDetails() {
 async function paynow() {
     try {
         //Check if address is valid (should be an object with keys, not null or empty)
-        if (!address || !address.state) {
+        if (!address) {
             document.getElementById("address_warning").innerHTML = " * Please add a delivery address";
             return;
         }
@@ -329,11 +323,9 @@ async function paynow() {
         });
 
         let jsonObject = null;
-        try {
-            jsonObject = await request.json();
-        } catch (error) {
-            jsonObject = null;
-        }
+
+        jsonObject = await request.json();
+        console.log(jsonObject);
 
         if (!request.ok) {
             Notiflix.Notify.failure((jsonObject && (jsonObject.message || jsonObject.error))
@@ -350,137 +342,139 @@ async function paynow() {
         }
 
         const orderData = jsonObject.data;
+        alert(orderData.hash);
         const payhereSdk = window.payhere;
         if (!payhereSdk || typeof payhereSdk.startPayment !== "function") {
             Notiflix.Notify.failure("PayHere is not available. Please disable ad blockers and try again.");
             return;
         }
 
-            // Payment completed. It can be a successful failure.
-            payhereSdk.onCompleted = function onCompleted() {
-                // Mark order as paid by updating order status
-                (async () => {
-                    try {
-                        const statusUpdate = {
-                            order_id: orderData.orderId || orderData.order_id
-                        };
+        // Payment completed. It can be a successful failure.
+        payhereSdk.onCompleted = function onCompleted() {
+            // Mark order as paid by updating order status
+            (async () => {
+                try {
+                    const statusUpdate = {
+                        order_id: orderData.orderId || orderData.order_id
+                    };
 
-                        const statusRequest = await fetch("/api/order/updateStatusAfterPayment", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify(statusUpdate)
-                        });
+                    const statusRequest = await fetch("/api/order/updateStatusAfterPayment", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(statusUpdate)
+                    });
 
-                        if (statusRequest.ok) {
-                            const statusResponse = await statusRequest.json();
-                            if (statusResponse.state) {
-                                // Show success message
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Payment Successful!',
-                                    text: 'Your order has been placed and payment confirmed.',
-                                    confirmButtonText: 'Continue Shopping'
-                                }).then((result) => {
-                                    // Redirect to home or order tracking page
-                                    window.location.href = "/profile.html";
-                                });
-                            } else {
-                                // Payment received but status update failed - still a success
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Payment Received!',
-                                    text: 'Your payment has been received. Order ID: ' + (orderData.orderId || orderData.order_id),
-                                    confirmButtonText: 'View Orders'
-                                }).then((result) => {
-                                    window.location.href = "/profile.html";
-                                });
-                            }
+                    if (statusRequest.ok) {
+                        const statusResponse = await statusRequest.json();
+                        if (statusResponse.state) {
+                            // Show success message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Payment Successful!',
+                                text: 'Your order has been placed and payment confirmed.',
+                                confirmButtonText: 'Continue Shopping'
+                            }).then((result) => {
+                                // Redirect to home or order tracking page
+                                window.location.href = "/profile.html";
+                            });
                         } else {
-                            throw new Error('Failed to update order status');
+                            // Payment received but status update failed - still a success
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Payment Received!',
+                                text: 'Your payment has been received. Order ID: ' + (orderData.orderId || orderData.order_id),
+                                confirmButtonText: 'View Orders'
+                            }).then((result) => {
+                                window.location.href = "/profile.html";
+                            });
                         }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        Notiflix.Notify.failure('Error ' + error);
+                    } else {
+                        throw new Error('Failed to update order status');
                     }
-                })();
-            };
+                } catch (error) {
+                    console.error('Error:', error);
+                    Notiflix.Notify.failure('Error ' + error);
+                }
+            })();
+        };
 
-            // Payment window closed
-            payhereSdk.onDismissed = function onDismissed() {
-                cancelOrder(orderData.orderId || orderData.order_id);
-            };
+        // Payment window closed
+        payhereSdk.onDismissed = function onDismissed() {
+            cancelOrder(orderData.orderId || orderData.order_id);
+        };
 
-            // Error occurred
-            payhereSdk.onError = function onError(error) {
-                // Log error and show user-friendly message
-                console.error("PayHere Payment Error:", error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Payment Failed',
-                    text: 'An error occurred during payment. Please try again or contact support.',
-                    confirmButtonText: 'Back to Checkout'
-                }).then((result) => {
-                    // Option to retry by staying on page or cancel
-                    window.location.href = "/timestore/checkout/" + id + "/" + qty;
-                });
-            };
+        // Error occurred
+        payhereSdk.onError = function onError(error) {
+            // Log error and show user-friendly message
+            console.error("PayHere Payment Error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Payment Failed',
+                text: 'An error occurred during payment. Please try again or contact support.',
+                confirmButtonText: 'Back to Checkout'
+            }).then((result) => {
+                // Option to retry by staying on page or cancel
+                window.location.href = "/timestore/checkout/" + id + "/" + qty;
+            });
+        };
 
-            // Put the payment variables here
-            const selectedModel = Array.isArray(modelData) && modelData.length > 0 ? modelData[0] : null;
-            const firstName = (currentUserProfile && (currentUserProfile.firstName || currentUserProfile.first_name)) || "Customer";
-            const lastName = (currentUserProfile && (currentUserProfile.lastName || currentUserProfile.last_name)) || "";
-            const phone = (currentUserProfile && currentUserProfile.mobile) || "0770000000";
-            const items = (jsonObject.items || orderData.items || (selectedModel ? selectedModel.model : null));
-            const amountValue = Number(jsonObject.amount || orderData.amount || orderData.total || 0);
-            const amount = Number.isFinite(amountValue) && amountValue > 0 ? amountValue.toFixed(2) : null;
-            const addressLine = jsonObject.address || orderData.address || [address?.line_one, address?.line_two].filter(Boolean).join(", ");
-            const city = jsonObject.city || orderData.city || address?.city || "Colombo";
-            const country = jsonObject.country || orderData.country || "Sri Lanka";
+        // Put the payment variables here
+        const selectedModel = Array.isArray(modelData) && modelData.length > 0 ? modelData[0] : null;
+        const firstName = (currentUserProfile && (currentUserProfile.firstName || currentUserProfile.first_name)) || "Customer";
+        const lastName = (currentUserProfile && (currentUserProfile.lastName || currentUserProfile.last_name)) || "";
+        const phone = (currentUserProfile && currentUserProfile.mobile) || "0770000000";
+        const items = (jsonObject.items || orderData.items || (selectedModel ? selectedModel.model : null));
+        const amountValue = Number(jsonObject.amount || orderData.amount || orderData.total || 0);
+        const amount = Number.isFinite(amountValue) && amountValue > 0 ? amountValue.toFixed(2) : null;
+        const addressLine = jsonObject.address || orderData.address || [address?.line_one, address?.line_two].filter(Boolean).join(", ");
+        const city = jsonObject.city || orderData.city || address?.city || "Colombo";
+        const country = jsonObject.country || orderData.country || "Sri Lanka";
 
-            const merchantId = jsonObject.merchant_id || orderData.merchant_id;
-            const hash = jsonObject.hash || orderData.hash;
-            const orderId = orderData.orderId || orderData.order_id;
+        const merchantId = jsonObject.merchant_id || orderData.merchant_id;
+        const hash = jsonObject.hash || orderData.hash;
+        const orderId = orderData.orderId || orderData.order_id;
 
-            if (!merchantId || !hash) {
-                Notiflix.Notify.failure("Payment initialization data is missing (merchant_id/hash). Please contact support.");
-                cancelOrder(orderId);
-                return;
-            }
+        if (!merchantId || !hash) {
+            Notiflix.Notify.failure("Payment initialization data is missing (merchant_id/hash). Please contact support.");
+            cancelOrder(orderId);
+            return;
+        }
 
-            if (!items || !amount || !orderId) {
-                Notiflix.Notify.failure("Payment details are incomplete. Please try again.");
-                cancelOrder(orderId);
-                return;
-            }
+        if (!items || !amount || !orderId) {
+            Notiflix.Notify.failure("Payment details are incomplete. Please try again.");
+            cancelOrder(orderId);
+            return;
+        }
 
-            const payment = {
-                "sandbox": true,
-                "merchant_id": merchantId,
-                "return_url": "http://localhost/index.php",
-                "cancel_url": "http://localhost/index.php",
-                "notify_url": "http://localhost/index.php",
-                "order_id": orderId,
-                "items": items,
-                "amount": amount,
-                "currency": jsonObject.currency || orderData.currency || "LKR",
-                "hash": hash,
-                "first_name": jsonObject.first_name || orderData.first_name || firstName,
-                "last_name": jsonObject.last_name || orderData.last_name || lastName,
-                "email": jsonObject.email || orderData.email || (currentUserProfile ? currentUserProfile.email : ""),
-                "phone": jsonObject.phone || orderData.phone || phone,
-                "address": addressLine,
-                "city": city,
-                "country": country,
-                "delivery_address": addressLine,
-                "delivery_city": city,
-                "delivery_country": country,
-                "custom_1": "",
-                "custom_2": ""
-            };
-            // Show the payhere.js popup, when "PayHere Pay" is clicked
-            payhereSdk.startPayment(payment);
+        const payment = {
+            "sandbox": true,
+            "merchant_id": 1226402,
+            "return_url": "http://localhost/index.php",
+            "cancel_url": "http://localhost/index.php",
+            "notify_url": "http://localhost/index.php",
+            "order_id": orderId,
+            "items": items,
+            "amount": amount,
+            "currency": jsonObject.currency || orderData.currency || "LKR",
+            "hash": hash,
+            "first_name": jsonObject.first_name || orderData.first_name || firstName,
+            "last_name": jsonObject.last_name || orderData.last_name || lastName,
+            "email": jsonObject.email || orderData.email || (currentUserProfile ? currentUserProfile.email : ""),
+            "phone": jsonObject.phone || orderData.phone || phone,
+            "address": addressLine,
+            "city": city,
+            "country": country,
+            "delivery_address": addressLine,
+            "delivery_city": city,
+            "delivery_country": country,
+            "custom_1": "",
+            "custom_2": ""
+        };
+        // Show the payhere.js popup, when "PayHere Pay" is clicked
+        
+        payhereSdk.startPayment(payment);
     } catch (error) {
         console.error('Error:', error);
         Notiflix.Notify.failure('Error ' + error);

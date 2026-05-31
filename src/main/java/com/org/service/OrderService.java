@@ -17,6 +17,10 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,22 @@ import java.util.Locale;
 public class OrderService {
 
     private final Gson gson = new Gson();
+
+    public static String getMd5(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger no = new BigInteger(1, messageDigest);
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext.toUpperCase();
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public String loadAllOrders(FilterDTO filterDTO) {
         boolean state = true;
@@ -226,7 +246,22 @@ public class OrderService {
 
             transaction.commit();
 
-            data = gson.toJsonTree(convertToDTO(order, session));
+        
+            double amount = model.getPrice() * parsedQuantity;
+
+            DecimalFormat df       = new DecimalFormat("0.00");
+            String amountFormatted = df.format(amount);
+
+            String hash    = getMd5(1226402 + order.getOrder_id() + amountFormatted + "LKR" + getMd5("NDI3NjU0NDIwMzIxMDM5NzMxMTM0MTQ4MzY3NjY5MzQ1MzkxNzIwNw=="));
+
+            JsonObject paymentData = new JsonObject();
+            paymentData.addProperty("merchantId", 1226402);
+            paymentData.addProperty("orderId", String.valueOf(order.getOrder_id()));
+            paymentData.addProperty("quantity", parsedQuantity);
+            paymentData.addProperty("amount", amountFormatted);
+            paymentData.addProperty("hash", hash);
+
+            data = paymentData;
             message = "order created successfully";
 
         } catch (Exception e) {
