@@ -10,17 +10,20 @@ public class HibernateUtil {
         try {
             Configuration configuration = new Configuration().configure();
 
+
             String host = System.getenv("MYSQLHOST");
             String port = System.getenv("MYSQLPORT");
-            String db   = System.getenv("MYSQL_DATABASE");
+            String db = System.getenv("MYSQLDATABASE");   // <-- use this
             String user = System.getenv("MYSQLUSER");
             String pass = System.getenv("MYSQLPASSWORD");
 
-            // If Railway env vars are present, override the XML config.
-            // Otherwise, fall back to whatever is in hibernate.cfg.xml (local dev).
-            if (host != null && port != null && db != null) {
-                String url = "jdbc:mysql://" + host + ":" + port + "/" + db;
-                configuration.setProperty("hibernate.connection.url", url);
+            if (host != null) {
+                configuration.setProperty(
+                        "hibernate.connection.url",
+                        "jdbc:mysql://" + host + ":" + port + "/" + db +
+                                "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+                );
+
                 configuration.setProperty("hibernate.connection.username", user);
                 configuration.setProperty("hibernate.connection.password", pass);
             }
