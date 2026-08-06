@@ -14,7 +14,7 @@ public class HibernateUtil {
             String port = System.getenv("MYSQLPORT");
             String db   = System.getenv("MYSQL_DATABASE");
             String user = System.getenv("MYSQLUSER");
-            String pass = System.getenv("MYSQL_ROOT_PASSWORD");
+            String pass = System.getenv("MYSQLPASSWORD");
 
             // If Railway env vars are present, override the XML config.
             // Otherwise, fall back to whatever is in hibernate.cfg.xml (local dev).
