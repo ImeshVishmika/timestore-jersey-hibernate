@@ -8,13 +8,30 @@ public class HibernateUtil {
 
     static {
         try {
-            sessionFactory = new Configuration().configure().buildSessionFactory();
-        }catch (Exception e){
-            throw  new ExceptionInInitializerError("Session Factory creation failed" + e.getMessage());
+            Configuration configuration = new Configuration().configure();
+
+            String host = System.getenv("MYSQLHOST");
+            String port = System.getenv("MYSQLPORT");
+            String db   = System.getenv("MYSQLDATABASE");
+            String user = System.getenv("MYSQLUSER");
+            String pass = System.getenv("MYSQLPASSWORD");
+
+            // If Railway env vars are present, override the XML config.
+            // Otherwise, fall back to whatever is in hibernate.cfg.xml (local dev).
+            if (host != null && port != null && db != null) {
+                String url = "jdbc:mysql://" + host + ":" + port + "/" + db;
+                configuration.setProperty("hibernate.connection.url", url);
+                configuration.setProperty("hibernate.connection.username", user);
+                configuration.setProperty("hibernate.connection.password", pass);
+            }
+
+            sessionFactory = configuration.buildSessionFactory();
+        } catch (Exception e) {
+            throw new ExceptionInInitializerError("Session Factory creation failed: " + e.getMessage());
         }
     }
 
-    public static SessionFactory getSessionFactory(){
+    public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 }

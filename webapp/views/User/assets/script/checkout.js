@@ -432,7 +432,7 @@ async function paynow() {
         const city = jsonObject.city || orderData.city || address?.city || "Colombo";
         const country = jsonObject.country || orderData.country || "Sri Lanka";
 
-        const merchantId = jsonObject.merchant_id || orderData.merchant_id;
+        const merchantId = jsonObject.merchantId || orderData.merchantId;
         const hash = jsonObject.hash || orderData.hash;
         const orderId = orderData.orderId || orderData.order_id;
 
@@ -450,7 +450,7 @@ async function paynow() {
 
         const payment = {
             "sandbox": true,
-            "merchant_id": 1226402,
+            "merchant_id": merchantId,
             "return_url": "http://localhost/index.php",
             "cancel_url": "http://localhost/index.php",
             "notify_url": "http://localhost/index.php",

@@ -252,7 +252,7 @@ public class OrderService {
             DecimalFormat df       = new DecimalFormat("0.00");
             String amountFormatted = df.format(amount);
 
-            String hash    = getMd5(1226402 + order.getOrder_id() + amountFormatted + "LKR" + getMd5("NDI3NjU0NDIwMzIxMDM5NzMxMTM0MTQ4MzY3NjY5MzQ1MzkxNzIwNw=="));
+            String hash    = getMd5("1226402" + order.getOrder_id() + amountFormatted + "LKR" + getMd5("NDI3NjU0NDIwMzIxMDM5NzMxMTM0MTQ4MzY3NjY5MzQ1MzkxNzIwNw=="));
 
             JsonObject paymentData = new JsonObject();
             paymentData.addProperty("merchantId", 1226402);
