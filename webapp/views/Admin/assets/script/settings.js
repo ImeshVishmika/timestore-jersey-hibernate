@@ -65,7 +65,7 @@ async function loadDeliveryDetails() {
 
             const fragment = document.createDocumentFragment();
 
-            jsonObject.forEach(delivery => {
+            jsonObject.data.forEach(delivery => {
                 const div = document.createElement("div");
                 div.classList = "row g-3 align-items-end mb-3";
                 div.dataset.id = delivery.id;

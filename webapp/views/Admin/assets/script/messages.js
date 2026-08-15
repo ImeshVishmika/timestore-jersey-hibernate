@@ -18,10 +18,10 @@ async function loadMsgSenders() {
 
             const fragment = document.createDocumentFragment();
 
-            jsonObject.forEach(user => {
+            jsonObject.data.forEach(user => {
                 const div = document.createElement("div");
                 div.className = "d-flex align-items-center p-2 mb-2 border-bottom hover-bg message_item";
-                div.dataset.email = user.sender;
+                div.dataset.email = user;
                 div.dataset.first_name = user.fname;
                 div.dataset.last_name = user.lname;
                 div.dataset.new_msg = user.new_msg;
@@ -31,13 +31,13 @@ async function loadMsgSenders() {
     </div>
 
     <div class="flex-grow-1 overflow-hidden">   
-        <h6 class="mb-0 fw-bold text-dark text-truncate">${user.fname} ${user.lname}</h6>
-         <small class="text-secondary d-block text-truncate">${user.sender}</small>
+        <h6 class="mb-0 fw-bold text-dark text-truncate"></h6>
+         <small class="text-secondary d-block text-truncate">${user}</small>
         </div>
 
     <div class="d-flex flex-column align-items-end ms-2">
         
-        <small class="fw-bold text-secondary mb-1" style="font-size: 11px;">${user.date}</small>
+        
          ${user.new_msg > 0 ? `
         <span class="badge rounded-pill text-bg-primary">
            ${user.new_msg}
@@ -80,33 +80,31 @@ async function loadMessageItems(email) {
         if (request.ok) {
             const jsonObject = await request.json();
 
-            document.getElementById("newMsgCount").textContent = jsonObject.sender.new_msg > 0 ? jsonObject.sender.new_msg + " new messages" : "No new messages";
-            document.getElementById("msgSender").textContent = jsonObject.sender.fname + " " + jsonObject.sender.lname;
+            // document.getElementById("newMsgCount").textContent = jsonObject.sender.new_msg > 0 ? jsonObject.sender.new_msg + " new messages" : "No new messages";
+            // document.getElementById("msgSender").textContent = jsonObject.sender.fname + " " + jsonObject.sender.lname;
 
             const userMsgTableBody = document.getElementById("userMsgTableBody");
             userMsgTableBody.innerHTML = "";
 
             const fragment = document.createDocumentFragment();
 
-            jsonObject.messages.forEach(message => {
+            jsonObject.data.forEach(message => {
                 const div = document.createElement("div");
 
                 div.className = "col-12";
                 div.innerHTML = `
                     <div class="card msg-card shadow-sm rounded-3 border-0" 
-                        data-subject="${message.subject}"
-                        data-message_id="${message.message_id}"
+                        data-subject="${message.message}"
+                        data-message_id="${message.messageId}"
                         data-message="${message.message}"
-                        data-date="${message.date}"
-                        data-time="${message.time}"
-                        data-name="${jsonObject.sender.fname} ${jsonObject.sender.lname}"
-                        data-sender="${jsonObject.sender.email}"
+                        data-date="${message.dateTime}"
+                        
+                        data-sender="${jsonObject.email}"
                         data-status="${message.status}"
                         >
                                                 <div class="card-body p-4">
                                                     <div class="d-flex justify-content-between mb-2">
-                                                        <h6 class="fw-bold ${message.status === '1' ? `text-secondary` : `text-dark`} mb-0">${message.subject}</h6>
-                                                        <small class="text-muted">${message.date}</small>
+                                                        <small class="text-muted">${message.dateTime}</small>
                                                     </div>
                                                     <p class="text-muted small mb-0 text-truncate">
                                                         ${message.message}
