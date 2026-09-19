@@ -252,37 +252,51 @@ MODEL ||--o{ PRODUCT : categorizes
 
 # Application Screenshots
 
-Create a folder:
+## User Pages
 
-```
-docs/images
-```
-
-Example structure:
-
-```
-docs/images
- ├── homepage.png
- ├── product-page.png
- ├── checkout.png
- └── admin-dashboard.png
-```
-
-Then display them in README:
-
-```markdown
 ### Home Page
-![Home Page](docs/images/homepage.png)
+<img src="docs/images/user/Home.png" alt="TimeStore home page" width="800">
 
 ### Product Page
-![Product Page](docs/images/product-page.png)
+<img src="docs/images/user/ProductPage.png" alt="TimeStore product page" width="800">
 
-### Checkout
-![Checkout](docs/images/checkout.png)
+### Search Page
+<img src="docs/images/user/searchPage.png" alt="TimeStore product search page" width="800">
+
+### Product Purchase Window
+<img src="docs/images/user/ProductBuyWindow.png" alt="TimeStore product purchase window" width="800">
+
+### Checkout Page
+<img src="docs/images/user/checkoutPage.png" alt="TimeStore checkout page" width="800">
+
+### PayHere Payment Window
+<img src="docs/images/user/checkoutPayhereWindow.png" alt="PayHere payment window" width="800">
+
+### PayHere Details
+<img src="docs/images/user/Payheredetails.png" alt="PayHere payment details" width="800">
+
+### Payment Success
+<img src="docs/images/user/PaymentSuccessWindow.png" alt="Payment success confirmation" width="800">
+
+## Admin Pages
 
 ### Admin Dashboard
-![Admin Dashboard](docs/images/admin-dashboard.png)
-```
+<img src="docs/images/admin/AdminDashboard.png" alt="TimeStore admin dashboard" width="800">
+
+### Customers
+<img src="docs/images/admin/customers.png" alt="TimeStore customer management page" width="800">
+
+### Orders
+<img src="docs/images/admin/orders.png" alt="TimeStore order management page" width="800">
+
+### Products
+<img src="docs/images/admin/product.png" alt="TimeStore product management page" width="800">
+
+### Messages
+<img src="docs/images/admin/messages.png" alt="TimeStore admin messages page" width="800">
+
+### Settings
+<img src="docs/images/admin/settings.png" alt="TimeStore admin settings page" width="800">
 
 ---
 
@@ -365,17 +379,6 @@ tomcat/webapps/
 
 Start Tomcat and open the application in your browser.
 
----
-
-# Future Improvements
-
-* Docker container deployment
-* JWT authentication
-* Product search and filtering
-* Advanced admin analytics
-* Microservice architecture
-
----
 
 # Related Implementations
 

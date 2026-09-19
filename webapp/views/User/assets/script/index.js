@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () =>{
     loadPopularItems();
-    loadNewItems();
 
 });
 

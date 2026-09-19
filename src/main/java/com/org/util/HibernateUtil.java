@@ -10,7 +10,6 @@ public class HibernateUtil {
         try {
             Configuration configuration = new Configuration().configure();
 
-
             String host = System.getenv("MYSQLHOST");
             String port = System.getenv("MYSQLPORT");
             String db = System.getenv("MYSQLDATABASE");   // <-- use this

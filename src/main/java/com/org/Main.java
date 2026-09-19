@@ -54,16 +54,16 @@ public class Main {
             tomcat.addServlet("/admin","AdminJerseyServlet",new ServletContainer(new AppConfig()));
             adminContext.addServletMappingDecoded("/api/*","AdminJerseyServlet");
 
-//            FilterDef adminPageAuthFilterDef = new FilterDef();
-//            adminPageAuthFilterDef.setFilterName("AdminPageAuthFilter");
-//            adminPageAuthFilterDef.setFilterClass(AdminPageAuthFilter.class.getName());
-//            adminPageAuthFilterDef.setFilter(new AdminPageAuthFilter());
-//            adminContext.addFilterDef(adminPageAuthFilterDef);
-//
-//            FilterMap adminFilterMap = new FilterMap();
-//            adminFilterMap.setFilterName("AdminPageAuthFilter");
-//            adminFilterMap.addURLPattern("/*");
-//            adminContext.addFilterMap(adminFilterMap);
+            FilterDef adminPageAuthFilterDef = new FilterDef();
+            adminPageAuthFilterDef.setFilterName("AdminPageAuthFilter");
+            adminPageAuthFilterDef.setFilterClass(AdminPageAuthFilter.class.getName());
+            adminPageAuthFilterDef.setFilter(new AdminPageAuthFilter());
+            adminContext.addFilterDef(adminPageAuthFilterDef);
+
+            FilterMap adminFilterMap = new FilterMap();
+            adminFilterMap.setFilterName("AdminPageAuthFilter");
+            adminFilterMap.addURLPattern("/*");
+            adminContext.addFilterMap(adminFilterMap);
 
             tomcat.start();
             tomcat.getServer().await();
