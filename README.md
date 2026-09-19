@@ -61,7 +61,7 @@ Service --> Payment
 
 * Browse luxury watch collections
 * View detailed product information
-* Secure checkout using PayHere sandbox
+* PayHere Sandbox payment integration for checkout testing
 * View purchase history
 * Manage personal account
 
@@ -248,6 +248,101 @@ MODEL ||--o{ PRODUCT : categorizes
 | POST   | /user/login     | Authenticate user     |
 | GET    | /user/history   | View purchase history |
 
+## POST `/product/add`
+
+Adds a new product and its first one or more models.
+
+### Request
+
+```http
+POST /product/add
+Content-Type: application/json
+Cookie: JSESSIONID=<authenticated-admin-session>
+```
+
+When the application is deployed with the admin context, the full URL is
+`/admin/api/product/add`. The frontend calls this endpoint as
+`/api/product/add` from the admin application.
+
+#### Authentication
+
+An authenticated admin session is required. Authenticate through the admin
+login first and send the resulting `JSESSIONID` cookie with the request. This
+endpoint does not use a Bearer token or an `Authorization` header. Requests
+without an admin session are redirected to `/admin/signin.html`.
+
+#### Request body
+
+```json
+{
+	"productName": "Cosmograph Daytona",
+	"brandId": 1,
+	"models": [
+		{
+			"model": "126500LN",
+			"price": 18500.00,
+			"qty": 3
+		}
+	]
+}
+```
+
+`brandId` may be replaced with `brandName` to create a new brand. The
+`productName` and `models` fields are required.
+
+#### Validation
+
+* The request body must be present.
+* Provide either `brandId` or a non-empty `brandName`.
+* `productName` must be non-empty.
+* `models` must contain at least one item.
+* Every model must have a non-empty `model` name.
+* Every model must have a `price` greater than `0`.
+* Every model must have a `qty` greater than `0`.
+
+#### Responses
+
+**`200 OK` — product created**
+
+```json
+{
+	"state": true,
+	"message": "product added successfully",
+	"data": {
+		"productId": 101,
+		"productName": "Cosmograph Daytona",
+		"brandId": 1,
+		"brandName": "Rolex"
+	},
+	"error": ""
+}
+```
+
+Validation failures also currently return **`200 OK`**, with `state` set to
+`false`. For example:
+
+```json
+{
+	"state": false,
+	"message": "at least one model is required",
+	"data": null,
+	"error": "at least one model is required"
+}
+```
+
+**`302 Found` — unauthenticated**
+
+Redirects to `/admin/signin.html` when the admin session is missing.
+
+**`500 Internal Server Error` — malformed request or server/database error**
+
+```json
+{
+	"state": false,
+	"message": "Error: <error details>"
+}
+```
+
 ---
 
 # Application Screenshots
@@ -314,7 +409,7 @@ MODEL ||--o{ PRODUCT : categorizes
 ## Clone Repository
 
 ```
-git clone https://github.com/yourusername/timestore-jersey-hibernate.git
+git clone https://github.com/ImeshVishmika/timestore-jersey-hibernate
 ```
 
 ---
