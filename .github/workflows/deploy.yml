@@ -38,6 +38,15 @@ jobs:
           target: "/tmp/timestore-upload/"
           strip_components: 1
 
+      - name: Copy webapp to Azure VM
+        uses: appleboy/scp-action@v1
+        with :
+         host : ${{secrets.VM_HOST}}
+         username : ${{secrets.VM_USERNAME}}
+         key : ${{secrets.VM_SSH_KEY}}
+         source : "webapp"
+         target : "/tmp/timestore-upload"
+
       - name: Install and restart TimeStore
         uses: appleboy/ssh-action@v1
         with:
