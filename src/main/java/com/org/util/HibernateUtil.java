@@ -15,9 +15,10 @@ public class HibernateUtil {
 
     static {
         try {
-            
+
             Configuration configuration = new Configuration().configure();
             Properties environment = loadEnvironment();
+            
 
             String host = environment.getProperty("MYSQLHOST");
             String port = environment.getProperty("MYSQLPORT");
