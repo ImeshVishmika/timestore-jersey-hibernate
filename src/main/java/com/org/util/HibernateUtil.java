@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 public class HibernateUtil {
+    
     private static final SessionFactory sessionFactory;
 
     static {
