@@ -23,6 +23,11 @@ jobs:
       - name: Build JAR
         run: mvn clean package
 
+      - name: Verify JAR
+        run: |
+          ls -lah target
+          test -s target/TimeStore-1.0-jar-with-dependencies.jar
+
       - name: Copy JAR to Azure VM
         uses: appleboy/scp-action@v1
         with:
@@ -30,14 +35,40 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.VM_SSH_KEY }}
           source: "target/TimeStore-1.0-jar-with-dependencies.jar"
-          target: "/opt/timestore/"
+          target: "/tmp/timestore-upload/"
+          strip_components: 1
 
-      - name: Restart TimeStore
+      - name: Install and restart TimeStore
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
+            set -e
+
+            echo "Checking uploaded JAR..."
+            test -s /tmp/timestore-upload/TimeStore-1.0-jar-with-dependencies.jar
+
+            echo "Installing JAR..."
+            sudo mkdir -p /opt/timestore
+
+            sudo install \
+              -o root \
+              -g root \
+              -m 0644 \
+              /tmp/timestore-upload/TimeStore-1.0-jar-with-dependencies.jar \
+              /opt/timestore/TimeStore-1.0-jar-with-dependencies.jar
+
+            echo "Verifying installed JAR..."
+            test -r /opt/timestore/TimeStore-1.0-jar-with-dependencies.jar
+
+            ls -lh /opt/timestore/TimeStore-1.0-jar-with-dependencies.jar
+
+            echo "Restarting TimeStore..."
             sudo systemctl restart timestore
+
+            echo "Checking service..."
+            sudo systemctl is-active --quiet timestore
+
             sudo systemctl status timestore --no-pager
