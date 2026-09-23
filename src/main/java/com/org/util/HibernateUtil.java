@@ -30,7 +30,7 @@ public class HibernateUtil {
                 configuration.setProperty(
                         "hibernate.connection.url",
                         "jdbc:mysql://" + host + ":" + port + "/" + db +
-                                "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+                                "?sslMode=REQUIRED&serverTimezone=UTC"
                 );
 
                 configuration.setProperty("hibernate.connection.username", user);
