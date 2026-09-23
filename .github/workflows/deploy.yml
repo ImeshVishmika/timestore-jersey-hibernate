@@ -56,10 +56,11 @@ jobs:
           script: |
             set -e
 
-            echo "Checking uploaded JAR..."
             test -s /tmp/timestore-upload/TimeStore-1.0-jar-with-dependencies.jar
+            test -d /tmp/timestore-upload/webapp
+            test -d /tmp/timestore-upload/webapp/views/User
+            test -d /tmp/timestore-upload/webapp/views/Admin
 
-            echo "Installing JAR..."
             sudo mkdir -p /opt/timestore
 
             sudo install \
@@ -69,15 +70,18 @@ jobs:
               /tmp/timestore-upload/TimeStore-1.0-jar-with-dependencies.jar \
               /opt/timestore/TimeStore-1.0-jar-with-dependencies.jar
 
-            echo "Verifying installed JAR..."
-            test -r /opt/timestore/TimeStore-1.0-jar-with-dependencies.jar
+            sudo rm -rf /opt/timestore/webapp
 
-            ls -lh /opt/timestore/TimeStore-1.0-jar-with-dependencies.jar
+            sudo cp -a \
+              /tmp/timestore-upload/webapp \
+              /opt/timestore/webapp
 
-            echo "Restarting TimeStore..."
+            sudo chown -R root:root /opt/timestore/webapp
+
             sudo systemctl restart timestore
 
-            echo "Checking service..."
+            sleep 3
+
             sudo systemctl is-active --quiet timestore
 
             sudo systemctl status timestore --no-pager
