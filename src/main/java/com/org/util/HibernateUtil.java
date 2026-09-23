@@ -3,18 +3,25 @@ package com.org.util;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Properties;
+
 public class HibernateUtil {
     private static final SessionFactory sessionFactory;
 
     static {
         try {
             Configuration configuration = new Configuration().configure();
+            Properties environment = loadEnvironment();
 
-            String host = System.getenv("MYSQLHOST");
-            String port = System.getenv("MYSQLPORT");
-            String db = System.getenv("MYSQLDATABASE");   // <-- use this
-            String user = System.getenv("MYSQLUSER");
-            String pass = System.getenv("MYSQLPASSWORD");
+            String host = environment.getProperty("MYSQLHOST");
+            String port = environment.getProperty("MYSQLPORT");
+            String db = environment.getProperty("MYSQL_DATABASE");
+            String user = environment.getProperty("MYSQLUSER");
+            String pass = environment.getProperty("MYSQLPASSWORD");
 
             if (host != null) {
                 configuration.setProperty(
@@ -31,6 +38,20 @@ public class HibernateUtil {
         } catch (Exception e) {
             throw new ExceptionInInitializerError("Session Factory creation failed: " + e.getMessage());
         }
+    }
+
+    private static Properties loadEnvironment() throws IOException {
+        Properties environment = new Properties();
+        Path environmentFile = Path.of("timestore.env");
+
+        if (Files.exists(environmentFile)) {
+            try (Reader reader = Files.newBufferedReader(environmentFile)) {
+                environment.load(reader);
+            }
+        }
+
+        System.getenv().forEach(environment::put);
+        return environment;
     }
 
     public static SessionFactory getSessionFactory() {
