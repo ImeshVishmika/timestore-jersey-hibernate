@@ -384,8 +384,8 @@ Start Tomcat and open the application in your browser.
 
 This project has another implementation using PHP.
 
-* PHP Version → https://github.com/yourusername/timestore-php
-* Java Jersey + Hibernate Version → https://github.com/yourusername/timestore-jersey-hibernate
+* PHP Version → https://github.com/ImeshVishmika/timestore-php
+* Java Jersey + Hibernate Version → https://github.com/ImeshVishmika/timestore-jersey-hibernate
 
 ---
 
