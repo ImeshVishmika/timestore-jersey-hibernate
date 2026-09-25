@@ -17,7 +17,10 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.io.Reader;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
@@ -25,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 public class OrderService {
 
@@ -252,7 +256,18 @@ public class OrderService {
             DecimalFormat df       = new DecimalFormat("0.00");
             String amountFormatted = df.format(amount);
 
-            String hash    = getMd5("1226402" + order.getOrder_id() + amountFormatted + "LKR" + getMd5("NDI3NjU0NDIwMzIxMDM5NzMxMTM0MTQ4MzY3NjY5MzQ1MzkxNzIwNw=="));
+
+            Properties env = new Properties();
+            Path environmentFile = Path.of("timestore.env");
+            if (Files.exists(environmentFile)) {
+                try (Reader reader = Files.newBufferedReader(environmentFile)) {
+                    env.load(reader);
+                }
+            }
+
+            System.getenv().forEach(env::put);
+
+            String hash    = getMd5("1226402" + order.getOrder_id() + amountFormatted + "LKR" + getMd5(env.getProperty("MERCHANTSECRET")));
 
             JsonObject paymentData = new JsonObject();
             paymentData.addProperty("merchantId", 1226402);
