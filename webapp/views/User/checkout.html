@@ -112,7 +112,7 @@
                         </div>
 
                         <div class="col-12 d-grid mt-3">
-                            <button id="payhere-payment" type="button" class="btn py-2 text-light  fw-bold" style="background-color: #dc3545;">Buy Now</button>
+                            <button id="payhere-payment" type="button" class="btn py-2 text-light fw-bold" style="background-color: #dc3545;">Buy Now</button>
 
                             <p class="small text-center text-muted mt-3 mb-1"><i class="bi bi-lock-fill me-1"></i> Secure Checkout. Payments are encrypted.</p>
                             <p class="small text-center text-secondary mb-0">By clicking Buy Now, you agree to our <a href="#" class="text-danger text-decoration-none">Terms & Conditions</a>.</p>
@@ -120,6 +120,53 @@
                         </div>
 
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="testCardModal" tabindex="-1" aria-labelledby="testCardModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="testCardModalLabel">Test Card Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">Use one of these cards in the PayHere sandbox checkout.</p>
+
+                    <div class="mb-3">
+                        <label for="visaTestCard" class="form-label fw-bold mb-1">Visa</label>
+                        <div class="input-group">
+                            <input id="visaTestCard" class="form-control" type="text" value="4916217501611292" readonly>
+                            <button class="btn btn-outline-secondary copy-test-card" type="button" data-card-input="visaTestCard" title="Copy Visa card number">
+                                <i class="bi bi-copy"></i><span class="visually-hidden">Copy Visa card number</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="masterCardTestCard" class="form-label fw-bold mb-1">MasterCard</label>
+                        <div class="input-group">
+                            <input id="masterCardTestCard" class="form-control" type="text" value="5307732125531191" readonly>
+                            <button class="btn btn-outline-secondary copy-test-card" type="button" data-card-input="masterCardTestCard" title="Copy MasterCard card number">
+                                <i class="bi bi-copy"></i><span class="visually-hidden">Copy MasterCard card number</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="amexTestCard" class="form-label fw-bold mb-1">AMEX</label>
+                        <div class="input-group">
+                            <input id="amexTestCard" class="form-control" type="text" value="346781005510225" readonly>
+                            <button class="btn btn-outline-secondary copy-test-card" type="button" data-card-input="amexTestCard" title="Copy AMEX card number">
+                                <i class="bi bi-copy"></i><span class="visually-hidden">Copy AMEX card number</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="continueToPayment">Continue to Payment</button>
                 </div>
             </div>
         </div>

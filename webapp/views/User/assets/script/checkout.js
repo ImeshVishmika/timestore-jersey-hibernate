@@ -52,8 +52,32 @@ deliveryDetails.addEventListener("click", function (event) {
 });
 
 let payherePayment = document.getElementById("payhere-payment");
-payherePayment.addEventListener("click", async function () {
+const testCardModalElement = document.getElementById("testCardModal");
+const testCardModal = new bootstrap.Modal(testCardModalElement);
+const continueToPayment = document.getElementById("continueToPayment");
+
+payherePayment.addEventListener("click", function () {
+    testCardModal.show();
+});
+
+continueToPayment.addEventListener("click", async function () {
+    testCardModal.hide();
     await paynow();
+});
+
+document.querySelectorAll(".copy-test-card").forEach(function (copyButton) {
+    copyButton.addEventListener("click", async function () {
+        const cardInput = document.getElementById(copyButton.dataset.cardInput);
+
+        try {
+            await navigator.clipboard.writeText(cardInput.value);
+            Notiflix.Notify.success("Card number copied");
+        } catch (error) {
+            cardInput.select();
+            document.execCommand("copy");
+            Notiflix.Notify.success("Card number copied");
+        }
+    });
 });
 
 let addressUpdateForm = document.getElementById("addressUpdateForm");
