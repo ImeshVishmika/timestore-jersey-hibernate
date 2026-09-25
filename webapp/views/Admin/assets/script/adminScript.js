@@ -28,7 +28,6 @@ async function adminLogIn() {
         if (request.ok) {
             const jsonObject = await request.json();
             if (jsonObject.state) {
-                alert("test");
                 window.location = "/admin/dashboard.html";
             } else {
                 Notiflix.Notify.failure((jsonObject && jsonObject.error) ? jsonObject.error : "Admin login failed state");

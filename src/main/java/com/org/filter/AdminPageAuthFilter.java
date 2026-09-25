@@ -14,14 +14,18 @@ import java.io.IOException;
 public class AdminPageAuthFilter implements Filter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String uri = httpRequest.getRequestURI();
 
         // Allow admin login page and static assets without session.
-        if (uri.endsWith("/admin/signin.html") || uri.endsWith("/admin/logInProcess.html") || uri.contains("/admin/assets/")) {
+        if (uri.endsWith("/admin/signin.html")
+                || uri.endsWith("/admin/logInProcess.html")
+                || uri.contains("/admin/assets/")
+                || uri.equals("/admin/api/admin/logIn")) {
             chain.doFilter(request, response);
             return;
         }
