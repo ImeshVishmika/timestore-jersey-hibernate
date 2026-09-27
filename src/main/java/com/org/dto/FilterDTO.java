@@ -52,6 +52,15 @@ public class FilterDTO {
         };
     }
 
+    public String getSort() {
+        sort = sort!=null?sort:"0";
+        return switch (sort){
+            case  "1"->"m.price ASC";
+            case  "2"->"m.price DESC";
+            default ->"m.addedTime";
+        };
+    }
+
     public Integer getUserStatusId() {
         return userStatusId;
     }
@@ -76,13 +85,6 @@ public class FilterDTO {
         this.orderStausId = orderStausId;
     }
 
-    public String getSort() {
-        return sort;
-    }
-
-    public void setSort(String sort) {
-        this.sort = sort;
-    }
 
     public int getPeriodDays() {
         return periodDays;

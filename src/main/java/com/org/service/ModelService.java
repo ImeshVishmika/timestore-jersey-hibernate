@@ -38,7 +38,6 @@ public class ModelService {
             List<Integer> productId = safeFilter.getProductId();
             List<Integer> modelId = safeFilter.getModelId();
             List<Integer> brandId = safeFilter.getBrandId();
-            List<String> brandName = safeFilter.getBrandName();
             String productName = safeFilter.getProductName();
             String modelName = safeFilter.getModelName();
 
@@ -57,31 +56,14 @@ public class ModelService {
             if (modelName != null && !modelName.isBlank()) {
                 queryText.append(" and lower(m.model) like :modelName");
             }
-
-            List<Integer> brandIdsFromNames = new ArrayList<>();
-            if (brandName != null && !brandName.isEmpty()) {
-                brandIdsFromNames = brandName.stream()
-                        .map(value -> value == null ? "" : value)
-                        .flatMap(value -> Arrays.stream(value.split(",")))
-                        .map(String::trim)
-                        .filter(value -> !value.isEmpty())
-                        .map(value -> {
-                            try {
-                                return Integer.parseInt(value);
-                            } catch (NumberFormatException ex) {
-                                return null;
-                            }
-                        })
-                        .filter(value -> value != null)
-                        .collect(Collectors.toList());
-                if (!brandIdsFromNames.isEmpty()) {
-                    queryText.append(" and m.product.brandId in (:brandIdsFromNames)");
-                }
-            }
-
             if (brandId != null && !brandId.isEmpty()) {
                 queryText.append(" and m.product.brandId in (:brandIds)");
             }
+            if(safeFilter.getSort()!=null){
+                queryText.append(" ORDER BY ").append(safeFilter.getSort());
+            }
+
+            System.out.println(queryText.toString());
 
             Query<Model> query = session.createQuery(queryText.toString(), Model.class);
 
@@ -94,9 +76,6 @@ public class ModelService {
             if (brandId != null && !brandId.isEmpty()) {
                 query.setParameterList("brandIds", brandId);
             }
-            if (!brandIdsFromNames.isEmpty()) {
-                query.setParameterList("brandIdsFromNames", brandIdsFromNames);
-            }
             if (productName != null && !productName.isBlank()) {
                 query.setParameter("productName", "%" + productName.toLowerCase() + "%");
             }
@@ -107,7 +86,6 @@ public class ModelService {
             if (safeFilter.getLimit()!=null){
                 query.setMaxResults(safeFilter.getLimit());
             }
-
 
             if (safeFilter.getPageNo()!=null){
                 int offset = safeFilter.getLimit()* (safeFilter.getPageNo()-1);
@@ -122,6 +100,7 @@ public class ModelService {
             data = gson.toJsonTree(modelDTOs);
 
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             state = false;
             message = "model loading failed: " + e.getMessage();
         }
