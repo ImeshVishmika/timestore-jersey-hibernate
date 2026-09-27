@@ -1,10 +1,14 @@
 package com.org.controller.user;
 
+import com.google.gson.Gson;
+import com.org.dto.FilterDTO;
 import com.org.dto.ProductDTO;
 import com.org.service.ProductService;
+
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
 
 @Path("/products")
 @Produces(MediaType.APPLICATION_JSON)
@@ -12,11 +16,14 @@ import jakarta.ws.rs.core.Response;
 public class ProductController {
     
     private final ProductService productService = new ProductService();
+    private final Gson gson = new Gson();
 
-    @GET
-    public Response getAllProducts() {
+    @POST
+    @Path("/load")
+    public Response getAllProducts(String requestBody) {
         try {
-            String products = productService.getAllProducts();
+            FilterDTO filterDTO = gson.fromJson(requestBody,FilterDTO.class);
+            String products = productService.getAllProducts(filterDTO);
             return Response.ok().entity(products).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

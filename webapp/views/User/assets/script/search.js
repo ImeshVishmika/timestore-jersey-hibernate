@@ -3,17 +3,31 @@ window.addEventListener("load", () => {
     loadBrands();
 });
 
-let filter = document.getElementById("filter");
-filter.addEventListener("change", loadProducts);
+let pageNo=1;
 
-var brands = document.getElementById("brands");
-brands.addEventListener("change", loadProducts);
+let filter = document.getElementById("filter");
+filter.addEventListener("change", async ()=>{
+    pageNo=1;
+    changePageNo();
+    await loadProducts();
+});
+
+let brands = document.getElementById("brands");
+brands.addEventListener("change", async ()=>{
+    pageNo=1;
+    changePageNo();
+    await loadProducts();
+});
 
 async function loadProducts() {
     try {
         const payload = {};
-        if (filter.selectedIndex != 0) {
+        payload.limit=4;
+        payload.pageNo=pageNo;
+
+        if (filter.selectedIndex !== 0) {
             payload.sort = filter.value;
+            alert(JSON.stringify(payload));
         }
 
         const selectedBrands = [];
@@ -23,6 +37,7 @@ async function loadProducts() {
                 selectedBrands.push(input.value);
             }
         });
+
         if (selectedBrands.length > 0) {
             payload.brandId = selectedBrands;
         }
@@ -37,6 +52,12 @@ async function loadProducts() {
 
         if (request.ok) {
             const jsonObject = await request.json();
+
+            console.log(jsonObject);
+
+            if(jsonObject.state===false || jsonObject.data.length===0){
+                return false;
+            }
 
             const productsTable = document.getElementById("modelsTable");
             productsTable.innerHTML = "";
@@ -70,6 +91,8 @@ async function loadProducts() {
         console.error('Error:', error);
         Notiflix.Notify.failure('Error ' + error);
     }
+
+    return true;
 }
 
 async function loadBrands() {
@@ -102,4 +125,31 @@ async function loadBrands() {
         console.error('Error:', error);
         Notiflix.Notify.failure('Error ' + error);
     }
+}
+
+//---------------------------------Pagination---------------------------------
+
+let pageNoComponent = document.getElementById("pagNo");
+
+let prevButton = document.getElementById("prev-button");
+prevButton.addEventListener("click",async ()=>{
+    if(pageNo === 1){return}
+    pageNo--;
+    await loadProducts()  //used await so the page no change after the function completed
+    changePageNo();
+});
+
+let nextButton = document.getElementById("next-button");
+nextButton.addEventListener("click",async ()=>{
+    pageNo++;
+    let state=await loadProducts();
+    if (!state){
+        pageNo--
+        return
+    }
+    changePageNo();
+});
+
+function changePageNo(){
+    pageNoComponent.textContent = (pageNo).toString();
 }

@@ -16,9 +16,16 @@ function getApiError(jsonObject, fallbackMessage) {
 async function loadPopularItems() {
 
     try {
+
+        const requestBody={};
+        requestBody.limit =4;
         
-        const request = await fetch("/api/products",{
-            method:"GET"
+        const request = await fetch("/api/products/load",{
+            method:"POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
         });
 
         if (request.ok) {

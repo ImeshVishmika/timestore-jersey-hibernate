@@ -104,6 +104,16 @@ public class ModelService {
                 query.setParameter("modelName", "%" + modelName.toLowerCase() + "%");
             }
 
+            if (safeFilter.getLimit()!=null){
+                query.setMaxResults(safeFilter.getLimit());
+            }
+
+
+            if (safeFilter.getPageNo()!=null){
+                int offset = safeFilter.getLimit()* (safeFilter.getPageNo()-1);
+                query.setFirstResult(offset);
+            }
+
             List<Model> models = query.getResultList();
             List<ModelDTO> modelDTOs = new ArrayList<>();
             for (Model model : models) {

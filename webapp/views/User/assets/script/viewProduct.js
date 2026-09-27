@@ -99,6 +99,7 @@ async function loadModels(productId) {
 
         if (request.ok) {
             const jsonObject = await request.json();
+            console.log(jsonObject);
             const modelsTable = document.getElementById("modelsTable");
             modelsTable.innerHTML = "";
             const fragment = document.createDocumentFragment();

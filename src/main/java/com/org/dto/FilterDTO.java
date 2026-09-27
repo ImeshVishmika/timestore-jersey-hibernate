@@ -32,10 +32,15 @@ public class FilterDTO {
     private Integer orderStausId;
     private Integer minOrderCount;
     private Integer maxOrderCount;
-    private Double minSpent;
-    private Double maxSpent;
-    private String joinedDateFrom;
-    private String joinedDateTo;
+    private Double  minSpent;
+    private Double  maxSpent;
+    private String  joinedDateFrom;
+    private String  joinedDateTo;
+
+    private Integer limit;
+    private Integer offset;
+
+    private Integer pageNo;
 
     public String getViewBy() {
         viewBy=(viewBy==null)?"":viewBy;
@@ -257,5 +262,29 @@ public class FilterDTO {
 
     public void setMaxSpent(Double maxSpent) {
         this.maxSpent = maxSpent;
+    }
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
+
+    public Integer getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
+
+    public Integer getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(Integer pageNo) {
+        this.pageNo = pageNo;
     }
 }

@@ -27,13 +27,23 @@ public class ProductService {
     private final Gson gson = new Gson();
     private static final int CANCELLED_ORDER_STATUS = 6;
 
-    public String getAllProducts() {
+    public String getAllProducts(FilterDTO filterDTO) {
+        filterDTO = (filterDTO != null) ? filterDTO : new FilterDTO();
         boolean state = true;
         String message = "success";
         JsonElement data = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Product> query = session.createQuery("from Product", Product.class);
+
+            if (filterDTO.getLimit()!=null){
+                query.setMaxResults(filterDTO.getLimit());
+            }
+
+            if(filterDTO.getPageNo()!=null){
+                query.setFirstResult(filterDTO.getLimit()* filterDTO.getPageNo());
+            }
+
             List<Product> products = query.getResultList();
             List<ProductDTO> productDTOs = new ArrayList<>();
 
