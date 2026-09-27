@@ -25,6 +25,7 @@ public class ModelController {
             System.out.println(requestBody);
             FilterDTO filterDTO = gson.fromJson(requestBody, FilterDTO.class);
             String result = modelService.loadModels(filterDTO);
+            System.out.println("after load model");
             return Response.ok().entity(result).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

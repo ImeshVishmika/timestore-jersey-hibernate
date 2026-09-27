@@ -1,20 +1,20 @@
-window.addEventListener("load", () => {
-    loadProducts();
-    loadBrands();
+window.addEventListener("load", async () => {
+    await loadProducts();
+    await loadBrands();
 });
 
-let pageNo=1;
+let pageNo = 1;
 
 let filter = document.getElementById("filter");
-filter.addEventListener("change", async ()=>{
-    pageNo=1;
+filter.addEventListener("change", async () => {
+    pageNo = 1;
     changePageNo();
     await loadProducts();
 });
 
 let brands = document.getElementById("brands");
-brands.addEventListener("change", async ()=>{
-    pageNo=1;
+brands.addEventListener("change", async () => {
+    pageNo = 1;
     changePageNo();
     await loadProducts();
 });
@@ -22,17 +22,14 @@ brands.addEventListener("change", async ()=>{
 async function loadProducts() {
     try {
         const payload = {};
-        payload.limit=4;
-        payload.pageNo=pageNo;
+        payload.limit = 4;
+        payload.pageNo = pageNo;
 
-        if (filter.selectedIndex !== 0) {
-            payload.sort = filter.value;
-            alert(JSON.stringify(payload));
-        }
+        payload.sort = filter.value;
 
         const selectedBrands = [];
         brands.querySelectorAll("input").forEach(input => {
-            
+
             if (input.checked) {
                 selectedBrands.push(input.value);
             }
@@ -55,7 +52,7 @@ async function loadProducts() {
 
             console.log(jsonObject);
 
-            if(jsonObject.state===false || jsonObject.data.length===0){
+            if (jsonObject.state === false || jsonObject.data.length === 0) {
                 return false;
             }
 
@@ -132,24 +129,26 @@ async function loadBrands() {
 let pageNoComponent = document.getElementById("pagNo");
 
 let prevButton = document.getElementById("prev-button");
-prevButton.addEventListener("click",async ()=>{
-    if(pageNo === 1){return}
+prevButton.addEventListener("click", async () => {
+    if (pageNo === 1) {
+        return
+    }
     pageNo--;
     await loadProducts()  //used await so the page no change after the function completed
     changePageNo();
 });
 
 let nextButton = document.getElementById("next-button");
-nextButton.addEventListener("click",async ()=>{
+nextButton.addEventListener("click", async () => {
     pageNo++;
-    let state=await loadProducts();
-    if (!state){
+    let state = await loadProducts();
+    if (!state) {
         pageNo--
         return
     }
     changePageNo();
 });
 
-function changePageNo(){
+function changePageNo() {
     pageNoComponent.textContent = (pageNo).toString();
 }
