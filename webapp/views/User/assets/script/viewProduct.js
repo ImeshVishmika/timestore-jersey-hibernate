@@ -1,5 +1,4 @@
 const models = {};
-const OPEN_BUY_MODAL_KEY = "timestore:openBuyModal";
 let buyingModelId = 0;
 let model;
 let isLoggedIn;
@@ -48,13 +47,14 @@ async function loadModels(productId) {
                 input.type = "radio";
                 input.classList.add("btn-check");
                 input.name = "color";
-                input.id = model.modelId;
+                input.id = `${model.modelId}colorBtn`;
+                input.dataset.modelId = model.modelId;
                 input.autocomplete = "off";
                 colorGroup.appendChild(input);
 
                 const label = document.createElement("label");
                 label.textContent = model.color;
-                label.htmlFor = model.modelId;
+                label.htmlFor = `${model.modelId}colorBtn`;
                 label.classList.add("btn", "btn-outline-dark");
                 colorGroup.appendChild(label);
 
@@ -65,7 +65,7 @@ async function loadModels(productId) {
             modelsTable.appendChild(fragment);
 
             changeModel(jsonObject.data[0].modelId);
-            maybeOpenBuyModal();
+
         } else {
             Notiflix.Notify.failure('Failed to load models');
         }
@@ -87,7 +87,7 @@ document.getElementById("modelsTable").addEventListener("click", (event) => {
 const colorGroup = document.getElementById("colors");
 colorGroup.addEventListener("click", (event) => {
     let colorBtn = event.target.closest("input");
-    changeModel(colorBtn.id);
+    changeModel(colorBtn.dataset.modelId);
 })
 
 const description = document.getElementById("description");
@@ -96,7 +96,7 @@ function changeModel(modelId) {
     buyingModelId = modelId;
     let model = models[modelId];
     description.textContent = model.description;
-    document.getElementById(modelId).checked = true;
+    document.getElementById(`${model.modelId}colorBtn`).checked = true;
     document.getElementById("product_label").innerText = model.model;
     document.getElementById("model").innerText = model.model;
     document.getElementById("price").innerText = "Rs." + model.price;
@@ -106,73 +106,59 @@ function changeModel(modelId) {
 //=================================================================================================
 
 
-//-------------------------------------------------------------------------------------------------
+//------------------------------Checks User login Status-------------------------------------------
 const signInModalElement = document.getElementById("signInModal");
 const signInModalInstance = window.bootstrap.Modal.getOrCreateInstance(signInModalElement);
 
 const buyNowModalElement = document.getElementById("buyNowModal");
 const modalInstance = window.bootstrap.Modal.getOrCreateInstance(buyNowModalElement);
 
-async function handleBuyNow() {
-    try {
-        const response = await fetch("/api/user/signinstatus", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (response.ok) {
-            const jsonResponse = await response.json();
-            if (jsonResponse.status) {
-                // User is logged in
-                isLoggedIn = true;
-                buyingProduct();
-                if (buyNowModalElement && window.bootstrap && window.bootstrap.Modal) {
-                    modalInstance.show();
-                }
-            } else {
-                // User is not logged in
-                isLoggedIn = false;
-                if (signInModalElement && window.bootstrap && window.bootstrap.Modal) {
-                    signInModalInstance.show();
-                }
-            }
-        } else {
-            Notiflix.Notify.failure('Failed to check login status');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        Notiflix.Notify.failure('Error: ' + error);
-    }
-}
-
 async function checkLoginStatus() {
     try {
         const response = await fetch("/api/user/signinstatus", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
+            method: "GET"
         });
 
         if (response.ok) {
             const jsonResponse = await response.json();
             isLoggedIn = jsonResponse.status;
         }
+
     } catch (error) {
         console.error('Error checking login status:', error);
         isLoggedIn = false;
     }
 }
 
+async function handleBuyNow() {
+    try {
+        await checkLoginStatus();
+
+        if (isLoggedIn) {
+            // User is logged in
+            buyingProduct();
+            modalInstance.show();
+
+        } else {
+            // User is not logged in
+            signInModalInstance.show();
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+        Notiflix.Notify.failure('Error: ' + error);
+    }
+}
+
+
 //================================================================================================
 
 //--------------------------Handle Signing before going to checkout-----------------------------
 
 const checkoutForm = document.getElementById("checkoutSignInForm");
+const buyNowModal = new bootstrap.Modal(document.getElementById("buyNowModal"));
 
-checkoutForm.addEventListener("submit",  (event)=> {
+checkoutForm.addEventListener("submit", (event) => {
     event.preventDefault();
     signIn();
 });
@@ -224,10 +210,7 @@ async function signIn() {
         }
 
         if (response.state) {
-            localStorage.setItem(OPEN_BUY_MODAL_KEY, "1");
-            //window.location.reload();
             signInModalInstance.hide();
-            const buyNowModal = new bootstrap.Modal(document.getElementById("buyNowModal"));
             buyingProduct();
             buyNowModal.show();
         } else {
@@ -260,6 +243,7 @@ function buyingProduct() {
     buyingProductPrice.textContent = "Rs." + model.price;
     buyingProductImg.src = `api/model/img/${buyingModelId}`;
 }
+
 //===============================================================================================
 
 //----------------------------------Adjusting Buying model Count--------------------------------
@@ -302,24 +286,7 @@ function toCheckout() {
     const buyingProductId = document.getElementById("buying_product_id");
     window.location = "/checkout.html?id=" + buyingProductId.value + "&qty=" + buyingProductQty.value;
 }
+
 //=================================================================================================
 
-// function maybeOpenBuyModal() {
-//     if (!isLoggedIn) {
-//         localStorage.removeItem(OPEN_BUY_MODAL_KEY);
-//         return;
-//     }
-//
-//     if (localStorage.getItem(OPEN_BUY_MODAL_KEY) !== "1") {
-//         return;
-//     }
-//
-//     localStorage.removeItem(OPEN_BUY_MODAL_KEY);
-//     buyingProduct();
-//
-//     const modalElement = document.getElementById("exampleModal");
-//     if (modalElement && window.bootstrap && window.bootstrap.Modal) {
-//         const modalInstance = window.bootstrap.Modal.getOrCreateInstance(modalElement);
-//         modalInstance.show();
-//     }
-// }
+
