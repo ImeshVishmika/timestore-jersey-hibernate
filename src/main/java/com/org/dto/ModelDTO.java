@@ -16,6 +16,7 @@ public class ModelDTO {
     private String imgPath;
     private Long soldCount;
     private double  revenue;
+    private String description;
 
     public ModelDTO() {}
 
@@ -41,6 +42,7 @@ public class ModelDTO {
         this.qty = model.getQty();
         this.addedTime = model.getAdded_time() != null ? model.getAdded_time().toString() : null;
         this.color= model.getColor();
+        this.description =model.getDescription();
     }
 
     public String getColor() {
