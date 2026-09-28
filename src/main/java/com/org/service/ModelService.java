@@ -59,7 +59,7 @@ public class ModelService {
                 queryText.append(" and m.product.brandId in (:brandIds)");
             }
             if(safeFilter.getSort()!=null){
-                queryText.append(" ORDER BY m.").append(safeFilter.getSort());
+                queryText.append(" ORDER BY ").append(safeFilter.getSort());
             }
 
             System.out.println(queryText.toString());

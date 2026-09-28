@@ -2,6 +2,8 @@ package com.org.dto;
 
 import java.util.List;
 
+import jakarta.ws.rs.HEAD;
+
 public class FilterDTO {
 
     private String email;
@@ -54,13 +56,21 @@ public class FilterDTO {
     }
 
     public String getSort() {
-        sort = sort != null ? sort : "0";
-        return switch (sort) {
-            case "1" -> " price ASC";
-            case "2" -> " price DESC";
-            default -> " addedTime";
+              sort = sort!=null?sort:"0";
+        return switch (sort){
+            case  "1"->"m.price ASC";
+            case  "2"->"m.price DESC";
+            default ->"m.addedTime";
         };
     }
+
+    //     sort = sort != null ? sort : "0";
+    //     return switch (sort) {
+    //         case "1" -> " price ASC";
+    //         case "2" -> " price DESC";
+    //         default -> " addedTime";
+    //     };
+    // }
 
     public String getProductSort() {
         productSort = productSort != null? productSort :"0";
@@ -70,10 +80,6 @@ public class FilterDTO {
             default -> " MAX(ml.addedTime)";
         };
     }
-
-//    public void setProductSort(String productSort) {
-//        this.productSort = productSort;
-//    }
 
     public Integer getUserStatusId() {
         return userStatusId;
