@@ -22,6 +22,7 @@ public class ProductController {
     @Path("/load")
     public Response getAllProducts(String requestBody) {
         try {
+            System.out.println(requestBody);
             FilterDTO filterDTO = gson.fromJson(requestBody,FilterDTO.class);
             String products = productService.getAllProducts(filterDTO);
             return Response.ok().entity(products).build();

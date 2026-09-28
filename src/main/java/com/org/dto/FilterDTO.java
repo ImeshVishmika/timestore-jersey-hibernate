@@ -6,7 +6,7 @@ public class FilterDTO {
 
     private String email;
     private String searchQuery;
-    private Integer userStatusId ;
+    private Integer userStatusId;
 
     private List<Integer> brandId;
     private List<String> brandName;
@@ -18,6 +18,7 @@ public class FilterDTO {
     private String modelName;
 
     private String sort;
+    private String productSort;
     private int periodDays;
     private String startDate;
     private String endDate;
@@ -32,10 +33,10 @@ public class FilterDTO {
     private Integer orderStausId;
     private Integer minOrderCount;
     private Integer maxOrderCount;
-    private Double  minSpent;
-    private Double  maxSpent;
-    private String  joinedDateFrom;
-    private String  joinedDateTo;
+    private Double minSpent;
+    private Double maxSpent;
+    private String joinedDateFrom;
+    private String joinedDateTo;
 
     private Integer limit;
     private Integer offset;
@@ -43,7 +44,7 @@ public class FilterDTO {
     private Integer pageNo;
 
     public String getViewBy() {
-        viewBy=(viewBy==null)?"":viewBy;
+        viewBy = (viewBy == null) ? "" : viewBy;
         return switch (viewBy.toUpperCase()) {
             case "WEEK" -> "WEEK";
             case "MONTH" -> "MONTH";
@@ -53,13 +54,26 @@ public class FilterDTO {
     }
 
     public String getSort() {
-        sort = sort!=null?sort:"0";
-        return switch (sort){
-            case  "1"->"m.price ASC";
-            case  "2"->"m.price DESC";
-            default ->"m.addedTime";
+        sort = sort != null ? sort : "0";
+        return switch (sort) {
+            case "1" -> " price ASC";
+            case "2" -> " price DESC";
+            default -> " addedTime";
         };
     }
+
+    public String getProductSort() {
+        productSort = productSort != null? productSort :"0";
+        return switch (productSort) {
+            case "1" -> " MIN(ml.price)";
+            case "2" -> " MAX(ml.price)";
+            default -> " MAX(ml.addedTime)";
+        };
+    }
+
+//    public void setProductSort(String productSort) {
+//        this.productSort = productSort;
+//    }
 
     public Integer getUserStatusId() {
         return userStatusId;

@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.org.dto.FilterDTO;
 import com.org.dto.ProductDTO;
 import com.org.service.ProductService;
-import com.org.util.JsonRequestUtil;
-import com.google.gson.JsonObject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -22,6 +20,7 @@ public class ApiProductController {
     @Path("/load")
     public Response loadProducts(String requestBody) {
         try {
+
             FilterDTO filterDTO = gson.fromJson(requestBody, FilterDTO.class);
             String result = productService.loadProducts(filterDTO);
             return Response.ok().entity(result).build();

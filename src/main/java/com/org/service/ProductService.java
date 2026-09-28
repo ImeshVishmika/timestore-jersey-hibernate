@@ -34,7 +34,10 @@ public class ProductService {
         JsonElement data = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Product> query = session.createQuery("from Product", Product.class);
+            StringBuilder queryString = new StringBuilder("from Product p JOIN p.modelList ml GROUP BY p.id ");
+            queryString.append(" ORDER BY ").append(filterDTO.getProductSort());
+            System.out.println(queryString.toString());
+            Query<Product> query = session.createQuery(queryString.toString(), Product.class);
 
             if (filterDTO.getLimit()!=null){
                 query.setMaxResults(filterDTO.getLimit());
@@ -54,6 +57,7 @@ public class ProductService {
             data = gson.toJsonTree(productDTOs);
 
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             state = false;
             message = "product loading failed";
 
@@ -251,13 +255,6 @@ public class ProductService {
                 productDTOs.add(convertToDTO(product));
             }
 
-            if (sort != null) {
-                if ("asc".equalsIgnoreCase(sort) || "low_to_high".equalsIgnoreCase(sort)) {
-                    productDTOs.sort(Comparator.comparing(ProductDTO::getProductName, Comparator.nullsLast(String::compareToIgnoreCase)));
-                } else if ("desc".equalsIgnoreCase(sort) || "high_to_low".equalsIgnoreCase(sort)) {
-                    productDTOs.sort(Comparator.comparing(ProductDTO::getProductName, Comparator.nullsLast(String::compareToIgnoreCase)).reversed());
-                }
-            }
 
             data = gson.toJsonTree(productDTOs);
 

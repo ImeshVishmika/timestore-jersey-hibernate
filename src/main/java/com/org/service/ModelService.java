@@ -49,7 +49,6 @@ public class ModelService {
             if (modelId != null && !modelId.isEmpty()) {
                 queryText.append(" and m.modelId in (:modelIds)");
             }
-
             if (productName != null && !productName.isBlank()) {
                 queryText.append(" and lower(m.product.productName) like :productName");
             }
@@ -60,7 +59,7 @@ public class ModelService {
                 queryText.append(" and m.product.brandId in (:brandIds)");
             }
             if(safeFilter.getSort()!=null){
-                queryText.append(" ORDER BY ").append(safeFilter.getSort());
+                queryText.append(" ORDER BY m.").append(safeFilter.getSort());
             }
 
             System.out.println(queryText.toString());
