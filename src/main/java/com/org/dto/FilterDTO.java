@@ -64,14 +64,6 @@ public class FilterDTO {
         };
     }
 
-    //     sort = sort != null ? sort : "0";
-    //     return switch (sort) {
-    //         case "1" -> " price ASC";
-    //         case "2" -> " price DESC";
-    //         default -> " addedTime";
-    //     };
-    // }
-
     public String getProductSort() {
         productSort = productSort != null? productSort :"0";
         return switch (productSort) {

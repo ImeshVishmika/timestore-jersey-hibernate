@@ -29,6 +29,9 @@ public class Model {
     @Column(name = "added_time")
     private LocalDateTime addedTime;
 
+    @Column(name = "color")
+    private String color;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id", insertable = false, updatable = false)
     private Product product;
@@ -123,5 +126,13 @@ public class Model {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

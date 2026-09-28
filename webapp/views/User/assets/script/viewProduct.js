@@ -1,11 +1,10 @@
 const models = {};
 const OPEN_BUY_MODAL_KEY = "timestore:openBuyModal";
 let buyingModelId = 0;
-let model
-
+let model;
+let isLoggedIn;
 window.addEventListener("load", event => {
     const buyNowButton = document.getElementById("buyNow");
-
     var parm = new URLSearchParams(window.location.search);
     let id = parm.get("id");
     loadModels(id);
@@ -14,7 +13,7 @@ window.addEventListener("load", event => {
 });
 
 document.getElementById("modelsTable").addEventListener("click", function(event) {
-    var button = event.target.closest(".btn");
+    const button = event.target.closest(".btn");
     changeModel(button.dataset.modelId);
 });
 
@@ -83,6 +82,12 @@ if (checkoutForm) {
     });
 }
 
+const colorGroup = document.getElementById("colors");
+colorGroup.addEventListener("click",(event)=>{
+    let colorBtn =event.target.closest("input");
+    changeModel(colorBtn.id);
+})
+
 async function loadModels(productId) {
     try {
         const payload = {
@@ -104,6 +109,10 @@ async function loadModels(productId) {
             modelsTable.innerHTML = "";
             const fragment = document.createDocumentFragment();
 
+            colorGroup.innerHTML="";
+            const colorFragment = document.createDocumentFragment();
+            const labelFragment = document.createDocumentFragment();
+
             jsonObject.data.forEach(model => {
                 models[model.modelId] = model;
                 const button = document.createElement("button");
@@ -111,9 +120,27 @@ async function loadModels(productId) {
                 button.classList.add("btn", "border", "rounded-3");
                 button.innerHTML=`<img src=api/model/img/${model.modelId} width="50" alt="Side View">`;
                 fragment.appendChild(button);
+
+                const  input = document.createElement("input");
+                input.checked = jsonObject.data.indexOf(model)===0;
+                input.type= "radio";
+                input.classList.add("btn-check");
+                input.name="color";
+                input.id=model.modelId;
+                input.autocomplete="off";
+                colorGroup.appendChild(input);
+
+                const label = document.createElement("label");
+                label.textContent=model.color;
+                label.htmlFor=model.modelId;
+                label.classList.add("btn","btn-outline-dark");
+                colorGroup.appendChild(label);
+
+
             });
             console.log(models);
             modelsTable.appendChild(fragment);
+
             changeModel(jsonObject.data[0].modelId);
             maybeOpenBuyModal();
         } else {
