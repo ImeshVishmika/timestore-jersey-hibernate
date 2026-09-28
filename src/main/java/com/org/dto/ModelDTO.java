@@ -43,6 +43,14 @@ public class ModelDTO {
         this.color= model.getColor();
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     public Double getRevenue() {
         return revenue;
     }
