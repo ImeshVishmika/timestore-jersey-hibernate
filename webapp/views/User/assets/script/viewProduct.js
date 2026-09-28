@@ -155,6 +155,7 @@ async function loadModels(productId) {
 function changeModel(modelId) {
     buyingModelId = modelId;
     let model = models[modelId];
+    document.getElementById(modelId).checked=true;
     document.getElementById("product_label").innerText = model.model;
     document.getElementById("model").innerText = model.model;
     document.getElementById("price").innerText = "Rs." + model.price;
