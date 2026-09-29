@@ -6,11 +6,7 @@ import com.google.gson.JsonObject;
 import com.org.dto.FilterDTO;
 import com.org.dto.OrderDTO;
 import com.org.dto.OrderItemsDTO;
-import com.org.entity.Model;
-import com.org.entity.Order;
-import com.org.entity.OrderHasModel;
-import com.org.entity.OrderHasModelId;
-import com.org.entity.OrderStatus;
+import com.org.entity.*;
 import com.org.util.HibernateUtil;
 import com.org.util.JsonResponse;
 import org.hibernate.Session;
@@ -250,8 +246,10 @@ public class OrderService {
 
             transaction.commit();
 
+            DeliveryMethod deliveryMethod = session.find(DeliveryMethod.class , deliveryMethodId);
+            double deliveryFee = deliveryMethod.getPrice();
         
-            double amount = model.getPrice() * parsedQuantity;
+            double amount = (model.getPrice() * parsedQuantity)+deliveryFee;
 
             DecimalFormat df       = new DecimalFormat("0.00");
             String amountFormatted = df.format(amount);
@@ -304,6 +302,31 @@ public class OrderService {
             }
 
             transaction = session.beginTransaction();
+
+            Invoice invoice = new Invoice();
+            invoice.setOrderId(order.getOrderId());
+            invoice.setEmail(order.getEmail());
+            invoice.setUser(order.getUser());
+            invoice.setDeliveryFee(order.getDeliveryMethodRef().getPrice());
+
+            List<InvoiceItem> invoiceItemList = new ArrayList<>();
+
+            for (OrderHasModel orderModels: order.getOrderItems()){
+                InvoiceItem invoiceItem = new InvoiceItem();
+                invoiceItem.setInvoice(invoice);
+                invoiceItem.setModelPrice(orderModels.getModelPrice());
+                invoiceItem.setModelName(orderModels.getModel().getModel());
+                invoiceItem.setModel(orderModels.getModel());
+                invoiceItem.setQty(orderModels.getQty());
+                invoiceItem.setOrder(orderModels.getOrder());
+
+                invoiceItemList.add(invoiceItem);
+            }
+
+            invoice.setItems(invoiceItemList);
+
+            session.persist(invoice);
+
             order.setOrder_status(2);
             session.merge(order);
             transaction.commit();

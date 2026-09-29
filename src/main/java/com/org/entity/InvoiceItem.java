@@ -1,7 +1,6 @@
 package com.org.entity;
 
 import jakarta.persistence.*;
-import jdk.jfr.Timestamp;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -39,7 +38,6 @@ public class InvoiceItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id", referencedColumnName = "invoice_id", insertable = false, updatable = false)
     private Invoice invoice;
-
 
 
     public int getInvoiceItemId() {

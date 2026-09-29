@@ -349,7 +349,6 @@ async function paynow() {
         let jsonObject = null;
 
         jsonObject = await request.json();
-        console.log(jsonObject);
 
         if (!request.ok) {
             Notiflix.Notify.failure((jsonObject && (jsonObject.message || jsonObject.error))
@@ -366,7 +365,6 @@ async function paynow() {
         }
 
         const orderData = jsonObject.data;
-        alert(orderData.hash);
         const payhereSdk = window.payhere;
         if (!payhereSdk || typeof payhereSdk.startPayment !== "function") {
             Notiflix.Notify.failure("PayHere is not available. Please disable ad blockers and try again.");
@@ -401,7 +399,7 @@ async function paynow() {
                                 confirmButtonText: 'Continue Shopping'
                             }).then((result) => {
                                 // Redirect to home or order tracking page
-                                window.location.href = "/profile.html";
+                                //window.location.href = "/profile.html";
                             });
                         } else {
                             // Payment received but status update failed - still a success
