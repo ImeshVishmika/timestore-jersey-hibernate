@@ -475,7 +475,6 @@ Security was considered at both the application and infrastructure levels.
 
 The application includes:
 
-* Password hashing using **bcrypt**
 * User authentication
 * Admin authentication and authorization
 * User page authentication filters
