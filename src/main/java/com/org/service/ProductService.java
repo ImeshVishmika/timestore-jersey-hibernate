@@ -27,7 +27,7 @@ public class ProductService {
     private final Gson gson = new Gson();
     private static final int CANCELLED_ORDER_STATUS = 6;
 
-    public String getAllProducts(FilterDTO filterDTO) {
+    public String  getAllProducts(FilterDTO filterDTO) {
         filterDTO = (filterDTO != null) ? filterDTO : new FilterDTO();
         boolean state = true;
         String message = "success";
@@ -37,6 +37,9 @@ public class ProductService {
             StringBuilder queryString = new StringBuilder("from Product p JOIN p.modelList ml GROUP BY p.id ");
             queryString.append(" ORDER BY ").append(filterDTO.getProductSort());
             System.out.println(queryString.toString());
+
+            
+
             Query<Product> query = session.createQuery(queryString.toString(), Product.class);
 
             if (filterDTO.getLimit()!=null){
@@ -254,7 +257,6 @@ public class ProductService {
             for (Product product : products) {
                 productDTOs.add(convertToDTO(product));
             }
-
 
             data = gson.toJsonTree(productDTOs);
 

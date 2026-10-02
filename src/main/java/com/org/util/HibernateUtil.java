@@ -1,5 +1,6 @@
 package com.org.util;
 
+import com.org.cache.SQLiteConnection;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -12,11 +13,12 @@ import java.util.Properties;
 public class HibernateUtil {
 
     private static final SessionFactory sessionFactory;
+    private static final SessionFactory SQLiteSessionFactory;
 
     static {
         try {
 
-            Configuration configuration = new Configuration().configure();
+            Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
             Properties environment = loadEnvironment();
 
             String host = environment.getProperty("MYSQLHOST");
@@ -42,6 +44,18 @@ public class HibernateUtil {
         }
     }
 
+    static {
+        try {
+            Configuration configuration =new Configuration().configure("sqlite.cfg.xml");
+            configuration.setProperty("hibernate.connection.url","jdbc:sqlite:timestore-cache.db");
+            SQLiteSessionFactory= configuration.buildSessionFactory();
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            throw new ExceptionInInitializerError("SQLite Session Factory creation failed: " + e.getMessage());
+        }
+    }
+
     private static Properties loadEnvironment() throws IOException {
         Properties environment = new Properties();
         Path environmentFile = Path.of("timestore.env");
@@ -58,5 +72,9 @@ public class HibernateUtil {
 
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
+    }
+
+    public static SessionFactory getSQLiteSessionFactory(){
+        return SQLiteSessionFactory ;
     }
 }

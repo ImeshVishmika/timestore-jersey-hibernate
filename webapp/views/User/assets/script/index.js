@@ -4,11 +4,6 @@ document.addEventListener("DOMContentLoaded", async () =>{
 
 });
 
-function getModelImageUrl(model) {
-    const modelId = model.model_id ?? model.modelId;
-    return modelId ? `/api/model/img/${modelId}` : (model.img_path || "");
-}
-
 function getApiError(jsonObject, fallbackMessage) {
     return (jsonObject && jsonObject.error) ? jsonObject.error : fallbackMessage;
 }
