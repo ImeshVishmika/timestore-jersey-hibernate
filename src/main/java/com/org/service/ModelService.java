@@ -33,7 +33,7 @@ public class ModelService {
         String message = "success";
         JsonElement data = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSQLiteSessionFactory().openSession()) {
             FilterDTO safeFilter = filterDTO != null ? filterDTO : new FilterDTO();
             List<Integer> productId = safeFilter.getProductId();
             List<Integer> modelId = safeFilter.getModelId();

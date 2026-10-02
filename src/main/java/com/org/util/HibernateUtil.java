@@ -46,8 +46,10 @@ public class HibernateUtil {
 
     static {
         try {
+            Properties env = loadEnvironment();
             Configuration configuration =new Configuration().configure("sqlite.cfg.xml");
-            configuration.setProperty("hibernate.connection.url","jdbc:sqlite:timestore-cache.db");
+            System.out.println(env.getProperty("SQLITEURL"));
+            configuration.setProperty("hibernate.connection.url",env.getProperty("SQLITEURL"));
             SQLiteSessionFactory= configuration.buildSessionFactory();
 
         }catch (Exception e){

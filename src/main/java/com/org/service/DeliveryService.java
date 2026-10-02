@@ -17,15 +17,13 @@ public class DeliveryService {
 
     private final Gson gson = new Gson();
 
-    /**
-     * Load delivery methods
-     */
+
     public String loadDeliveryMethods() {
         boolean state = true;
         String message = "success";
         JsonElement data = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSQLiteSessionFactory().openSession()) {
             Query<DeliveryMethod> query = session.createQuery("from DeliveryMethod", DeliveryMethod.class);
             List<DeliveryMethod> methods = query.getResultList();
             List<DeliveryMethodDTO> methodDTOs = new ArrayList<>();
@@ -41,9 +39,6 @@ public class DeliveryService {
         return JsonResponse.response(state, message, data);
     }
 
-    /**
-     * Update delivery method
-     */
     public String updateDeliveryMethod(String deliveryMethodId, String price) {
         boolean state = true;
         String message = "success";
@@ -79,9 +74,6 @@ public class DeliveryService {
         return JsonResponse.response(state, message, data);
     }
 
-    /**
-     * Delete delivery method
-     */
     public String deleteDeliveryMethod(String deliveryMethodId) {
         boolean state = true;
         String message = "success";

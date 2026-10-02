@@ -21,7 +21,7 @@ public class BrandService {
         String message = "success";
         JsonElement data = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSQLiteSessionFactory().openSession()) {
             Query<Brand> query = session.createQuery("from Brand", Brand.class);
             List<Brand> brands = query.getResultList();
             List<BrandDTO> brandDTOs = new ArrayList<>();

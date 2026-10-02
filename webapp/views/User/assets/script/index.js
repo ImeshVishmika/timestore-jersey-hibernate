@@ -4,11 +4,6 @@ document.addEventListener("DOMContentLoaded", async () =>{
 
 });
 
-function getApiError(jsonObject, fallbackMessage) {
-    return (jsonObject && jsonObject.error) ? jsonObject.error : fallbackMessage;
-}
-
-
 async function loadPopularItems() {
 
     try {
@@ -64,7 +59,7 @@ async function loadPopularItems() {
                 });
                 newItemesBody.appendChild(fragment);
             } else {
-                Notiflix.Notify.failure(getApiError(jsonObject, 'Failed to fetch popular items'));
+                Notiflix.Notify.failure(jsonObject.error);
             }
         } else {
             Notiflix.Notify.failure('Failed to fetch popular items');
@@ -130,7 +125,7 @@ async function loadNewItems() {
                 });
                 newItemesBody.appendChild(fragment);
             } else {
-                Notiflix.Notify.failure(getApiError(jsonObject, 'Failed to fetch new items'));
+                Notiflix.Notify.failure(jsonObject.error);
             }
         } else {
             Notiflix.Notify.failure('Failed to fetch new items');
