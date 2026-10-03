@@ -1,5 +1,6 @@
 package com.org.config;
 
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 public class AppConfig extends ResourceConfig {
@@ -8,6 +9,7 @@ public class AppConfig extends ResourceConfig {
 
         packages("com.org.controller.user",
                 "com.org.controller.admin", "com.org.filter");
+        register(MultiPartFeature.class);
     }
 
 }
