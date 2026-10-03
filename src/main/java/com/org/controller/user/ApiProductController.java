@@ -7,6 +7,10 @@ import com.org.service.ProductService;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import java.io.InputStream;
 
 @Path("/product")
 @Produces(MediaType.APPLICATION_JSON)
@@ -32,12 +36,16 @@ public class ApiProductController {
 
     @POST
     @Path("/add")
-    public Response addProduct(String requestBody) {
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response addProduct(@FormDataParam("productData") String requestBody,
+                               @FormDataParam("img") InputStream img,
+                               @FormDataParam("img") FormDataContentDisposition fileDetails) {
         try {
             ProductDTO productDTO = gson.fromJson(requestBody,ProductDTO.class);
-            String result = productService.addProduct(productDTO);
+            String result = productService.addProduct(productDTO,img);
             return Response.ok().entity(result).build();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"state\": false, \"message\": \"Error: " + e.getMessage() + "\"}").build();
         }

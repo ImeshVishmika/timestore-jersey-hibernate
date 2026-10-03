@@ -34,12 +34,10 @@
         <mapping class="com.org.entity.MessageStatus"/>
         <mapping class="com.org.entity.Message"/>
 
-<!--        <mapping class="com.org.entity.Product"/>-->
-<!--        <mapping class="com.org.entity.Model"/>-->
-<!--        <mapping class="com.org.entity.Brand"/>-->
-<!--        <mapping class="com.org.entity.DeliveryMethod"/>-->
-<!--        <mapping class="com.org.entity.Invoice"/>-->
-<!--        <mapping class="com.org.entity.InvoiceItem"/>-->
+<!--        <mapping class="com.org.cache.Brand"/>-->
+<!--        <mapping class="com.org.cache.Product"/>-->
+<!--        <mapping class="com.org.cache.Model"/>-->
+<!--        <mapping class="com.org.cache.ProductImg"/>-->
 
     </session-factory>
 </hibernate-configuration>

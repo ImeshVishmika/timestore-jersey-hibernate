@@ -268,7 +268,7 @@ public class ModelService {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSQLiteSessionFactory().openSession()) {
             ProductImage productImage = session.createQuery(
                             "FROM ProductImage p WHERE p.modelId = :mid OR p.model.productId =:mid", ProductImage.class)
                     .setParameter("mid", mid)

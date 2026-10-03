@@ -1,6 +1,5 @@
 package com.org.util;
 
-import com.org.cache.SQLiteConnection;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 

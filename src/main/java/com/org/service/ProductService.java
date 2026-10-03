@@ -15,6 +15,10 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -267,7 +271,7 @@ public class ProductService {
         return JsonResponse.response(state, message, data);
     }
 
-    public String addProduct(ProductDTO productDTO) {
+    public String addProduct(ProductDTO productDTO,InputStream img) {
         boolean state = true;
         String message = "success";
         JsonElement data = null;
@@ -278,9 +282,12 @@ public class ProductService {
             return JsonResponse.response(state, message, data);
         }
 
+
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        Transaction sqliteTransaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession(); Session sqliteSession = HibernateUtil.getSQLiteSessionFactory().openSession()) {
             transaction = session.beginTransaction();
+            sqliteTransaction = sqliteSession.beginTransaction();
 
             // Validate and handle Brand
             Integer brandId = productDTO.getBrandId();
@@ -288,7 +295,6 @@ public class ProductService {
                 Brand newBrand = new Brand();
                 newBrand.setBrandName(productDTO.getBrandName());
                 session.persist(newBrand);
-                session.flush();
                 brandId = newBrand.getBrandId();
             }
 
@@ -308,11 +314,16 @@ public class ProductService {
             }
 
             // Create new Product
-            Product product = new Product();
-            product.setProductName(productDTO.getProductName());
-            product.setBrandId(brandId);
+            Product product = new Product(productDTO);
             session.persist(product);
             session.flush();
+
+            // Create new Cache Product
+            Product cachedProduct = new Product(productDTO);
+            cachedProduct.setProductId(product.getProductId());
+            sqliteSession.merge(cachedProduct);
+            sqliteSession.flush();
+
 
             // Validate and create Model
             if (productDTO.getModels() == null || productDTO.getModels().isEmpty()) {
@@ -344,20 +355,42 @@ public class ProductService {
                     return JsonResponse.response(state, message, data);
                 }
 
-                Model model = new Model();
+                Model model = new Model(modelDTO);
                 model.setProductId(product.getProductId());
-                model.setModel(modelDTO.getModel());
-                model.setPrice(modelDTO.getPrice());
-                model.setQty(modelDTO.getQty());
-                model.setAddedTime(LocalDateTime.now());
                 session.persist(model);
+                session.flush();
+
+                Model cacheModel = new Model(modelDTO);
+                cacheModel.setProductId(product.getProductId());
+                cacheModel.setModelId(model.getModelId());
+                sqliteSession.merge(cacheModel);
+                sqliteSession.flush();
+
+                Path path = Paths.get("webapp/Image/product");
+                Files.createDirectories(path);
+                Path filePath = path.resolve(model.getModel());
+                Files.copy(img,filePath);
+
+                ProductImage productImage = new ProductImage();
+                productImage.setModel_id(model.getModel_id());
+                productImage.setImg_path("Image/product/"+model.getModel());
+                session.persist(productImage);
+                session.flush();
+
+//                ProductImage cachedProductImg = new ProductImage();
+//                cachedProductImg.setModel_id(model.getModel_id());
+//                cachedProductImg.setImg_path("Image/product/"+model.getModel());
+                sqliteSession.persist(productImage);
+                sqliteSession.flush();
             }
 
+            sqliteTransaction.commit();
             transaction.commit();
-            data = gson.toJsonTree(convertToDTO(product));
+//            data = gson.toJsonTree(convertToDTO(product));
             message = "product added successfully";
 
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             if (transaction != null) transaction.rollback();
             state = false;
             message = "product addition failed: " + e.getMessage();

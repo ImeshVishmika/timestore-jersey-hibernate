@@ -1,6 +1,6 @@
 package com.org;
 
-import com.org.cache.SQLiteCacheDatabase;
+
 import com.org.config.AppConfig;
 import com.org.filter.AdminPageAuthFilter;
 import com.org.filter.UserPageAuthFilter;
@@ -19,8 +19,8 @@ public class Main {
 
         try {
 
-//            HibernateUtil.getSessionFactory().openSession();
-//            HibernateUtil.getSQLiteSessionFactory().openSession();
+            HibernateUtil.getSessionFactory().openSession();
+            HibernateUtil.getSQLiteSessionFactory().openSession();
 
             Tomcat tomcat = new Tomcat();
 

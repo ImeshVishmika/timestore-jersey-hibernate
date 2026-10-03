@@ -1,5 +1,6 @@
 package com.org.entity;
 
+import com.org.dto.ProductDTO;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -68,5 +69,13 @@ public class Product {
 
     public void setBrand(Brand brand) {
         this.brand = brand;
+    }
+
+    public Product() {
+    }
+
+    public Product(ProductDTO productDTO) {
+        this.productName = productDTO.getProductName();
+        this.brandId = productDTO.getBrandId();
     }
 }

@@ -3,6 +3,7 @@ package com.org.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.org.dto.ModelDTO;
 import jakarta.persistence.*;
 
 @Entity
@@ -145,5 +146,16 @@ public class Model {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Model() {
+    }
+
+    public Model(ModelDTO modelDTO) {
+        this.model = modelDTO.getModel();
+        this.price = modelDTO.getPrice();
+        this.qty = modelDTO.getQty();
+        this.addedTime = LocalDateTime.now();
+
     }
 }

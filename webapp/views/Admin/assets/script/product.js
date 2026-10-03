@@ -122,6 +122,9 @@ async function loadBrands() {
             const brandSelect = document.getElementById("brandSelect");
 
             const fragment = document.createDocumentFragment();
+            const defaultSelect = document.createElement("option");
+            defaultSelect.textContent="Filter by Brand";
+            fragment.appendChild(defaultSelect);
 
             brandList.forEach(brand => {
                 const select = document.createElement("option");
@@ -180,6 +183,7 @@ const brandInput = document.getElementById("brandInput");
 const brandSelect = document.getElementById("brandSelect");
 const modelInput = document.getElementById("modelInput");
 const modelSelect = document.getElementById("modelSelect");
+const productImg = document.getElementById("productImg");
 
 // Declare modal and toggle elements
 const addProductModal = document.getElementById("addProductModal");
@@ -290,7 +294,9 @@ modelSelect.addEventListener("change", () => {
 
 document.getElementById("addProduct").addEventListener("click", async () => {
     try {
-        const payload = {};
+        const payload = {
+            models: []
+        };
 
         if (!brandSelect.classList.contains("d-none")) {
             payload.brandId = brandSelect.value;
@@ -309,16 +315,15 @@ document.getElementById("addProduct").addEventListener("click", async () => {
         model.price = document.getElementById("productPrice").value;
         model.qty = document.getElementById("productQty").value;
 
-        payload.models = [model];
+        payload.models.push(model);
 
-        console.log(payload);
+        const formData = new FormData();
+        formData.append("productData",JSON.stringify(payload));
+        formData.append("img",productImg.files[0]);
 
         const request = await fetch("/api/product/add", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
+            body: formData
         });
 
         if (request.ok) {
