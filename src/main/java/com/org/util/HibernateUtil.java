@@ -48,7 +48,6 @@ public class HibernateUtil {
         try {
             Properties env = loadEnvironment();
             Configuration configuration = new Configuration().configure("sqlite.cfg.xml");
-            System.out.println(env.getProperty("SQLITEURL"));
             configuration.setProperty("hibernate.connection.url", env.getProperty("SQLITEURL"));
             SQLiteSessionFactory = configuration.buildSessionFactory();
 
