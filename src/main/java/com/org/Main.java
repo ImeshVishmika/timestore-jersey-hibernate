@@ -19,8 +19,8 @@ public class Main {
 
         try {
 
-//            HibernateUtil.getSessionFactory().openSession();
-//            HibernateUtil.getSQLiteSessionFactory().openSession();
+            HibernateUtil.getSessionFactory().openSession();
+            HibernateUtil.getSQLiteSessionFactory().openSession();
 
             Tomcat tomcat = new Tomcat();
 
