@@ -39,21 +39,22 @@ public class HibernateUtil {
 
             sessionFactory = configuration.buildSessionFactory();
         } catch (Exception e) {
-            throw new ExceptionInInitializerError("Session Factory creation failed: " + e.getMessage());
+            e.printStackTrace();
+            throw new ExceptionInInitializerError(e);
         }
     }
 
     static {
         try {
             Properties env = loadEnvironment();
-            Configuration configuration =new Configuration().configure("sqlite.cfg.xml");
+            Configuration configuration = new Configuration().configure("sqlite.cfg.xml");
             System.out.println(env.getProperty("SQLITEURL"));
-            configuration.setProperty("hibernate.connection.url",env.getProperty("SQLITEURL"));
-            SQLiteSessionFactory= configuration.buildSessionFactory();
+            configuration.setProperty("hibernate.connection.url", env.getProperty("SQLITEURL"));
+            SQLiteSessionFactory = configuration.buildSessionFactory();
 
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            throw new ExceptionInInitializerError("SQLite Session Factory creation failed: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExceptionInInitializerError(e);
         }
     }
 
@@ -75,7 +76,7 @@ public class HibernateUtil {
         return sessionFactory;
     }
 
-    public static SessionFactory getSQLiteSessionFactory(){
-        return SQLiteSessionFactory ;
+    public static SessionFactory getSQLiteSessionFactory() {
+        return SQLiteSessionFactory;
     }
 }

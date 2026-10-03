@@ -37,10 +37,11 @@ public class ProductService {
         String message = "success";
         JsonElement data = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSQLiteSessionFactory().openSession()) {
 
             StringBuilder queryString = new StringBuilder("from Product p JOIN p.modelList ml GROUP BY p.id ");
             queryString.append(" ORDER BY ").append(filterDTO.getProductSort());
+            System.out.println("sqlite");
             System.out.println(queryString.toString());
 
             Query<Product> query = session.createQuery(queryString.toString(), Product.class);
