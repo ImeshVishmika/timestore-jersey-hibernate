@@ -2,7 +2,7 @@
     <session-factory>
         <property name="hibernate.connection.driver_class">org.sqlite.JDBC</property>
         <property name="hibernate.dialect">org.hibernate.community.dialect.SQLiteDialect</property>
-        <property name="hibernate.hbm2ddl.auto">update</property>
+<!--        <property name="hibernate.hbm2ddl.auto">update</property>-->
 
         <mapping class="com.org.entity.Admin"/>
         <mapping class="com.org.entity.Gender"/>
