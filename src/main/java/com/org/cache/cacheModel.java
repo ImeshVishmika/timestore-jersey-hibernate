@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class Model {
+public class cacheModel {
 
     @Id
     @Column(name = "model_id")
@@ -35,12 +35,12 @@ public class Model {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id",referencedColumnName = "product_id",insertable = false,updatable = false)
-    private Product product;
+    private cacheProduct product;
 
-    public Model(){}
+    public cacheModel(){}
 
 
-    public Model(ModelDTO modelDTO) {
+    public cacheModel(ModelDTO modelDTO) {
         this.model = modelDTO.getModel();
         this.price = modelDTO.getPrice();
         this.qty = modelDTO.getQty();
@@ -112,11 +112,11 @@ public class Model {
         this.description = description;
     }
 
-    public Product getProduct() {
+    public cacheProduct getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(cacheProduct product) {
         this.product = product;
     }
 }

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-public class Brand {
+public class cacheBrand {
 
     @Id
     @Column(name = "brand_id")
@@ -15,7 +15,7 @@ public class Brand {
     private String brandName;
 
     @OneToMany(mappedBy = "brand" , fetch = FetchType.LAZY)
-    private List<Product> productList;
+    private List<cacheProduct> productList;
 
     public Integer getBrandId() {
         return brandId;
@@ -33,11 +33,11 @@ public class Brand {
         this.brandName = brandName;
     }
 
-    public List<Product> getProductList() {
+    public List<cacheProduct> getProductList() {
         return productList;
     }
 
-    public void setProductList(List<Product> productList) {
+    public void setProductList(List<cacheProduct> productList) {
         this.productList = productList;
     }
 }

@@ -6,6 +6,7 @@ import com.org.dto.DiscountDTO;
 import com.org.entity.Discount;
 import com.org.entity.Product;
 import com.org.entity.ProductDiscount;
+import com.org.util.GsonUtil;
 import com.org.util.HibernateUtil;
 import com.org.util.JsonResponse;
 import org.hibernate.Session;
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class DiscountService {
 
-    private final Gson gson = new Gson();
+    private final Gson gson = GsonUtil.getGson();
 
     /**
      * Create a new discount

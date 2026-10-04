@@ -2,11 +2,14 @@ package com.org.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.org.cache.cacheModel;
+import com.org.cache.cacheProductImg;
 import com.org.dto.FilterDTO;
 import com.org.dto.ModelDTO;
 import com.org.entity.Model;
 import com.org.entity.Product;
 import com.org.entity.ProductImage;
+import com.org.util.GsonUtil;
 import com.org.util.HibernateUtil;
 import com.org.util.JsonResponse;
 import jakarta.ws.rs.core.MediaType;
@@ -26,7 +29,7 @@ import java.util.stream.Collectors;
 
 public class ModelService {
 
-    private final Gson gson = new Gson();
+    private final Gson gson = GsonUtil.getGson();
 
     public String loadModels(FilterDTO filterDTO) {
         boolean state = true;
@@ -41,7 +44,7 @@ public class ModelService {
             String productName = safeFilter.getProductName();
             String modelName = safeFilter.getModelName();
 
-            StringBuilder queryText = new StringBuilder("from Model m where 1=1");
+            StringBuilder queryText = new StringBuilder("from cacheModel m where 1=1");
 
             if (productId != null && !productId.isEmpty()) {
                 queryText.append(" and m.productId in (:productIds)");
@@ -64,7 +67,7 @@ public class ModelService {
 
             System.out.println(queryText.toString());
 
-            Query<Model> query = session.createQuery(queryText.toString(), Model.class);
+            Query<cacheModel> query = session.createQuery(queryText.toString(), cacheModel.class);
 
             if (productId != null && !productId.isEmpty()) {
                 query.setParameterList("productIds", productId);
@@ -89,10 +92,10 @@ public class ModelService {
                 query.setFirstResult(offset);
             }
 
-            List<Model> models = query.getResultList();
+            List<cacheModel> cacheModels = query.getResultList();
             List<ModelDTO> modelDTOs = new ArrayList<>();
-            for (Model model : models) {
-                modelDTOs.add(new ModelDTO(model));
+            for (cacheModel cacheModel : cacheModels) {
+                modelDTOs.add(new ModelDTO(cacheModel));
             }
             data = gson.toJsonTree(modelDTOs);
 
@@ -269,18 +272,18 @@ public class ModelService {
         }
 
         try (Session session = HibernateUtil.getSQLiteSessionFactory().openSession()) {
-            ProductImage productImage = session.createQuery(
-                            "FROM ProductImage p WHERE p.modelId = :mid OR p.model.productId =:mid", ProductImage.class)
+            cacheProductImg cacheProductImg = session.createQuery(
+                            "FROM cacheProductImg p WHERE p.modelId = :mid OR p.model.productId =:mid", cacheProductImg.class)
                     .setParameter("mid", mid)
                     .setMaxResults(1)
                     .uniqueResult();
 
-            if (productImage == null || productImage.getImg_path() == null || productImage.getImg_path().isBlank()) {
+            if (cacheProductImg == null || cacheProductImg.getImgPath() == null || cacheProductImg.getImgPath().isBlank()) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
 
 
-            String dbPath = productImage.getImg_path();
+            String dbPath = cacheProductImg.getImgPath();
             Path path = Paths.get("webapp/" + dbPath);
 
             if (!Files.exists(path) || !Files.isRegularFile(path)) {

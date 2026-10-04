@@ -7,6 +7,7 @@ import com.org.dto.FilterDTO;
 import com.org.dto.OrderDTO;
 import com.org.dto.OrderItemsDTO;
 import com.org.entity.*;
+import com.org.util.GsonUtil;
 import com.org.util.HibernateUtil;
 import com.org.util.JsonResponse;
 import org.hibernate.Session;
@@ -28,7 +29,7 @@ import java.util.Properties;
 
 public class OrderService {
 
-    private final Gson gson = new Gson();
+    private final Gson gson = GsonUtil.getGson();
 
     public static String getMd5(String input) {
         try {

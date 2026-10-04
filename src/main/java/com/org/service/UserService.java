@@ -7,6 +7,7 @@ import com.org.dto.FilterDTO;
 import com.org.dto.OrderDTO;
 import com.org.dto.UserDTO;
 import com.org.entity.User;
+import com.org.util.GsonUtil;
 import com.org.util.HibernateUtil;
 import com.org.util.JsonResponse;
 import jakarta.servlet.http.HttpSession;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class UserService {
 
-    private final Gson gson = new Gson();
+    private final Gson gson = GsonUtil.getGson();
 
     public String getUserProfile(UserDTO userDTO) {
         boolean state = true;

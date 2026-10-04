@@ -1,11 +1,9 @@
 package com.org.cache;
 
-import com.org.entity.ProductImage;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "product_img")
-public class ProductImg {
+public class cacheProductImg {
 
     @Id
     @Column(name = "img_path",nullable = false,length = 150)
@@ -16,11 +14,15 @@ public class ProductImg {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "model_id",referencedColumnName = "model_id",insertable = false,updatable = false)
-    private Model model;
+    private cacheModel model;
 
-    public ProductImg(Model model){
+    public cacheProductImg(cacheModel model){
         this.modelId = model.getModelId();
         this.imgPath = "Image/product/"+model.getModel();
+    }
+
+    public cacheProductImg() {
+
     }
 
     public String getImgPath() {
@@ -39,11 +41,11 @@ public class ProductImg {
         this.modelId = modelId;
     }
 
-    public Model getModel() {
+    public cacheModel getModel() {
         return model;
     }
 
-    public void setModel(Model model) {
+    public void setModel(cacheModel model) {
         this.model = model;
     }
 }

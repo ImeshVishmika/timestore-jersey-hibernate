@@ -43,7 +43,10 @@ public class ProductImage {
         return model;
     }
 
-    public void setModel(Model model) {
-        this.model = model;
+    public ProductImage(){}
+
+    public ProductImage(Model model){
+        this.modelId = model.getModelId();
+        this.imgPath = "Image/product/"+model.getModel();
     }
 }

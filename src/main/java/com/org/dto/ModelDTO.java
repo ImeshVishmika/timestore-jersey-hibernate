@@ -1,5 +1,6 @@
 package com.org.dto;
 
+import com.org.cache.cacheModel;
 import com.org.entity.Model;
 
 public class ModelDTO {
@@ -43,6 +44,20 @@ public class ModelDTO {
         this.addedTime = model.getAdded_time() != null ? model.getAdded_time().toString() : null;
         this.color= model.getColor();
         this.description =model.getDescription();
+    }
+
+    public ModelDTO(cacheModel cacheModel) {
+        this.modelId = cacheModel.getModelId();
+        this.productId = cacheModel.getProductId();
+        this.productName = cacheModel.getProduct().getProductName() ;
+        this.brandId = cacheModel.getProduct().getBrandId();
+        this.brandName = cacheModel.getProduct().getBrand().getBrandName();
+        this.model = cacheModel.getModel();
+        this.price = cacheModel.getPrice();
+        this.qty = cacheModel.getQty();
+        this.addedTime = cacheModel.getAddedTime() != null ? cacheModel.getAddedTime().toString() : null;
+        this.color= cacheModel.getColor();
+        this.description =cacheModel.getDescription();
     }
 
     public String getColor() {

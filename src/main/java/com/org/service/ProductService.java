@@ -2,6 +2,7 @@ package com.org.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.org.cache.cacheProduct;
 import com.org.dto.FilterDTO;
 import com.org.dto.ModelDTO;
 import com.org.dto.ProductDTO;
@@ -9,6 +10,7 @@ import com.org.entity.Brand;
 import com.org.entity.Model;
 import com.org.entity.Product;
 import com.org.entity.ProductImage;
+import com.org.util.GsonUtil;
 import com.org.util.HibernateUtil;
 import com.org.util.JsonResponse;
 import org.hibernate.Session;
@@ -19,6 +21,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -28,10 +31,11 @@ import java.time.LocalDate;
 
 public class ProductService {
 
-    private final Gson gson = new Gson();
+    private final Gson gson = GsonUtil.getGson();
     private static final int CANCELLED_ORDER_STATUS = 6;
 
     public String  getAllProducts(FilterDTO filterDTO) {
+
         filterDTO = (filterDTO != null) ? filterDTO : new FilterDTO();
         boolean state = true;
         String message = "success";
@@ -39,11 +43,11 @@ public class ProductService {
 
         try (Session session = HibernateUtil.getSQLiteSessionFactory().openSession()) {
 
-            StringBuilder queryString = new StringBuilder("from Product p JOIN p.modelList ml GROUP BY p.id ");
+            StringBuilder queryString = new StringBuilder("from cacheProduct p JOIN p.modelList ml GROUP BY p.id ");
             queryString.append(" ORDER BY ").append(filterDTO.getProductSort());
             System.out.println(queryString.toString());
 
-            Query<Product> query = session.createQuery(queryString.toString(), Product.class);
+            Query<cacheProduct> query = session.createQuery(queryString.toString(), cacheProduct.class);
 
             if (filterDTO.getLimit()!=null){
                 query.setMaxResults(filterDTO.getLimit());
@@ -53,16 +57,18 @@ public class ProductService {
                 query.setFirstResult(filterDTO.getLimit()* filterDTO.getPageNo());
             }
 
-            List<Product> products = query.getResultList();
+            List<cacheProduct> cacheProducts = query.getResultList();
             List<ProductDTO> productDTOs = new ArrayList<>();
 
-            for (Product product : products) {
-                productDTOs.add(convertToDTO(product));
+            for (cacheProduct cacheProduct :cacheProducts) {
+                ProductDTO productDTO = new ProductDTO(cacheProduct);
+                productDTOs.add(productDTO);
             }
 
             data = gson.toJsonTree(productDTOs);
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
             state = false;
             message = "product loading failed";
@@ -76,7 +82,7 @@ public class ProductService {
         String message = "success";
         JsonElement data = null;
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSQLiteSessionFactory().openSession()) {
             Product product = session.get(Product.class, productId);
             ProductDTO productDTO = convertToDTO(product);
 
@@ -204,7 +210,7 @@ public class ProductService {
                 return JsonResponse.response(state, message, data);
             }
 
-            session.createQuery("DELETE FROM Model m WHERE m.productId =:productId")
+            session.createQuery("DELETE FROM cacheModel m WHERE m.productId =:productId")
                     .setParameter("productId", productId)
                     .executeUpdate();
 
@@ -316,12 +322,14 @@ public class ProductService {
             Product product = new Product(productDTO);
             session.persist(product);
             session.flush();
+            System.out.println("Mysql product id:"+product.getProductId());
 
             // Create new Cache Product
             Product cachedProduct = new Product(productDTO);
             cachedProduct.setProductId(product.getProductId());
             sqliteSession.merge(cachedProduct);
             sqliteSession.flush();
+            System.out.println("Cached product id:"+cachedProduct.getProductId());
 
 
             // Validate and create Model
@@ -368,7 +376,7 @@ public class ProductService {
                 Path path = Paths.get("webapp/Image/product");
                 Files.createDirectories(path);
                 Path filePath = path.resolve(model.getModel());
-                Files.copy(img,filePath);
+                Files.copy(img,filePath, StandardCopyOption.REPLACE_EXISTING);
 
                 ProductImage productImage = new ProductImage();
                 productImage.setModel_id(model.getModel_id());
@@ -379,7 +387,7 @@ public class ProductService {
 //                ProductImage cachedProductImg = new ProductImage();
 //                cachedProductImg.setModel_id(model.getModel_id());
 //                cachedProductImg.setImg_path("Image/product/"+model.getModel());
-                sqliteSession.persist(productImage);
+                sqliteSession.merge(productImage);
                 sqliteSession.flush();
             }
 
@@ -389,7 +397,7 @@ public class ProductService {
             message = "product added successfully";
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             if (transaction != null) transaction.rollback();
             state = false;
             message = "product addition failed: " + e.getMessage();

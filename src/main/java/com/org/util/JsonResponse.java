@@ -8,6 +8,7 @@ public class JsonResponse {
     private static final Gson gson = new Gson();
 
     public static String response(boolean state, String message, JsonElement jsonElement) {
+
         JsonObject responseJson = new JsonObject();
         responseJson.addProperty("state", state);
         responseJson.addProperty("message", message);

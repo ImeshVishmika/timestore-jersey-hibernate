@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-public class Product {
+public class cacheProduct {
 
     @Id
     @Column(name = "product_id" , nullable = false)
@@ -20,14 +20,14 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "brand_id" , referencedColumnName = "brand_id",insertable = false,updatable = false)
-    private Brand brand;
+    private cacheBrand brand;
 
     @OneToMany(mappedBy = "product",fetch = FetchType.LAZY)
-    private List<Model> modelList;
+    private List<cacheModel> modelList;
 
-    public Product(){}
+    public cacheProduct(){}
 
-    public Product(ProductDTO productDTO) {
+    public cacheProduct(ProductDTO productDTO) {
         this.productName = productDTO.getProductName();
         this.brandId = productDTO.getBrandId();
     }
@@ -56,19 +56,19 @@ public class Product {
         this.productName = productName;
     }
 
-    public Brand getBrand() {
+    public cacheBrand getBrand() {
         return brand;
     }
 
-    public void setBrand(Brand brand) {
+    public void setBrand(cacheBrand brand) {
         this.brand = brand;
     }
 
-    public List<Model> getModelList() {
+    public List<cacheModel> getModelList() {
         return modelList;
     }
 
-    public void setModelList(List<Model> modelList) {
+    public void setModelList(List<cacheModel> modelList) {
         this.modelList = modelList;
     }
 }

@@ -1,5 +1,6 @@
 package com.org.dto;
 
+import com.org.cache.cacheProduct;
 import com.org.entity.Product;
 
 import java.sql.Date;
@@ -34,6 +35,13 @@ public class ProductDTO {
     public ProductDTO(double revenue, Date date) {
         this.date = date.toString();
         this.revenue = revenue;
+    }
+
+    public ProductDTO(cacheProduct cacheProduct){
+        this.productName = cacheProduct.getProductName();
+        this.productId = cacheProduct.getProductid();
+        this.brandName = cacheProduct.getBrand().getBrandName();
+        this.brandId = cacheProduct.getBrandId();
     }
 
     public ProductDTO(double revenue, Integer value) {

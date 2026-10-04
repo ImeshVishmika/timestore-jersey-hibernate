@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.org.dto.MessageDTO;
 import com.org.entity.Message;
+import com.org.util.GsonUtil;
 import com.org.util.HibernateUtil;
 import com.org.util.JsonResponse;
 import org.hibernate.Session;
@@ -15,18 +16,12 @@ import java.util.List;
 
 public class MessageService {
 
-    private final Gson gson = new Gson();
+    private final Gson gson = GsonUtil.getGson();
 
-    /**
-     * Get message senders
-     */
     public String sendSenderData() {
         return getMessageSenders();
     }
 
-    /**
-     * Get message senders
-     */
     public String getMessageSenders() {
         boolean state = true;
         String message = "success";

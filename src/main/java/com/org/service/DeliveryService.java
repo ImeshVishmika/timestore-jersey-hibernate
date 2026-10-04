@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.org.dto.DeliveryMethodDTO;
 import com.org.entity.DeliveryMethod;
+import com.org.util.GsonUtil;
 import com.org.util.HibernateUtil;
 import com.org.util.JsonResponse;
 import org.hibernate.Session;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class DeliveryService {
 
-    private final Gson gson = new Gson();
+    private final Gson gson = GsonUtil.getGson();
 
 
     public String loadDeliveryMethods() {

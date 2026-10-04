@@ -2,8 +2,10 @@ package com.org.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.org.cache.cacheBrand;
 import com.org.dto.BrandDTO;
 import com.org.entity.Brand;
+import com.org.util.GsonUtil;
 import com.org.util.HibernateUtil;
 import com.org.util.JsonResponse;
 import org.hibernate.Session;
@@ -14,7 +16,7 @@ import java.util.List;
 
 public class BrandService {
 
-    private final Gson gson = new Gson();
+    private final Gson gson = GsonUtil.getGson();
 
     public String loadBrands() {
         boolean state = true;
@@ -22,23 +24,21 @@ public class BrandService {
         JsonElement data = null;
 
         try (Session session = HibernateUtil.getSQLiteSessionFactory().openSession()) {
-            Query<Brand> query = session.createQuery("from Brand", Brand.class);
-            List<Brand> brands = query.getResultList();
+            session.beginTransaction();
+
+            Query<cacheBrand> query = session.createQuery("from cacheBrand ", cacheBrand.class);
+            List<cacheBrand> brands = query.getResultList();
             List<BrandDTO> brandDTOs = new ArrayList<>();
-            for (Brand brand : brands) {
-                brandDTOs.add(convertToDTO(brand));
+            for (cacheBrand cacheBrand : brands) {
+                brandDTOs.add(new BrandDTO(cacheBrand));
             }
             data = gson.toJsonTree(brandDTOs);
 
         } catch (Exception e) {
             state = false;
-            message = "brand loading failed: " + e.getMessage();
+            message = "brand loading failed";
         }
         return JsonResponse.response(state, message, data);
-    }
-
-    private BrandDTO convertToDTO(Brand brand) {
-        return new BrandDTO(brand.getBrandId(), brand.getBrandName());
     }
 
 }

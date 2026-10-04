@@ -1,14 +1,22 @@
 package com.org.dto;
 
+import com.org.cache.cacheBrand;
+import com.org.entity.Brand;
+
 public class BrandDTO {
     private Integer brandId;
     private String brandName;
 
     public BrandDTO() {}
 
-    public BrandDTO(Integer brandId, String brandName) {
-        this.brandId = brandId;
-        this.brandName = brandName;
+    public BrandDTO(Brand brand) {
+        this.brandId = brand.getBrandId();
+        this.brandName = brand.getBrandName();
+    }
+
+    public BrandDTO(cacheBrand cacheBrand) {
+        this.brandId = cacheBrand.getBrandId();
+        this.brandName = cacheBrand.getBrandName();
     }
 
     public Integer getBrandId() {
