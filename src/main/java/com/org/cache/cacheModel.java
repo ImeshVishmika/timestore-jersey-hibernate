@@ -1,5 +1,6 @@
 package com.org.cache;
 
+import com.org.dto.ModelDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -35,6 +36,17 @@ public class Model {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id",referencedColumnName = "product_id",insertable = false,updatable = false)
     private Product product;
+
+    public Model(){}
+
+
+    public Model(ModelDTO modelDTO) {
+        this.model = modelDTO.getModel();
+        this.price = modelDTO.getPrice();
+        this.qty = modelDTO.getQty();
+        this.addedTime = LocalDateTime.now();
+
+    }
 
     public Integer getModelId() {
         return modelId;

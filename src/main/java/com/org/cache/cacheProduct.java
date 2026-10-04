@@ -1,5 +1,6 @@
 package com.org.cache;
 
+import com.org.dto.ProductDTO;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -23,6 +24,13 @@ public class Product {
 
     @OneToMany(mappedBy = "product",fetch = FetchType.LAZY)
     private List<Model> modelList;
+
+    public Product(){}
+
+    public Product(ProductDTO productDTO) {
+        this.productName = productDTO.getProductName();
+        this.brandId = productDTO.getBrandId();
+    }
 
     public Integer getProductid() {
         return productid;

@@ -1,5 +1,6 @@
 package com.org.cache;
 
+import com.org.entity.ProductImage;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +17,11 @@ public class ProductImg {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "model_id",referencedColumnName = "model_id",insertable = false,updatable = false)
     private Model model;
+
+    public ProductImg(Model model){
+        this.modelId = model.getModelId();
+        this.imgPath = "Image/product/"+model.getModel();
+    }
 
     public String getImgPath() {
         return imgPath;
